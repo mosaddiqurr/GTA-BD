@@ -1,0 +1,377 @@
+:root {
+  --ink: #f7f3e8;
+  --ink-dim: rgba(247, 243, 232, 0.66);
+  --gold: #f6b93b;
+  --green: #0a6b4f;
+  --red: #e0263c;
+  --glass: rgba(10, 13, 17, 0.62);
+  --line: rgba(255, 255, 255, 0.14);
+  --ui-font: "Hind Siliguri", "Noto Sans Bengali", system-ui, sans-serif;
+  --display-font: "Galada", "Hind Siliguri", serif;
+  --heavy-font: "Anek Bangla", "Hind Siliguri", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0d10;
+  color: var(--ink);
+  font-family: var(--ui-font);
+  user-select: none;
+}
+
+#game {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+}
+
+#ui {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.fatal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  background: #0b0d10;
+  pointer-events: auto;
+}
+.fatal-title { font-family: var(--heavy-font); font-size: 34px; font-weight: 800; color: var(--gold); margin-bottom: 8px; }
+
+/* ---------- loading and title ---------- */
+
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  pointer-events: auto;
+  transition: opacity 0.7s ease;
+}
+.screen.hidden { opacity: 0; pointer-events: none; }
+
+.loading {
+  background: #0b0d10;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 7vh 6vw;
+  overflow: hidden;
+}
+/* An actual view from the game, drifting slowly, under a shade that keeps the text readable. */
+.loading::before {
+  content: "";
+  position: absolute;
+  inset: -3%;
+  background: url("/assets/ui/loading.webp") center / cover no-repeat;
+  animation: loadDrift 40s ease-out forwards;
+}
+.loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(5, 8, 10, 0.94) 0%, rgba(5, 8, 10, 0.62) 34%, rgba(5, 8, 10, 0) 68%);
+}
+.loading > * { position: relative; z-index: 1; }
+@keyframes loadDrift {
+  from { transform: scale(1); }
+  to { transform: scale(1.07) translate(-1%, -0.8%); }
+}
+.loading .brand { font-family: var(--display-font); font-size: clamp(46px, 7vw, 92px); color: var(--ink); line-height: 1.15; text-shadow: 0 3px 24px rgba(0, 0, 0, 0.6); }
+.loading .brand-sub { font-size: 20px; color: var(--gold); margin-bottom: 48px; }
+/* The road a small rickshaw rides along as things load. */
+.bar { position: relative; height: 3px; background: rgba(255, 255, 255, 0.22); max-width: 620px; }
+.bar > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--red), var(--gold)); transition: width 0.25s; }
+.rick { position: absolute; bottom: -1px; left: 0; width: 46px; height: 29px; transform: translateX(-50%); transition: left 0.25s; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6)); }
+.rick .w { stroke-dasharray: 5 2; animation: rickRoll 0.7s linear infinite; }
+@keyframes rickRoll { to { stroke-dashoffset: -14; } }
+.loading .status { margin-top: 14px; color: var(--ink-dim); font-size: 15px; min-height: 22px; }
+.loading .tip { margin-top: 4px; color: var(--ink); font-size: 17px; }
+
+.title {
+  background: linear-gradient(90deg, rgba(5, 9, 11, 0.9) 0%, rgba(5, 9, 11, 0.62) 34%, rgba(5, 9, 11, 0) 62%);
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 6vw;
+}
+.title h1 { font-family: var(--display-font); font-weight: 400; font-size: clamp(50px, 8vw, 112px); line-height: 1.12; margin: 0; max-width: 11em; text-shadow: 0 4px 30px rgba(0, 0, 0, 0.55); }
+.title .where { font-family: var(--heavy-font); font-weight: 700; color: var(--gold); font-size: clamp(20px, 2.4vw, 30px); margin: 8px 0 34px; }
+.title .controls { margin-top: 34px; display: grid; grid-template-columns: max-content max-content; gap: 5px 18px; font-size: 15px; color: var(--ink-dim); }
+.title .controls b { color: var(--ink); font-weight: 600; font-family: system-ui, sans-serif; font-size: 13px; }
+
+.btn {
+  font-family: var(--heavy-font);
+  font-weight: 700;
+  font-size: 22px;
+  color: #12100a;
+  background: var(--gold);
+  border: 0;
+  border-radius: 3px;
+  padding: 13px 34px 11px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: transform 0.12s, background 0.12s;
+}
+.btn:hover { background: #ffd166; transform: translateY(-1px); }
+.btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* ---------- gameplay HUD ---------- */
+
+.hud { position: fixed; inset: 0; pointer-events: none; transition: opacity 0.3s; }
+.hud.hidden { opacity: 0; }
+
+.mapwrap {
+  position: absolute;
+  left: 26px;
+  bottom: 26px;
+  width: 196px;
+  height: 196px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  background: #1a1f1d;
+}
+.mapwrap canvas { width: 100%; height: 100%; display: block; }
+.north {
+  position: absolute;
+  left: 26px;
+  bottom: 26px;
+  width: 196px;
+  height: 196px;
+  pointer-events: none;
+}
+.north span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  margin: -11px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.place {
+  position: absolute;
+  left: 240px;
+  bottom: 30px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+.place .road { font-family: var(--heavy-font); font-weight: 700; font-size: 22px; line-height: 1.2; }
+.place .area { font-size: 15px; color: var(--ink-dim); }
+
+.clock {
+  position: absolute;
+  top: 22px;
+  right: 28px;
+  text-align: right;
+  font-family: var(--heavy-font);
+  font-weight: 700;
+  font-size: 24px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+
+.speedo {
+  position: absolute;
+  right: 28px;
+  bottom: 24px;
+  text-align: right;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s, transform 0.25s;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+}
+.speedo.on { opacity: 1; transform: none; }
+.speedo .val { font-family: var(--heavy-font); font-weight: 800; font-size: 66px; line-height: 0.95; }
+.speedo .unit { font-size: 14px; color: var(--ink-dim); }
+.speedo .veh { font-family: var(--heavy-font); font-weight: 700; font-size: 20px; color: var(--gold); }
+
+.prompt {
+  position: absolute;
+  left: 50%;
+  bottom: 12vh;
+  transform: translateX(-50%);
+  padding: 7px 16px 5px;
+  background: var(--glass);
+  border-radius: 3px;
+  font-size: 18px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.14s;
+}
+.prompt.on { opacity: 1; }
+kbd {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #12100a;
+  background: var(--gold);
+  padding: 1px 8px;
+  border-radius: 2px;
+  margin-right: 6px;
+}
+
+.subtitle {
+  position: absolute;
+  left: 50%;
+  bottom: 20vh;
+  transform: translateX(-50%);
+  max-width: 62vw;
+  text-align: center;
+  font-size: 23px;
+  line-height: 1.35;
+  padding: 6px 16px 4px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.subtitle.on { opacity: 1; }
+
+.area-toast {
+  position: absolute;
+  right: 28px;
+  top: 64px;
+  text-align: right;
+  font-family: var(--display-font);
+  font-size: 38px;
+  color: var(--ink);
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.75);
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.area-toast.on { opacity: 1; }
+
+.lookhint {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px 2px;
+  background: var(--glass);
+  border-radius: 3px;
+  font-size: 15px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.lookhint.on { opacity: 1; }
+
+.debug {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  font: 12px/1.45 ui-monospace, Consolas, monospace;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 10px;
+  border-radius: 3px;
+  white-space: pre;
+  display: none;
+}
+.debug.on { display: block; }
+
+/* ---------- pause ---------- */
+
+.pause {
+  background: linear-gradient(90deg, rgba(5, 8, 10, 0.92) 0%, rgba(5, 8, 10, 0.72) 42%, rgba(5, 8, 10, 0.25) 100%);
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 6vw;
+}
+.pause h2 { font-family: var(--display-font); font-weight: 400; font-size: 64px; margin: 0 0 22px; }
+.rows { display: grid; gap: 15px; max-width: 620px; }
+.row { display: grid; grid-template-columns: 170px 1fr; align-items: center; gap: 14px; font-size: 17px; }
+.row label { color: var(--ink-dim); }
+.seg { display: flex; gap: 2px; flex-wrap: wrap; }
+.seg button {
+  font-family: var(--ui-font);
+  font-size: 16px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  border: 0;
+  padding: 6px 14px 4px;
+  cursor: pointer;
+  min-width: 58px;
+}
+.seg button:hover { background: rgba(255, 255, 255, 0.18); }
+.seg button.on { background: var(--gold); color: #12100a; font-weight: 700; }
+.row input[type="range"] { width: 100%; accent-color: var(--gold); }
+.pause .actions { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
+.btn.ghost { background: rgba(255, 255, 255, 0.1); color: var(--ink); }
+.btn.ghost:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* ---------- vehicle chooser ---------- */
+
+.chooser {
+  background: rgba(5, 8, 10, 0.86);
+  flex-direction: column;
+  justify-content: center;
+  padding: 3vh 6vw;
+}
+.chooser h2 { font-family: var(--display-font); font-weight: 400; font-size: 54px; margin: 0; }
+.chooser-hint { color: var(--ink-dim); margin: 4px 0 18px; font-size: 17px; }
+.chooser-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; max-height: 66vh; overflow: auto; }
+.chooser-card { background: rgba(255, 255, 255, 0.06); border-radius: 4px; padding: 11px 13px 13px; }
+.chooser-name { font-family: var(--heavy-font); font-weight: 700; font-size: 21px; margin-bottom: 8px; }
+.chooser-paints { display: flex; gap: 6px; flex-wrap: wrap; }
+.chooser-paints button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--ui-font);
+  font-size: 15px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  border: 0;
+  border-radius: 3px;
+  padding: 5px 10px 3px 7px;
+  cursor: pointer;
+}
+.chooser-paints button:hover { background: var(--gold); color: #12100a; }
+.chooser-paints i { width: 14px; height: 14px; border-radius: 50%; background: var(--paint); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35); }
+.chooser .actions { margin-top: 18px; }
+
+.gpu-hint {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(760px, 90vw);
+  padding: 8px 14px 6px;
+  background: rgba(150, 28, 28, 0.92);
+  border-radius: 3px;
+  font-size: 15px;
+  line-height: 1.4;
+  pointer-events: auto;
+  z-index: 20;
+  transition: opacity 0.3s;
+}
+.gpu-hint.hidden { opacity: 0; pointer-events: none; }
+
+@media (max-width: 700px) {
+  .mapwrap, .north { width: 120px; height: 120px; left: 12px; bottom: 12px; }
+  .place { left: 142px; bottom: 14px; }
+  .place .road { font-size: 16px; }
+  .speedo .val { font-size: 42px; }
+  .row { grid-template-columns: 1fr; gap: 4px; }
+}
