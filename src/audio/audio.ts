@@ -1,4 +1,6 @@
 import type { Vehicle } from "../vehicles/vehicle";
+import { lang, spokenFor } from "../localization/bn";
+import { lineKey } from "./lineKey";
 
 type HornKind = "bell" | "squeak" | "horn" | "airhorn";
 
@@ -27,12 +29,52 @@ const PROFILES: Record<string, [number, number, number, number, number]> = {
 const TRAFFIC_VOICES = 6;
 const VOICE_RANGE = 55;
 
+/** How one character sounds. `alt` picks the second male voice, where the browser has one. */
+export interface VoiceStyle {
+  /** A woman's or girl's voice: if there's no clip, no voice at all rather than a man's. */
+  female?: boolean;
+  pitch: number;
+  rate: number;
+  alt?: boolean;
+  /** Which voice in the game's own pack. */
+  actor?: string;
+}
+
+/** Where someone is, so a line said down the street sounds like it. */
+interface SpokenAt {
+  x: number;
+  z: number;
+}
+
+const MAX_CLIPS = 160;
+
+const PLAIN_VOICE: VoiceStyle = { pitch: 1, rate: 1.02 };
+// Edge's names are in Bangla script. Only these are known to be men's voices.
+const MALE_BD = /প্রদ্বীপ|প্রদীপ|pradeep/i;
+const MALE_IN = /ভাস্কর|bashkar|bhaskar/i;
+
 /** All game sound is synthesised at runtime with Web Audio: no recordings, so no rights
  *  issues and nothing to download. It unlocks from the Play button, and if the browser
  *  refuses audio entirely the game simply runs silent. */
 export class AudioSystem {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
+  // Each kind of sound has its own level, set in the pause menu.
+  private voiceBus: GainNode | null = null;
+  private ambienceBus: GainNode | null = null;
+  private vehicleBus: GainNode | null = null;
+  private effectsBus: GainNode | null = null;
+  private levels = { voice: 1, ambience: 0.8, vehicles: 0.8, effects: 0.9 };
+  private meter: AnalyserNode | null = null;
+  private meterData: Float32Array | null = null;
+  private paused = false;
+  private muted = false;
+  /** The game's own voices: which lines exist for which actor, and any already loaded. */
+  private pack: Record<string, Record<string, 1>> | null = null;
+  private clips = new Map<string, AudioBuffer>();
+  private playing: AudioBufferSourceNode | null = null;
+  private backgroundPlaying = 0;
+  useVoicePack = true;
   private ambience: GainNode | null = null;
   private murmur: GainNode | null = null;
   private noiseBuf: AudioBuffer | null = null;
@@ -47,6 +89,10 @@ export class AudioSystem {
   private listenerX = 0;
   private listenerZ = 0;
   private bnVoice: SpeechSynthesisVoice | null = null;
+  private bnVoiceAlt: SpeechSynthesisVoice | null = null;
+  /** A conversation line is being said. */
+  private foreground = false;
+  private speechTurn = 0;
   voiceEnabled = true;
   private volume = 0.8;
 
@@ -61,12 +107,30 @@ export class AudioSystem {
       const ctx = new Ctx();
       this.ctx = ctx;
       this.master = ctx.createGain();
-      this.master.gain.value = volume;
+      this.master.gain.value = this.muted ? 0 : volume;
       const comp = ctx.createDynamicsCompressor();
       comp.threshold.value = -16;
       comp.ratio.value = 6;
       this.master.connect(comp);
-      comp.connect(ctx.destination);
+      // The compressor takes the top off, so what comes out of it can stand to be louder.
+      const lift = ctx.createGain();
+      lift.gain.value = 1.7;
+      comp.connect(lift);
+      lift.connect(ctx.destination);
+      this.meter = ctx.createAnalyser();
+      this.meter.fftSize = 1024;
+      lift.connect(this.meter);
+      this.meterData = new Float32Array(this.meter.fftSize);
+      const bus = (level: number): GainNode => {
+        const g = ctx.createGain();
+        g.gain.value = level;
+        g.connect(this.master!);
+        return g;
+      };
+      this.voiceBus = bus(this.levels.voice);
+      this.ambienceBus = bus(this.levels.ambience);
+      this.vehicleBus = bus(this.levels.vehicles);
+      this.effectsBus = bus(this.levels.effects);
       this.noiseBuf = this.makeNoise(3);
       this.startAmbience();
       for (let i = 0; i < TRAFFIC_VOICES; i++) this.traffic.push(this.makeVoice("car"));
@@ -74,16 +138,147 @@ export class AudioSystem {
       this.ctx = null;
     }
     this.findVoice();
+    void this.loadPack();
+    this.listenForWake();
   }
 
-  /** Spoken Bangla through the browser's own voices, where it has one. Edge ships a Bangladeshi
-   *  Bangla voice; elsewhere the game simply shows the subtitle. */
+  /** Browsers hold sound back until someone clicks or presses a key, and can stop it again when the
+   *  device changes. Any press at all brings it back, unless it was paused on purpose. */
+  private listenForWake(): void {
+    const wake = (): void => {
+      if (this.ctx && !this.paused && this.ctx.state !== "running") void this.ctx.resume();
+    };
+    for (const ev of ["pointerdown", "keydown", "touchend"]) window.addEventListener(ev, wake, true);
+    if (this.ctx) this.ctx.onstatechange = () => {
+      if (this.ctx?.state !== "running") wake();
+    };
+    navigator.mediaDevices?.addEventListener?.("devicechange", wake);
+    wake();
+  }
+
+  /** Whether sound is getting out, for the menu and the warning on screen. */
+  get status(): "none" | "muted" | "blocked" | "running" {
+    if (!this.ctx) return "none";
+    if (this.muted) return "muted";
+    return this.ctx.state === "running" ? "running" : "blocked";
+  }
+
+  /** How loud it is right now, from 0 to 1. */
+  get level(): number {
+    if (!this.meter || !this.meterData || this.ctx?.state !== "running") return 0;
+    this.meter.getFloatTimeDomainData(this.meterData as Float32Array<ArrayBuffer>);
+    let peak = 0;
+    for (const v of this.meterData) peak = Math.max(peak, Math.abs(v));
+    return Math.min(1, peak);
+  }
+
+  private async loadPack(): Promise<void> {
+    try {
+      const res = await fetch("assets/voice/manifest.json");
+      if (res.ok) this.pack = await res.json();
+    } catch {
+      /* the browser's voice, or text alone */
+    }
+  }
+
+  get hasVoicePack(): boolean {
+    return !!this.pack;
+  }
+
+  /** Sets one kind of sound's level. */
+  setLevel(kind: "voice" | "ambience" | "vehicles" | "effects", v: number): void {
+    this.levels[kind] = v;
+    const bus = { voice: this.voiceBus, ambience: this.ambienceBus, vehicles: this.vehicleBus, effects: this.effectsBus }[kind];
+    if (bus && this.ctx) bus.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
+  }
+
+  setMuted(on: boolean): void {
+    this.muted = on;
+    if (on) this.hush();
+    if (this.master && this.ctx) this.master.gain.setTargetAtTime(on ? 0 : this.volume, this.ctx.currentTime, 0.05);
+  }
+
+  /** The recording of one line, loaded when first needed. Null if there isn't one. */
+  private async clip(actor: string, text: string): Promise<AudioBuffer | null> {
+    const ctx = this.ctx;
+    const key = lineKey(text);
+    if (!ctx || !this.pack?.[actor]?.[key]) return null;
+    const id = `${actor}/${key}`;
+    const have = this.clips.get(id);
+    if (have) {
+      // Most recently used goes to the back of the queue.
+      this.clips.delete(id);
+      this.clips.set(id, have);
+      return have;
+    }
+    try {
+      const res = await fetch(`assets/voice/${id}.mp3`);
+      if (!res.ok) return null;
+      const buf = await ctx.decodeAudioData(await res.arrayBuffer());
+      this.clips.set(id, buf);
+      if (this.clips.size > MAX_CLIPS) this.clips.delete(this.clips.keys().next().value as string);
+      return buf;
+    } catch {
+      return null;
+    }
+  }
+
+  /** Plays a run of recordings one after another. Returns false if any of them doesn't exist. */
+  private async playClips(parts: string[], actor: string, background: boolean, at: SpokenAt | undefined, turn: number, onEnd?: () => void): Promise<boolean> {
+    const ctx = this.ctx!;
+    const buffers: AudioBuffer[] = [];
+    for (const part of parts) {
+      const b = await this.clip(actor, part);
+      if (!b) return false;
+      buffers.push(b);
+    }
+    // Something else was said in the time that took to load.
+    if (!background && turn !== this.speechTurn) return true;
+    if (background && this.foreground) return true;
+    let dest: AudioNode = this.voiceBus!;
+    if (at) {
+      const dist = Math.hypot(at.x - this.listenerX, at.z - this.listenerZ);
+      const g = ctx.createGain();
+      g.gain.value = Math.max(0.12, 1 - dist / 28) * (background ? 0.75 : 1);
+      const p = ctx.createStereoPanner();
+      p.pan.value = this.panFor(at.x, at.z) * 0.7;
+      g.connect(p);
+      p.connect(this.voiceBus!);
+      dest = g;
+    }
+    let time = ctx.currentTime + 0.01;
+    let last: AudioBufferSourceNode | null = null;
+    for (const b of buffers) {
+      const src = ctx.createBufferSource();
+      src.buffer = b;
+      src.connect(dest);
+      src.start(time);
+      time += b.duration;
+      last = src;
+    }
+    if (!last) return false;
+    if (background) this.backgroundPlaying++;
+    else this.playing = last;
+    last.onended = () => {
+      if (background) this.backgroundPlaying--;
+      else if (this.playing === last) {
+        this.playing = null;
+        if (turn === this.speechTurn) this.foreground = false;
+      }
+      onEnd?.();
+    };
+    return true;
+  }
+
+  /** Spoken Bangla through the browser's own voices. The whole cast is male, so only voices known
+   *  to be male are ever used: Edge lists them in Bangla script, other browsers may use Latin. If
+   *  there is no male Bangla voice, nothing is spoken and the on-screen text carries the line. */
   private findVoice(): void {
     if (!("speechSynthesis" in window)) return;
     const pick = (): void => {
-      const voices = speechSynthesis.getVoices();
-      const bn = voices.filter((v) => v.lang.toLowerCase().startsWith("bn"));
-      this.bnVoice = bn.find((v) => /bd/i.test(v.lang) && /pradeep/i.test(v.name)) ?? bn.find((v) => /bd/i.test(v.lang)) ?? bn[0] ?? null;
+      const bn = speechSynthesis.getVoices().filter((v) => v.lang.toLowerCase().startsWith("bn"));
+      this.bnVoice = bn.find((v) => MALE_BD.test(v.name)) ?? bn.find((v) => MALE_IN.test(v.name)) ?? null;
+      this.bnVoiceAlt = bn.find((v) => MALE_IN.test(v.name) && v !== this.bnVoice) ?? null;
     };
     pick();
     speechSynthesis.addEventListener?.("voiceschanged", pick);
@@ -93,23 +288,107 @@ export class AudioSystem {
     return !!this.bnVoice;
   }
 
-  speak(text: string): void {
-    if (!this.voiceEnabled || !this.bnVoice || !("speechSynthesis" in window)) return;
+  /** Name of the voice in use, or null when the game is showing text only. */
+  get voiceName(): string | null {
+    return this.bnVoice?.name ?? null;
+  }
+
+  /** Says a line in a character's voice, from the game's own recordings if it has them, and otherwise
+   *  the browser's. `parts` is what's actually said when that differs from the words on screen.
+   *  A background line waits its turn: it never cuts off a conversation. `onEnd` fires when it
+   *  finishes, or at once if nothing will be spoken. */
+  speak(shown: string, style: VoiceStyle = PLAIN_VOICE, background = false, onEnd?: () => void, at?: SpokenAt, parts?: string[]): void {
+    // The voices only have Bangla: with English on screen, they still say the Bangla it came from.
+    const text = spokenFor(shown);
+    if (!this.voiceEnabled || this.muted || (lang === "en" && !parts && text === shown)) {
+      onEnd?.();
+      return;
+    }
+    if (background && (this.foreground || this.backgroundPlaying >= 2)) {
+      onEnd?.();
+      return;
+    }
+    if (this.useVoicePack && this.pack && style.actor && this.ctx) {
+      const turn = background ? this.speechTurn : ++this.speechTurn;
+      if (!background) {
+        this.foreground = true;
+        this.stopPlaying();
+      }
+      void this.playClips(parts ?? [text], style.actor, background, at, turn, onEnd).then((played) => {
+        if (played) return;
+        // No recording of this line: the browser says it instead, if the conversation is still on it.
+        if (!background && turn !== this.speechTurn) return;
+        if (!background) this.foreground = false;
+        if (style.female) {
+          onEnd?.();
+          return;
+        }
+        this.speakBrowser((parts ?? [text]).join(" "), style, background, onEnd);
+      });
+      return;
+    }
+    if (style.female) {
+      onEnd?.();
+      return;
+    }
+    this.speakBrowser((parts ?? [text]).join(" "), style, background, onEnd);
+  }
+
+  private stopPlaying(): void {
+    const p = this.playing;
+    this.playing = null;
+    if (!p) return;
+    p.onended = null;
+    try {
+      p.stop();
+    } catch {
+      /* already finished */
+    }
+  }
+
+  private speakBrowser(text: string, style: VoiceStyle, background: boolean, onEnd?: () => void): void {
+    const skip = !this.bnVoice || !("speechSynthesis" in window) || (background && (this.foreground || speechSynthesis.speaking));
+    if (skip) {
+      onEnd?.();
+      return;
+    }
     const u = new SpeechSynthesisUtterance(text);
-    u.voice = this.bnVoice;
-    u.lang = this.bnVoice.lang;
-    u.volume = Math.min(1, this.volume * 1.1);
-    u.rate = 1.02;
-    speechSynthesis.cancel();
+    const voice = (style.alt && this.bnVoiceAlt) || this.bnVoice!;
+    u.voice = voice;
+    u.lang = voice.lang;
+    u.volume = Math.min(1, this.volume * (background ? 0.55 : 1.1));
+    u.rate = style.rate;
+    u.pitch = style.pitch;
+    // Cancelling a line reports its end later on, which mustn't clear the one that replaced it.
+    const turn = background ? 0 : ++this.speechTurn;
+    const done = (): void => {
+      if (turn === this.speechTurn) this.foreground = false;
+      onEnd?.();
+    };
+    u.onend = done;
+    u.onerror = done;
+    if (!background) {
+      this.foreground = true;
+      speechSynthesis.cancel();
+    }
     speechSynthesis.speak(u);
+  }
+
+  /** Stops whatever is being said. */
+  hush(): void {
+    this.speechTurn++;
+    this.foreground = false;
+    this.stopPlaying();
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
   }
 
   setVolume(v: number): void {
     this.volume = v;
-    if (this.master && this.ctx) this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
+    if (this.master && this.ctx && !this.muted) this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
   }
 
   suspend(on: boolean): void {
+    this.paused = on;
     if (!this.ctx) return;
     void (on ? this.ctx.suspend() : this.ctx.resume());
     if (on && "speechSynthesis" in window) speechSynthesis.cancel();
@@ -135,7 +414,7 @@ export class AudioSystem {
     const ctx = this.ctx!;
     const gain = ctx.createGain();
     gain.gain.value = 0.16;
-    gain.connect(this.master!);
+    gain.connect(this.ambienceBus!);
     this.ambience = gain;
     const rumble = this.noiseSource();
     const low = ctx.createBiquadFilter();
@@ -179,6 +458,7 @@ export class AudioSystem {
       this.birdTimer = 7 + Math.random() * 16;
       if (night < 0.5) this.crow();
     }
+    this.outBus = this.ambienceBus;
     if (this.hornTimer <= 0) {
       this.hornTimer = 1.2 + Math.random() * 4.5;
       const roll = Math.random();
@@ -190,13 +470,18 @@ export class AudioSystem {
       this.clinkTimer = 2 + Math.random() * 5;
       this.clink();
     }
+    this.outBus = null;
   }
 
-  private out(pan: number): AudioNode {
-    if (pan === 0) return this.master!;
+  /** Where a one-off sound goes: the ambience while the background is being filled in. */
+  private outBus: GainNode | null = null;
+
+  private out(pan: number, bus?: GainNode | null): AudioNode {
+    const to = bus ?? this.outBus ?? this.effectsBus!;
+    if (pan === 0) return to;
     const p = this.ctx!.createStereoPanner();
     p.pan.value = pan;
-    p.connect(this.master!);
+    p.connect(to);
     return p;
   }
 
@@ -248,7 +533,7 @@ export class AudioSystem {
   bell(level = 0.22, pan = 0): void {
     if (!this.ctx) return;
     const ctx = this.ctx;
-    const dest = this.out(pan);
+    const dest = this.out(pan, this.outBus ?? this.vehicleBus);
     for (let i = 0; i < 2; i++) {
       const t = ctx.currentTime + i * 0.13;
       for (const [freq, amp] of [[2650, 1], [3980, 0.5], [6100, 0.25]] as [number, number][]) {
@@ -268,7 +553,7 @@ export class AudioSystem {
   private hornBlip(level: number, freq: number, dur: number, pan = 0): void {
     const ctx = this.ctx!;
     const t = ctx.currentTime;
-    const dest = this.out(pan);
+    const dest = this.out(pan, this.outBus ?? this.vehicleBus);
     for (const mul of [1, 1.26]) {
       const o = ctx.createOscillator();
       o.type = "square";
@@ -295,6 +580,56 @@ export class AudioSystem {
     else if (kind === "squeak") this.hornBlip(0.14, 720, 0.2);
     else if (kind === "airhorn") this.hornBlip(0.24, 230, 0.55);
     else this.hornBlip(0.18, 420, 0.32);
+  }
+
+  private held: { stop: () => void } | null = null;
+  private nextBell = 0;
+
+  /** The hero's own horn, sounding for as long as it's held. A rickshaw bell keeps ringing instead. */
+  hornHold(kind: HornKind, on: boolean): void {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    if (!on) {
+      this.held?.stop();
+      this.held = null;
+      return;
+    }
+    if (kind === "bell") {
+      if (ctx.currentTime >= this.nextBell) {
+        this.nextBell = ctx.currentTime + 0.32;
+        this.bell();
+      }
+      return;
+    }
+    if (this.held) return;
+    const t = ctx.currentTime;
+    const [freq, level] = kind === "squeak" ? [720, 0.3] : kind === "airhorn" ? [230, 0.5] : [420, 0.38];
+    const bus = this.out(0, this.vehicleBus);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(level, t + 0.015);
+    const lp = ctx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = 1900;
+    lp.connect(g);
+    g.connect(bus);
+    const voices = [1, 1.26].map((mul) => {
+      const o = ctx.createOscillator();
+      o.type = "square";
+      o.frequency.value = freq * mul;
+      o.connect(lp);
+      o.start(t);
+      return o;
+    });
+    this.held = {
+      stop: () => {
+        const end = ctx.currentTime;
+        g.gain.cancelScheduledValues(end);
+        g.gain.setValueAtTime(g.gain.value, end);
+        g.gain.linearRampToValueAtTime(0, end + 0.05);
+        for (const o of voices) o.stop(end + 0.06);
+      },
+    };
   }
 
   /** A horn from another vehicle: quieter with distance, and placed left or right of the camera. */
@@ -335,11 +670,44 @@ export class AudioSystem {
     g.gain.setValueAtTime(0.16, t + 0.5);
     g.gain.linearRampToValueAtTime(0, t + 0.62);
     o.connect(g);
-    g.connect(this.master!);
+    g.connect(this.effectsBus!);
     o.start(t);
     trill.start(t);
     o.stop(t + 0.64);
     trill.stop(t + 0.64);
+  }
+
+  /** An officer's whistle from over there: quieter with distance, placed left or right. */
+  whistleAt(x: number, z: number): void {
+    if (!this.ctx) return;
+    const ctx = this.ctx;
+    const dist = Math.hypot(x - this.listenerX, z - this.listenerZ);
+    const level = 0.1 * Math.max(0.12, 1 - dist / 60);
+    const t = ctx.currentTime;
+    const o = ctx.createOscillator();
+    o.frequency.setValueAtTime(2900, t);
+    const trill = ctx.createOscillator();
+    trill.frequency.value = 32;
+    const depth = ctx.createGain();
+    depth.gain.value = 170;
+    trill.connect(depth);
+    depth.connect(o.frequency);
+    const g = ctx.createGain();
+    const blasts = Math.random() < 0.5 ? 1 : 2;
+    g.gain.setValueAtTime(0, t);
+    for (let i = 0; i < blasts; i++) {
+      const s = t + i * 0.42;
+      g.gain.linearRampToValueAtTime(level, s + 0.02);
+      g.gain.setValueAtTime(level, s + 0.26);
+      g.gain.linearRampToValueAtTime(0, s + 0.33);
+    }
+    o.connect(g);
+    g.connect(this.out(this.panFor(x, z)));
+    const end = t + blasts * 0.45;
+    o.start(t);
+    trill.start(t);
+    o.stop(end);
+    trill.stop(end);
   }
 
   impact(strength: number): void {
@@ -351,13 +719,219 @@ export class AudioSystem {
     lp.type = "lowpass";
     lp.frequency.value = 900 + strength * 1400;
     const g = ctx.createGain();
-    g.gain.setValueAtTime(0.32 * strength + 0.05, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+    g.gain.setValueAtTime(0.4 * strength + 0.08, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.34);
     src.connect(lp);
     lp.connect(g);
-    g.connect(this.master!);
+    g.connect(this.effectsBus!);
     src.start(t);
-    src.stop(t + 0.3);
+    src.stop(t + 0.36);
+    // A low thump underneath, and on a hard hit the ring of panels flexing.
+    const body = ctx.createOscillator();
+    body.frequency.setValueAtTime(86, t);
+    body.frequency.exponentialRampToValueAtTime(42, t + 0.18);
+    const bg = ctx.createGain();
+    bg.gain.setValueAtTime(0.4 * strength + 0.1, t);
+    bg.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+    body.connect(bg);
+    bg.connect(this.effectsBus!);
+    body.start(t);
+    body.stop(t + 0.24);
+    if (strength < 0.3) return;
+    for (const [f, a] of [[410, 0.05], [677, 0.04], [1130, 0.025]] as [number, number][]) {
+      const o = ctx.createOscillator();
+      o.type = "square";
+      o.frequency.value = f * (0.94 + Math.random() * 0.12);
+      const hp = ctx.createBiquadFilter();
+      hp.type = "bandpass";
+      hp.frequency.value = f * 1.4;
+      const og = ctx.createGain();
+      og.gain.setValueAtTime(a * (0.5 + strength), t);
+      og.gain.exponentialRampToValueAtTime(0.0005, t + 0.2 + strength * 0.2);
+      o.connect(hp);
+      hp.connect(og);
+      og.connect(this.effectsBus!);
+      o.start(t);
+      o.stop(t + 0.45);
+    }
+  }
+
+  private rainGain: GainNode | null = null;
+
+  /** The steady hiss of rain on everything. */
+  setRain(k: number): void {
+    if (!this.ctx) return;
+    if (!this.rainGain) {
+      if (k <= 0.01) return;
+      const ctx = this.ctx;
+      const len = ctx.sampleRate * 2;
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.loop = true;
+      const hp = ctx.createBiquadFilter();
+      hp.type = "highpass";
+      hp.frequency.value = 900;
+      const lp = ctx.createBiquadFilter();
+      lp.type = "lowpass";
+      lp.frequency.value = 7500;
+      this.rainGain = ctx.createGain();
+      this.rainGain.gain.value = 0;
+      src.connect(hp);
+      hp.connect(lp);
+      lp.connect(this.rainGain);
+      this.rainGain.connect(this.effectsBus!);
+      src.start();
+    }
+    this.rainGain.gain.value = k * 0.16;
+  }
+
+  /** A long roll, far away. */
+  thunder(): void {
+    if (!this.ctx) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime;
+    const o = ctx.createOscillator();
+    o.type = "sawtooth";
+    o.frequency.setValueAtTime(58, t);
+    o.frequency.exponentialRampToValueAtTime(30, t + 2.2);
+    const lp = ctx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = 170;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.32, t + 0.25);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 2.8);
+    o.connect(lp);
+    lp.connect(g);
+    g.connect(this.effectsBus!);
+    o.start(t);
+    o.stop(t + 2.9);
+  }
+
+  private sirenOsc: OscillatorNode | null = null;
+  private sirenGain: GainNode | null = null;
+
+  /** The two-tone wail of an ambulance, as loud as it is close. Pass 0 when none is near. */
+  siren(k: number): void {
+    if (!this.ctx) return;
+    if (!this.sirenOsc) {
+      if (k <= 0) return;
+      const ctx = this.ctx;
+      this.sirenOsc = ctx.createOscillator();
+      this.sirenOsc.type = "triangle";
+      this.sirenGain = ctx.createGain();
+      this.sirenGain.gain.value = 0;
+      this.sirenOsc.connect(this.sirenGain);
+      this.sirenGain.connect(this.effectsBus!);
+      this.sirenOsc.start();
+    }
+    const t = this.ctx.currentTime;
+    this.sirenOsc.frequency.setTargetAtTime(Math.floor(t * 1.4) % 2 ? 620 : 860, t, 0.04);
+    this.sirenGain!.gain.setTargetAtTime(k * 0.12, t, 0.2);
+  }
+
+  /** A cheap phone's two-note ring. */
+  /** For the radio, which makes its own sounds. */
+  get context(): AudioContext | null {
+    return this.ctx;
+  }
+
+  get musicOut(): GainNode | null {
+    return this.effectsBus;
+  }
+
+  /** Paper and a coin or two changing hands. */
+  cash(): void {
+    const ctx = this.ctx;
+    if (!ctx || !this.effectsBus || !this.noiseBuf) return;
+    const t = ctx.currentTime + 0.28;
+    const src = ctx.createBufferSource();
+    src.buffer = this.noiseBuf;
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.frequency.value = 3400;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.16, t + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
+    src.connect(band);
+    band.connect(g);
+    g.connect(this.effectsBus);
+    src.start(t, Math.random());
+    src.stop(t + 0.22);
+    [3100, 4300].forEach((hz, i) => {
+      const at = t + 0.3 + i * 0.07;
+      const o = ctx.createOscillator();
+      const v = ctx.createGain();
+      o.frequency.value = hz;
+      v.gain.setValueAtTime(0.09, at);
+      v.gain.exponentialRampToValueAtTime(0.0001, at + 0.14);
+      o.connect(v);
+      v.connect(this.effectsBus!);
+      o.start(at);
+      o.stop(at + 0.15);
+    });
+  }
+
+  /** A clear two-note chime: the sound of something having worked. */
+  chime(): void {
+    const ctx = this.ctx;
+    if (!ctx || !this.effectsBus) return;
+    [660, 880].forEach((hz, i) => {
+      const t = ctx.currentTime + i * 0.14;
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sine";
+      o.frequency.value = hz;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.5, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.34);
+      o.connect(g);
+      g.connect(this.effectsBus!);
+      o.start(t);
+      o.stop(t + 0.36);
+    });
+  }
+
+  ring(): void {
+    if (!this.ctx) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime;
+    for (let i = 0; i < 4; i++) {
+      const o = ctx.createOscillator();
+      o.type = "square";
+      o.frequency.value = i % 2 ? 660 : 880;
+      const g = ctx.createGain();
+      const at = t + i * 0.2;
+      g.gain.setValueAtTime(0, at);
+      g.gain.linearRampToValueAtTime(0.05, at + 0.01);
+      g.gain.setValueAtTime(0.05, at + 0.16);
+      g.gain.linearRampToValueAtTime(0, at + 0.19);
+      o.connect(g);
+      g.connect(this.effectsBus!);
+      o.start(at);
+      o.stop(at + 0.2);
+    }
+  }
+
+  /** Something soft and heavy being bumped. */
+  thud(strength: number): void {
+    if (!this.ctx) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime;
+    const o = ctx.createOscillator();
+    o.frequency.setValueAtTime(120, t);
+    o.frequency.exponentialRampToValueAtTime(55, t + 0.12);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.32 * strength, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+    o.connect(g);
+    g.connect(this.effectsBus!);
+    o.start(t);
+    o.stop(t + 0.18);
   }
 
   /** A car door: a soft click opening, a heavier thunk closing. */
@@ -374,7 +948,7 @@ export class AudioSystem {
     g.gain.exponentialRampToValueAtTime(0.001, t + (closing ? 0.16 : 0.08));
     src.connect(lp);
     lp.connect(g);
-    g.connect(this.master!);
+    g.connect(this.effectsBus!);
     src.start(t, Math.random() * 2);
     src.stop(t + 0.18);
   }
@@ -393,7 +967,7 @@ export class AudioSystem {
     g.gain.exponentialRampToValueAtTime(0.0008, t + 0.08);
     src.connect(bp);
     bp.connect(g);
-    g.connect(this.master!);
+    g.connect(this.effectsBus!);
     src.start(t, Math.random() * 2);
     src.stop(t + 0.1);
   }
@@ -434,7 +1008,7 @@ export class AudioSystem {
     noiseGain.connect(filter);
     filter.connect(gain);
     gain.connect(pan);
-    pan.connect(this.master!);
+    pan.connect(this.vehicleBus!);
     osc.start();
     osc2.start();
     noise.start();
@@ -483,7 +1057,7 @@ export class AudioSystem {
     g.gain.linearRampToValueAtTime(0, t + 0.34);
     o.connect(lp);
     lp.connect(g);
-    g.connect(this.master!);
+    g.connect(this.vehicleBus!);
     o.start(t);
     o.stop(t + 0.36);
   }

@@ -1,0 +1,103 @@
+import type { Line } from "./types";
+
+/** The call-in show, reported by the presenter so that no caller needs a voice of their own. */
+export const TALK: Line[] = [
+  ["লাইনে আছেন মিরপুরের এক শ্রোতা। প্রশ্ন, প্রতিবেশীর মুরগি আমার বারান্দায় ডিম পাড়লে ডিমটা কার?", "On the line, a listener from Mirpur. If a neighbour's hen lays on my balcony, whose egg is it?"],
+  ["এক শ্রোতার সমস্যা, অতিথি পাঁচ ঘণ্টা ধরে যাই যাই করছেন। আমাদের পরামর্শ, চা বন্ধ করেন।", "A listener's guest has been saying he must go for five hours. Our advice: stop the tea."],
+  ["ধানমন্ডি থেকে ফোন। ছেলে পাশের ঘরে, তাকে খেতে ডাকতে হয় ফোন করে। এটাই এখন সংসার।", "A call from Dhanmondi. The son's in the next room and must be phoned for dinner. Such is home life now."],
+  ["প্রশ্ন, রিকশা ভাড়া নিয়ে কতক্ষণ তর্ক করলে সম্মান থাকে? আমাদের মত, তিন মিনিট।", "How long can you argue a rickshaw fare with dignity? We say three minutes."],
+  ["চিঠি এসেছে। শাশুড়ি বলেন লবণ কম, আম্মা বলেন বেশি, অথচ রান্না একই। বিচার চাই।", "A letter. Mother-in-law says too little salt, mum says too much, same cooking. Justice is requested."],
+  ["গুলশান থেকে এক শ্রোতা বলছেন, পাশের ফ্ল্যাটের গান খুব বাজে। আমাদের পরামর্শ, আপনিও ধরেন।", "A Gulshan listener says next door's music is terrible. Our advice: sing along."],
+  ["প্রশ্ন এসেছে, ঈদের নতুন জামা কি আগে পরে দেখা যায়? আমরা বলি, দরজা বন্ধ করে।", "Asked: can you try on new Eid clothes early? We say yes, door closed."],
+  ["এক শ্রোতা দুই বছর ধরে ডায়েটে আছেন, শুধু দাওয়াতের দিন ছাড়া। তাঁর এলাকায় দাওয়াত রোজ।", "A listener's been dieting two years, except on invitation days. Where he lives, that's every day."],
+  ["সমস্যা, বস রাত দশটায় ফোন করেন। পরামর্শ, বলেন নেটওয়ার্ক নাই। তবে ফোনে বলবেন না।", "The problem: the boss rings at ten at night. The advice: say there's no network. But not on the phone."],
+  ["এক শ্রোতার বাচ্চা জিজ্ঞেস করে, আকাশ নীল কেন। তিনি বলেন, পড়ো, জানবে। আসলে তিনিও জানেন না।", "A listener's child asks why the sky is blue. The answer: study and you'll find out. Truth is, the parent doesn't know."],
+  ["প্রশ্ন, চায়ে চিনি কম দিলে দোকানদার রাগ করে, বেশি দিলে ডাক্তার। কার কথা শুনব?", "Less sugar annoys the stall owner, more annoys the doctor. Whose word counts?"],
+  ["আজকের বিষয়, ধার দেওয়া ছাতা ফেরত আসে কি না। দুই ঘণ্টায় একজনও হ্যাঁ বলেননি।", "Today's topic: do lent umbrellas come back? Two hours and not one caller has said yes."],
+  ["মিরপুরের এক মুরুব্বি জানালেন, চল্লিশ বছর এক দোকানে চা খান। এখনো জিজ্ঞেস করে, চিনি কত?", "An old-timer in Mirpur says he's had tea at one stall for forty years. They still ask how much sugar."],
+  ["এক ছাত্র জানাচ্ছে, পড়া মনে থাকে না, গানের কথা ঠিকই থাকে। আমরা বলি, গণিতে সুর দাও।", "A student says lessons won't stick but song lyrics do. We say set your maths to a tune."],
+  ["এক শ্রোতার সকাল শুরু হয় পানির লাইনে তর্ক দিয়ে। আমাদের মত, ওটাই সকালের ব্যায়াম।", "One listener's morning begins with an argument in the water queue. We call that exercise."],
+  ["চিঠি এসেছে। স্বামী বাজারে গেলে যা বলা হয় তা ছাড়া সব আনেন। আজ এনেছেন একটা ছাগল।", "A letter. Her husband brings everything from market except what she asks for. Today, a goat."],
+  ["ফোনে এক দোকানদার। বলছেন, যে যত ভদ্রভাবে চায়, তার বাকি তত বেশি। আমরা একমত।", "A shopkeeper on the line says the more politely they ask, the more they owe. We agree."],
+  ["এক শ্রোতা জানালেন, অচেনা লোক ফোনে বলল, ছেলে বিপদে, টাকা পাঠান। ছেলে পাশে বসে চা খাচ্ছিল।", "A listener says a stranger rang: your son's in trouble, send money. The son was sitting right there drinking tea."],
+  ["আজকের প্রশ্ন, পাশের বাসার রান্নার গন্ধ এলে কি দরজায় যাওয়া যায়? বেশির ভাগের মত, প্লেট নিয়ে যান।", "Today's question: when next door's cooking smells good, can you knock? Most say bring a plate."],
+  ["এক দাদু জানালেন, নাতি তাঁকে ফোন শেখায়, তিনি নাতিকে ধৈর্য। দুজনেই এখনো ফেল।", "A grandad says his grandson teaches him the phone and he teaches the boy patience. Both are still failing."],
+];
+
+export const DJ_LINES: Line[] = [
+  ["আপনি শুনছেন ঢাকা বাতাস। জ্যাম যত লম্বাই হোক, বাতাস আমরা দিব।", "You're listening to Dhaka Breeze. However long the jam, we'll bring the breeze."],
+  ["ঢাকা বাতাস, যে রেডিওতে গান কম, কথা বেশি, আর হর্ন আপনার নিজের।", "Dhaka Breeze, the radio with few songs, plenty of talk, and horns of your own."],
+  ["জানালা খোলেন, ভলিউম বাড়ান, পাশের গাড়িকেও শুনতে দেন।", "Open the window, turn it up, let the car beside you listen too."],
+  ["একটু পরে গান। তার আগে আরেকটু কথা। তার পরে হয়তো আরও কথা।", "A song in a moment. First a little more talk. After that, perhaps more talk."],
+  ["এখন যে গানটা বাজানোর কথা, সেটা অনেক খুঁজলাম। পেলাম না। অন্যটা বাজাই।", "I looked everywhere for the song I was meant to play. Couldn't find it. Here's another."],
+  ["যারা চালাচ্ছেন, রাস্তায় মন দেন। আমরা তো এমনিই বকবক করছি।", "If you're driving, keep your mind on the road. We're only chattering anyway."],
+  ["জ্যামে বসে মন খারাপ করবেন না। আমাদের স্টুডিওর লিফটও বন্ধ।", "Don't be glum in traffic. Our studio's lift is out too."],
+  ["ঢাকা বাতাসের পক্ষ থেকে আপনার জন্য এক কাপ চা। মনে মনে খেয়ে নেন।", "A cup of tea for you from Dhaka Breeze. Drink it in your imagination."],
+  ["সিগন্যালে লাল বাতি? আমরা আছি। সবুজ হলে আমাদের ভুলে যান, রাস্তা দেখেন।", "Red light? We're here. When it turns green, forget us and watch the road."],
+  ["রাত হোক, দিন হোক, ঢাকা বাতাস চলছে। বিদ্যুৎ থাকলে।", "Day or night, Dhaka Breeze is on. As long as there's power."],
+  ["এই গানটা তাদের জন্য, যারা ভাড়া নিয়ে তর্ক করে শেষে ঠিকই দিয়ে দেন।", "This one's for those who argue about the fare and then pay it anyway."],
+  ["আজ স্টুডিওতে আমি একা, আর একটা তেলাপোকা। সেই আমার প্রযোজক।", "I'm alone in the studio today, with one cockroach. He's my producer."],
+  ["শ্রোতা বন্ধুরা, ফোন করেন, কথা বলেন। শুধু পিনটা নিজের কাছে রাখেন।", "Dear listeners, call in and talk. Just keep your PIN to yourself."],
+  ["ঘড়িতে যত বাজুক, ঢাকায় এখন জ্যামের সময়।", "Whatever the clock says, in Dhaka it's traffic jam time."],
+  ["আবার আসছি ছোট্ট একটা বিরতির পর। ছোট্ট মানে ঢাকার হিসাবে।", "Back after a short break. Short by Dhaka standards."],
+];
+
+export const SCAM_TIPS: Line[] = [
+  ["আপনার ওটিপি আপনার দাঁতের ব্রাশের মতো। কাউকে দিবেন না।", "Your OTP is like your toothbrush. Don't share it."],
+  ["ঝটপট টাকা কখনো ফোনে পিন চায় না। যে চায়, সে ঝটপট নিয়ে যাবে।", "Jhotpot Taka never asks for your PIN by phone. Whoever does will take your money, jhotpot."],
+  ["লটারি জিতেছেন? টিকিট কিনেছিলেন তো? না কিনলে জেতেননি।", "Won a lottery? Did you buy a ticket? If not, you haven't won."],
+  ["ভুল করে টাকা গেছে বলে কেউ কাঁদলে আগে নিজের ব্যালেন্স দেখেন। মেসেজ জাল হতে পারে।", "If someone's crying that they sent you money by mistake, check your balance first. Messages can be fake."],
+  ["অচেনা লিংকে চাপ দিবেন না। লিংক দেখতে ছোট, ক্ষতি বড়।", "Don't tap strange links. The link is small, the damage large."],
+  ["বিদেশে চাকরির জন্য আগে টাকা চাইলে আগে খোঁজ নেন। বিমানবন্দরে গিয়ে জানলে দেরি হয়ে যায়।", "If a job abroad wants money first, investigate first. Finding out at the airport is too late."],
+  ["আত্মীয় বিপদে বলে অচেনা নাম্বার টাকা চাইলে, ফোন কেটে আত্মীয়কে নিজে ফোন দেন।", "If a strange number says a relative's in trouble and wants money, hang up and ring the relative yourself."],
+  ["ব্যাংকের নামে ফোন এলে কেটে দেন। তারপর কার্ডের পেছনের নাম্বারে নিজে ফোন করেন।", "If a call claims to be your bank, hang up. Then ring the number on the back of your card."],
+  ["অর্ধেক দামে ফোন, আগে টাকা পাঠান? ওটা ফোনও না, অর্ধেকও না।", "A phone at half price if you send money first? It's neither a phone nor half."],
+  ["কাজ দেওয়ার আগে জমা চাইলে বুঝবেন, ওরা কাজ দিবে না, কাজ সেরে নিবে।", "If they want a deposit before giving you work, there's no work. Only their work on your wallet."],
+  ["কিউআর কোড স্ক্যান করলে টাকা আসে না, যায়। টাকা পেতে স্ক্যান করতে হয় না।", "Scanning a QR code doesn't bring money in, it sends it out. You never scan to receive."],
+  ["সহজ ঋণের অ্যাপ যদি ফোনের সব নাম্বার চায়, নামাবেন না।", "If an easy-loan app wants all your phone contacts, don't install it."],
+  ["পুলিশ বা আদালতের নামে ফোনে টাকা চাইলে কাছের থানায় নিজে যান। পুলিশ ফোনে টাকা নেয় না।", "If a call in the name of police or court wants money, go to your local station in person. Police don't collect by phone."],
+  ["অচেনা সহযাত্রীর দেওয়া চা, বিস্কুট, ডাব, কিছুই না। ধন্যবাদটা দেন, চুমুকটা না।", "No tea, biscuits or coconut water from a stranger on the road. Give your thanks, not your sip."],
+  ["সিম বদলাতে বা নিবন্ধন ঠিক করতে কেউ ফোনে ওটিপি চাইলে না বলেন।", "If anyone wants an OTP by phone to change your SIM or fix your registration, say no."],
+  ["পাসওয়ার্ড আপনার জন্মদিন হলে গোটা পাড়া সেটা জানে। একটু কঠিন করেন।", "If your password is your birthday, the whole neighbourhood knows it. Make it harder."],
+  ["যে অফারের সময় মাত্র পাঁচ মিনিট, সেটা আসলে আপনাকে ভাবতে না দেওয়ার জন্য।", "An offer that lasts only five minutes exists to stop you thinking."],
+  ["প্রতারক তাড়া দেয়, ভয় দেখায়, লোভ দেখায়। এই তিনটা একসঙ্গে এলে ফোন রাখেন।", "Scammers hurry you, scare you, tempt you. When all three come together, put the phone down."],
+  ["ঠকে গেলে লজ্জা না, ফোন করেন। ঝটপট টাকার আসল নাম্বারে জানান, থানায় জিডি করেন।", "If you've been tricked, don't be ashamed, call. Tell Jhotpot Taka's real number and file a report at the police station."],
+  ["জানা কথাটা অন্যকেও বলেন। আজকের টিপস বাসার মুরুব্বিকেও শোনান।", "Pass on what you know. Tell today's tip to the elders at home too."],
+];
+
+export const WEATHER: { clear: Line[]; rain: Line[] } = {
+  clear: [
+    ["আজ আকাশ পরিষ্কার। মন পরিষ্কার হতে আরও দুই সিগন্যাল লাগবে।", "The sky's clear today. A clear mind will take two more signals."],
+    ["রোদ কড়া। ছায়া পেলে দাঁড়ান, ডাব পেলে খান।", "Fierce sun. If you find shade, stand in it. If you find coconut water, drink it."],
+    ["আজ এমন গরম, ফুটপাথেই ডিম ভাজা যাবে। তবে ডিমের দামটা মনে রাখবেন।", "It's so hot you could fry an egg on the footpath. But remember what eggs cost."],
+    ["বাতাস ধীর, ধুলা দ্রুত। জানালা আধা খোলা রাখেন।", "Slow breeze, fast dust. Keep your window half open."],
+    ["বিকেলে আকাশ কমলা হবে, জ্যামে বসে দেখার মতো। এটাই আজকের বিনোদন।", "The sky will go orange this afternoon, well worth watching from a traffic jam. That's today's entertainment."],
+    ["রাতে ঠান্ডা বাতাস আসতে পারে। না এলে পাখা, পাখা না চললে ধৈর্য।", "A cool breeze may come tonight. If not, a fan. If the fan's off, patience."],
+  ],
+  rain: [
+    ["আজ বৃষ্টি। গর্তগুলো পুকুর হয়েছে, নামার আগে গভীরতা জিজ্ঞেস করবেন।", "Rain today. The potholes are ponds now, so ask how deep before you go in."],
+    ["বৃষ্টি আসছে, কাপড় তোলেন। রাস্তায় থাকলে কাপড় ভুলে যান, ব্রেকের কথা ভাবেন।", "Rain's coming, bring in the washing. If you're on the road, forget the washing and think of your brakes."],
+    ["ভেজা রাস্তায় ব্রেক ধরতে সময় লাগে। আস্তে চালান, কারো গায়ে কাদা ছিটাবেন না।", "Brakes take longer on wet roads. Go slow, and don't splash anyone."],
+    ["ছাতা নিয়ে বের হন। না থাকলে কারোটা ধার নেন, এভাবেই এই শহর চলে।", "Take an umbrella. If you haven't one, borrow someone's. That's how this city works."],
+    ["পানি জমে এক গলিতে নৌকা চলছে। ভাড়া জেনে উঠবেন।", "The flooding has put a boat on one lane. Ask the fare before you get in."],
+    ["বৃষ্টি থামলে খিচুড়ি। এটা আবহাওয়া দপ্তরের কথা না, আমার পেটের কথা।", "When the rain stops, khichuri. That's not the weather office talking, it's my stomach."],
+  ],
+};
+
+export const TRAFFIC_REPORTS: Line[] = [
+  ["ফার্মগেট থেকে কারওয়ান বাজার, হাঁটলে বিশ মিনিট, গাড়িতে গেলে জীবনের মানে বুঝবেন।", "Farmgate to Karwan Bazar: twenty minutes on foot. By car you'll discover the meaning of life."],
+  ["মিরপুর দশে গাড়ি চলছে, মানে নড়ছে, মানে একজন নড়তে দেখেছেন বলে জানিয়েছেন।", "Traffic's moving at Mirpur Ten. That is, it's stirring. That is, one person reports seeing it stir."],
+  ["গুলশান দুই নম্বরে সিগন্যাল চালু, অনেকেই আজ সেটা মানছেন। পুলিশ অবাক।", "The signal's on at Gulshan Two, and many are obeying it today. The police are astonished."],
+  ["ধানমন্ডি সাতাশে রিকশা, বাস আর একটা গরু। গরুটাই সবচেয়ে নিয়ম মানছে।", "Dhanmondi Twenty-Seven has rickshaws, buses and one cow. The cow's following the rules best."],
+  ["ফ্লাইওভারে উঠবেন? ভালো কথা। নামার মুখে জ্যাম, তবে ওপরে বাতাস আছে।", "Taking the flyover? Fine. There's a jam at the way down, but there's a breeze up top."],
+  ["বিমানবন্দর সড়কে সব গাড়ি একসঙ্গে দাঁড়িয়ে। এমন ঐক্য এই শহরে বিরল।", "All vehicles on Airport Road are standing still together. Such unity is rare in this city."],
+  ["সায়েন্স ল্যাবের মোড়ে একটি বাস ঘুরতে গিয়ে ভাবনায় পড়েছে। আধা ঘণ্টা ধরে ভাবছে।", "A bus trying to turn at Science Lab has fallen into thought. It's been thinking for half an hour."],
+  ["স্কুল ছুটির সময়, ধানমন্ডিতে গাড়ির লাইন। বাচ্চারা হেঁটে আগে পৌঁছাবে।", "School's out and there are queues in Dhanmondi. The kids will get home first, on foot."],
+  ["অ্যাম্বুলেন্স দেখলে জায়গা দেন। আজ আপনি দিলেন, কাল কেউ আপনাকে দিবে।", "See an ambulance, make way. You give way today, someone gives way for you tomorrow."],
+  ["মিরপুর রোডে একটি গাড়ি নষ্ট। চারজন ঠেলছেন, বিশজন পরামর্শ দিচ্ছেন।", "A car's broken down on Mirpur Road. Four people are pushing, twenty are advising."],
+  ["গুলশান এক নম্বরে চালকরা হর্নে নতুন গান বানিয়েছেন। তাল নাই, আবেগ আছে।", "Drivers at Gulshan One have composed a new song on their horns. No rhythm, plenty of feeling."],
+  ["বৃষ্টির পর আগারগাঁওয়ে পানি। ধীরে চালান, ঢেউ তুলবেন না।", "Water at Agargaon after the rain. Go slowly and don't make waves."],
+  ["রাত দশটার পর ট্রাক নামছে। বড় গাড়িকে জায়গা দেন, ছোট গাড়িকে দয়া।", "The trucks come out after ten at night. Give big vehicles room, and small ones kindness."],
+  ["কাজীপাড়ায় মেট্রোর নিচে বাস দাঁড়িয়ে যাত্রী তুলছে। ওপরের ট্রেন সব দেখছে, কিছু বলছে না।", "At Kazipara, buses are stopped beneath the metro picking up passengers. The trains above see all and say nothing."],
+  ["এই মুহূর্তে শহরের সবচেয়ে দ্রুত যান একজন পথচারী। তিনি হাঁটছেন।", "At this moment the city's fastest vehicle is one pedestrian. He's walking."],
+];

@@ -3,7 +3,7 @@
 python tools/textures/build_shops.py
 
 Everything is drawn from code, so there is nothing to license. No brand names and no text:
-labels are abstract marks. Cells are laid out 3 x 3 and must match SHOP_CELLS in src/world/atlas.ts.
+labels are abstract marks. Cells are laid out 5 x 4 and must match SHOP_CELLS in src/world/atlas.ts.
 """
 
 import os
@@ -13,7 +13,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 W, H = 4096, 2048
-COLS, ROWS = 3, 3
+COLS, ROWS = 5, 4
 CW, CH = W // COLS, H // ROWS
 SS = 2  # drawn at twice the size and scaled down, for clean edges
 
@@ -501,10 +501,267 @@ def plastics():
 PAINTERS = [grocery, pharmacy, mobile, clothes, tea, hardware, sweets, books, plastics]
 
 
+def mirror(c, x0, y0, x1, y1):
+    c.rect(x0 - 0.008, y0 - 0.012, x1 + 0.008, y1 + 0.012, (92, 64, 40))
+    c.rect(x0, y0, x1, y1, (176, 200, 208))
+    c.d.polygon([c.px(x0 + (x1 - x0) * 0.1, y0), c.px(x0 + (x1 - x0) * 0.3, y0), c.px(x0 + (x1 - x0) * 0.1, y1), c.px(x0, y1)], fill=(212, 228, 232))
+
+
+def barber():
+    c = Cell((214, 226, 232))
+    for x0, x1 in ((0.04, 0.3), (0.37, 0.63), (0.7, 0.96)):
+        mirror(c, x0, 0.14, x1, 0.56)
+        # A shelf of bottles under each mirror, and the chair's back.
+        c.shelf(0.62)
+        x = x0
+        while x < x1 - 0.02:
+            c.bottle(x, 0.54, x + 0.014, 0.62, vary(random.choice(SATURATED)))
+            x += 0.022
+        c.rect(x0 + 0.06, 0.66, x1 - 0.06, 0.9, (120, 30, 34), radius=0.01)
+        c.rect(x0 + 0.08, 0.68, x1 - 0.08, 0.8, (156, 44, 48), radius=0.01)
+        c.rect(x0 + 0.11, 0.9, x1 - 0.11, 1, (70, 70, 74))
+    # The striped pole.
+    for i in range(10):
+        c.rect(0.325, 0.1 + i * 0.05, 0.345, 0.15 + i * 0.05, (200, 40, 40) if i % 2 else (240, 240, 240))
+    return c.finish()
+
+
+def tailor():
+    c = Cell((226, 214, 190))
+    # Bolts of cloth on the shelves, and finished shirts hanging along the top.
+    x = 0.02
+    while x < 0.97:
+        col = vary(random.choice(SATURATED + PASTEL), 12)
+        shirt(c, x, 0.03, 0.06, 0.2, col)
+        x += 0.072
+    for y1 in (0.48, 0.66):
+        c.shelf(y1)
+        x = 0.012
+        while x < 0.97:
+            w = random.uniform(0.035, 0.05)
+            col = vary(random.choice(SATURATED + PASTEL), 10)
+            c.rect(x, y1 - 0.14, x + w, y1, col, radius=0.006)
+            c.rect(x + w * 0.2, y1 - 0.14, x + w * 0.4, y1, shade(col, 1.2))
+            x += w + 0.003
+    # The cutting table and the sewing machine on it.
+    c.rect(0, 0.74, 1, 0.8, (120, 88, 56))
+    c.rect(0, 0.8, 1, 1, (88, 64, 42))
+    for x in (0.18, 0.62):
+        c.rect(x, 0.62, x + 0.16, 0.74, (28, 28, 30), radius=0.012)
+        c.rect(x + 0.02, 0.58, x + 0.14, 0.64, (28, 28, 30), radius=0.012)
+        c.rect(x + 0.116, 0.66, x + 0.13, 0.74, (200, 180, 90))
+    return c.finish()
+
+
+def repair():
+    c = Cell((204, 214, 220))
+    # Phone cases and screens on a pegboard; a bench with a lamp and small parts.
+    for y in (0.08, 0.26, 0.44):
+        x = 0.02
+        while x < 0.96:
+            col = vary(random.choice(SATURATED + [(30, 30, 34), (30, 30, 34)]))
+            c.rect(x, y, x + 0.026, y + 0.14, col, radius=0.004)
+            c.rect(x + 0.003, y + 0.012, x + 0.023, y + 0.122, (24, 32, 44) if random.random() < 0.6 else shade(col, 1.3))
+            x += 0.034
+    c.rect(0, 0.66, 1, 0.72, (52, 56, 62))
+    c.rect(0, 0.72, 1, 1, (84, 96, 108))
+    c.rect(0, 0.72, 1, 0.73, (220, 232, 240))
+    for x in (0.1, 0.4, 0.72):
+        c.line(x, 0.66, x + 0.05, 0.52, (40, 40, 44), 0.008)
+        c.oval(x + 0.03, 0.47, x + 0.11, 0.54, (240, 228, 150))
+        c.rect(x - 0.02, 0.62, x + 0.08, 0.66, (30, 80, 60))
+    x = 0.02
+    while x < 0.97:
+        c.box(x, random.uniform(0.76, 0.84), x + 0.03, 0.97, vary(random.choice(PASTEL)))
+        x += 0.04
+    return c.finish()
+
+
+def photocopy():
+    c = Cell((232, 232, 226))
+    # Rows of passport photos of nobody at all, big copiers, stacks of paper.
+    for row in range(3):
+        y = 0.06 + row * 0.13
+        x = 0.03
+        while x < 0.6:
+            c.rect(x, y, x + 0.05, y + 0.11, (248, 248, 246))
+            c.rect(x + 0.006, y + 0.01, x + 0.044, y + 0.08, vary((110, 150, 190), 30))
+            c.oval(x + 0.014, y + 0.02, x + 0.036, y + 0.06, vary((230, 150, 60), 30))
+            x += 0.062
+    for x in (0.66, 0.82):
+        c.rect(x, 0.5, x + 0.14, 0.92, (214, 216, 216), radius=0.008)
+        c.rect(x, 0.5, x + 0.14, 0.56, (70, 74, 80))
+        c.rect(x + 0.02, 0.62, x + 0.12, 0.66, (248, 248, 244))
+        c.rect(x + 0.02, 0.72, x + 0.12, 0.76, (248, 248, 244))
+    c.rect(0, 0.72, 0.62, 0.78, (120, 92, 62))
+    c.rect(0, 0.78, 0.62, 1, (92, 70, 48))
+    x = 0.03
+    while x < 0.56:
+        h = random.uniform(0.04, 0.13)
+        c.rect(x, 0.72 - h, x + 0.08, 0.72, (246, 246, 240))
+        x += 0.095
+    return c.finish()
+
+
+def agent():
+    c = Cell((232, 208, 214))
+    # A counter, a cash box, and plain coloured notices with no words on them.
+    for i in range(4):
+        x = 0.05 + i * 0.235
+        col = random.choice([(214, 40, 110), (230, 110, 30), (40, 130, 90), (40, 100, 170)])
+        c.rect(x, 0.08, x + 0.2, 0.46, col)
+        c.oval(x + 0.05, 0.13, x + 0.15, 0.3, (248, 240, 240))
+        c.marks(x + 0.02, 0.33, x + 0.18, 0.44, (248, 240, 240))
+    c.shelf(0.58)
+    x = 0.04
+    while x < 0.96:
+        c.box(x, 0.5, x + 0.04, 0.58, vary(random.choice(PASTEL)))
+        x += 0.05
+    c.rect(0, 0.68, 1, 0.74, (58, 60, 66))
+    c.rect(0, 0.74, 1, 1, (150, 44, 86))
+    c.rect(0, 0.74, 1, 0.75, (250, 220, 230))
+    c.rect(0.4, 0.6, 0.6, 0.68, (40, 44, 52), radius=0.006)
+    return c.finish()
+
+
+def diagnostic():
+    c = Cell((236, 242, 244))
+    # A clean reception: a white counter, blue chairs, a cross and a screen on the wall.
+    c.rect(0.08, 0.06, 0.28, 0.34, (250, 252, 252))
+    c.rect(0.165, 0.1, 0.195, 0.3, (30, 110, 190))
+    c.rect(0.115, 0.185, 0.245, 0.215, (30, 110, 190))
+    c.rect(0.38, 0.08, 0.92, 0.42, (40, 48, 58), radius=0.01)
+    c.rect(0.4, 0.1, 0.9, 0.4, (214, 232, 244))
+    for i in range(5):
+        c.rect(0.43, 0.13 + i * 0.05, 0.43 + random.uniform(0.2, 0.42), 0.15 + i * 0.05, (90, 130, 170))
+    c.rect(0, 0.62, 1, 0.68, (120, 170, 214))
+    c.rect(0, 0.68, 1, 1, (240, 244, 246))
+    c.rect(0, 0.68, 1, 0.69, (200, 214, 224))
+    for x in (0.1, 0.32, 0.74):
+        c.rect(x, 0.54, x + 0.1, 0.62, (40, 44, 50), radius=0.006)
+    return c.finish()
+
+
+def biryani():
+    c = Cell((186, 150, 112))
+    # Great round handis on a brick stove, with the steam from them darkening the wall.
+    c.rect(0, 0, 1, 0.3, (116, 88, 62))
+    for x in (0.1, 0.42, 0.74):
+        c.oval(x - 0.08, 0.3, x + 0.14, 0.48, (120, 100, 80))
+    c.rect(0, 0.56, 1, 1, (120, 60, 42))
+    for row in range(5):
+        for col in range(14):
+            c.rect(col * 0.074 - (row % 2) * 0.03, 0.58 + row * 0.085, col * 0.074 + 0.066 - (row % 2) * 0.03, 0.655 + row * 0.085, vary((142, 72, 50), 14))
+    for x in (0.08, 0.4, 0.72):
+        c.oval(x, 0.36, x + 0.2, 0.68, (66, 62, 60))
+        c.oval(x + 0.01, 0.36, x + 0.19, 0.46, (222, 180, 110))
+        for _ in range(60):
+            px, py = random.uniform(x + 0.03, x + 0.17), random.uniform(0.375, 0.445)
+            c.oval(px, py, px + 0.006, py + 0.01, random.choice([(240, 214, 160), (200, 130, 50), (250, 240, 214)]))
+    return c.finish()
+
+
+def rice_hotel():
+    c = Cell((208, 224, 214))
+    # Formica tables in a row, a tube light, jugs and steel plates stacked by the wall.
+    c.rect(0, 0, 1, 0.5, (196, 222, 208))
+    c.rect(0, 0.5, 1, 0.56, (70, 130, 110))
+    for x in (0.03, 0.27, 0.51, 0.75):
+        c.rect(x, 0.62, x + 0.2, 0.67, (224, 228, 232))
+        c.rect(x + 0.02, 0.67, x + 0.04, 0.96, (130, 134, 140))
+        c.rect(x + 0.16, 0.67, x + 0.18, 0.96, (130, 134, 140))
+        c.oval(x + 0.03, 0.58, x + 0.09, 0.625, (220, 224, 230))
+        c.tin(x + 0.13, 0.54, x + 0.16, 0.62, (200, 200, 206))
+        c.rect(x + 0.01, 0.76, x + 0.05, 0.84, (60, 90, 150), radius=0.005)
+        c.rect(x + 0.15, 0.76, x + 0.19, 0.84, (60, 90, 150), radius=0.005)
+    c.shelf(0.3)
+    x = 0.04
+    while x < 0.96:
+        c.oval(x, 0.2, x + 0.05, 0.3, (214, 216, 220))
+        x += 0.07
+    c.rect(0.3, 0.05, 0.7, 0.075, (250, 250, 240))
+    c.rect(0, 0.96, 1, 1, (120, 124, 120))
+    return c.finish()
+
+
+def sari():
+    c = Cell((226, 204, 170))
+    # Sari after sari, hung in long folds with bright borders.
+    x = 0.0
+    while x < 1:
+        col = vary(random.choice(SATURATED + [(150, 30, 70), (20, 70, 110), (180, 110, 20)]), 16)
+        w = random.uniform(0.05, 0.075)
+        c.rect(x, 0, x + w, 0.72, col)
+        c.rect(x + w * 0.7, 0, x + w, 0.72, shade(col, 0.72))
+        c.rect(x, 0.62, x + w, 0.7, (222, 180, 60))
+        for k in range(10):
+            c.oval(x + w * 0.3, 0.06 + k * 0.055, x + w * 0.52, 0.09 + k * 0.055, (240, 210, 110))
+        x += w
+    c.rect(0, 0.74, 1, 0.8, (120, 90, 58))
+    c.rect(0, 0.8, 1, 1, (240, 236, 224))
+    x = 0.01
+    while x < 0.98:
+        w = random.uniform(0.07, 0.11)
+        col = vary(random.choice(SATURATED), 12)
+        c.rect(x, 0.68, x + w, 0.74, col, radius=0.004)
+        x += w + 0.004
+    return c.finish()
+
+
+def gold():
+    c = Cell((96, 22, 30))
+    # Dark velvet, bright glass, and every piece on its own little stand.
+    c.rect(0.02, 0.06, 0.98, 0.7, (56, 12, 18))
+    for row in range(3):
+        y = 0.1 + row * 0.2
+        for col in range(9):
+            x = 0.05 + col * 0.103
+            c.rect(x, y, x + 0.085, y + 0.17, (30, 8, 12), radius=0.006)
+            kind = random.random()
+            if kind < 0.45:
+                for k in range(6):
+                    c.d.ellipse((x * c.w + k * 2, (y + 0.03) * c.h + k * 2, (x + 0.085) * c.w - k * 2, (y + 0.14) * c.h - k * 2), outline=(236, 190, 70), width=3)
+            elif kind < 0.8:
+                c.oval(x + 0.022, y + 0.05, x + 0.062, y + 0.12, (240, 196, 70))
+                c.oval(x + 0.032, y + 0.07, x + 0.052, y + 0.1, (140, 26, 40))
+            else:
+                for k in range(5):
+                    c.rect(x + 0.012, y + 0.03 + k * 0.024, x + 0.072, y + 0.044 + k * 0.024, (236, 190, 70), radius=0.004)
+    c.rect(0, 0.76, 1, 0.82, (216, 182, 110))
+    c.rect(0, 0.82, 1, 1, (120, 24, 34))
+    c.rect(0.3, 0.1, 0.4, 0.13, (255, 250, 230))
+    return c.finish()
+
+
+def electronics():
+    c = Cell((190, 194, 200))
+    # Televisions in rows, all showing the same bright nothing, fans and cookers beneath.
+    pic = (40, 110, 170)
+    for row in range(2):
+        y = 0.05 + row * 0.27
+        x = 0.02
+        while x < 0.9:
+            w = random.uniform(0.13, 0.2)
+            c.rect(x, y, x + w, y + 0.23, (24, 24, 28), radius=0.006)
+            c.rect(x + 0.007, y + 0.012, x + w - 0.007, y + 0.21, vary(pic, 16))
+            c.oval(x + w * 0.2, y + 0.04, x + w * 0.5, y + 0.12, (240, 200, 90))
+            x += w + 0.012
+    c.shelf(0.6)
+    x = 0.02
+    while x < 0.96:
+        col = random.choice([(230, 232, 234), (40, 44, 50), (160, 30, 40)])
+        w = random.uniform(0.07, 0.11)
+        c.rect(x, 0.68, x + w, 0.94, col, radius=0.008)
+        c.oval(x + w * 0.2, 0.72, x + w * 0.8, 0.86, shade(col, 0.72))
+        x += w + 0.012
+    c.rect(0, 0.94, 1, 1, (120, 124, 130))
+    return c.finish()
+
+
 def main():
     random.seed(1971)
     atlas = Image.new("RGB", (W, H))
-    for i, paint in enumerate(PAINTERS):
+    for i, paint in enumerate(PAINTERS + [barber, tailor, repair, photocopy, agent, diagnostic, biryani, rice_hotel, sari, gold, electronics]):
         atlas.paste(paint(), ((i % COLS) * CW, (i // COLS) * CH))
     atlas = atlas.filter(ImageFilter.UnsharpMask(radius=1.2, percent=35, threshold=2))
     path = os.path.join(ROOT, "shops.webp")

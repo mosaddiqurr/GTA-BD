@@ -17,6 +17,8 @@ export interface Circle {
   z: number;
   r: number;
   h: number;
+  /** Something light: vehicles knock it flying rather than stopping for it. */
+  loose?: boolean;
 }
 
 export type Collider = Box | Circle;
@@ -48,8 +50,24 @@ export class CollisionWorld {
     this.insert({ kind: "box", x0, x1, z0, z1, h }, x0, x1, z0, z1);
   }
 
-  addCircle(x: number, z: number, r: number, h = 30): void {
-    this.insert({ kind: "circle", x, z, r, h }, x - r, x + r, z - r, z + r);
+  addCircle(x: number, z: number, r: number, h = 30): Circle {
+    const c: Circle = { kind: "circle", x, z, r, h };
+    this.insert(c, x - r, x + r, z - r, z + r);
+    return c;
+  }
+
+  /** Slides a circle to a new spot, for the few things that can get pushed about. */
+  moveCircle(c: Circle, x: number, z: number): void {
+    for (let ix = Math.floor((c.x - c.r) / CELL); ix <= Math.floor((c.x + c.r) / CELL); ix++) {
+      for (let iz = Math.floor((c.z - c.r) / CELL); iz <= Math.floor((c.z + c.r) / CELL); iz++) {
+        const list = this.grid.get(this.key(ix, iz));
+        const i = list ? list.indexOf(c) : -1;
+        if (i >= 0) list!.splice(i, 1);
+      }
+    }
+    c.x = x;
+    c.z = z;
+    this.insert(c, x - c.r, x + c.r, z - c.r, z + c.r);
   }
 
   query(x: number, z: number, radius: number): Collider[] {
@@ -78,7 +96,10 @@ export class CollisionWorld {
     let px = x, pz = z;
     let hit = false;
     let bestDepth = 0, nx = 0, nz = 0;
-    for (const c of this.query(x, z, r + 0.5)) {
+    // Round again if the way out of one thing led into another: a gap between two walls, say.
+    for (let pass = 0; pass < 3; pass++) {
+    let moved = false;
+    for (const c of this.query(px, pz, r + 0.5)) {
       let dx: number, dz: number, depth: number;
       if (c.kind === "box") {
         const cx = Math.max(c.x0, Math.min(px, c.x1));
@@ -119,11 +140,14 @@ export class CollisionWorld {
       px += dx * depth;
       pz += dz * depth;
       hit = true;
+      moved = true;
       if (depth > bestDepth) {
         bestDepth = depth;
         nx = dx;
         nz = dz;
       }
+    }
+    if (!moved) break;
     }
     result.x = px;
     result.z = pz;

@@ -4282,8 +4282,8 @@ def leaf_pack(b, x, y, half, z, mat, n=4):
         b.add(sweep("leaf", path, [(-0.035, -0.006), (0.035, -0.006), (0.035, 0.006), (-0.035, 0.006)], up=(0, 0, 1)), mat, den=0.25)
 
 
-@vehicle
-def build_truck(b):
+def truck_front(b):
+    """Cab, chassis and wheels: what every sort of lorry here has in common."""
     R = 0.50
     yf, yr = -2.62, 1.72
     txf, txr = 0.96, 0.82
@@ -4407,6 +4407,36 @@ def build_truck(b):
     b.current_wheel = None
     transform_parts(b, start, Matrix.Translation((0, 3.0, 0.72)) @ Matrix.Rotation(math.radians(90), 4, "Y"))
 
+    def tail(postm):
+        # Tail lamps, plate and mud flaps on a bar under the bed.
+        b.add(rbox("tailbar", (2.2, 0.08, 0.14), (0, 3.68, 1.06), r=0.012, seg=1), blk, den=0.25)
+        for s in (1, -1):
+            round_lamp(b, (s * 0.9, 3.725, 1.06), 0.058, "red", direction=1, den=0.45, bezel=blk)
+            round_lamp(b, (s * 0.74, 3.725, 1.06), 0.046, "amber", direction=1, den=0.35, bezel=blk)
+            b.empty("light_RL" if s > 0 else "light_RR", (s * 0.9, 3.77, 1.06))
+        b.empty("plate_R", (0, 3.732, 1.06))
+        mudm = paint("mudflap", "#101010", rough=0.8, dust=0.5, chips=0, scratch=0.2, edge=0)
+        for s in (1, -1):
+            b.add(rbox("flap", (0.48, 0.015, 0.46), (s * 0.85, 2.42, 0.42), r=0.004, seg=1), mudm, den=0.25)
+            b.add(fender("rfender", (s * 0.83, yr, R), R + 0.09, 0.56, 8, 172, n=12, drop=0.03), postm, den=0.7)
+
+        def t_front(bb, c):
+            wheel_truck(bb, c, R, 0.25, 0.30, bolts=8, seg=24, den=1.1, disc_col="#d6d2c2", lugs=26, holes=8)
+
+        def t_rear(bb, c):
+            wheel_truck(bb, c, R, 0.235, 0.30, bolts=8, seg=24, den=0.95, disc_col="#d6d2c2", lugs=26, holes=8, dual=True)
+
+        b.add_wheels([("wheel_FL", (txf, yf, R), False), ("wheel_FR", (-txf, yf, R), True)], t_front)
+        b.add_wheels([("wheel_RL", (txr, yr, R), False), ("wheel_RR", (-txr, yr, R), True)], t_rear)
+        b.variant("default")
+
+    return dict(st=st, ch=ch, blk=blk, tail=tail)
+
+
+@vehicle
+def build_truck(b):
+    f = truck_front(b)
+    st, ch, blk = f["st"], f["ch"], f["blk"]
     # ---- wooden cargo body
     x_side, y0c, y1c, zf, ztop = 1.15, -1.75, 3.75, 1.2, 3.28
     side_cv = truck_cargo_side()
@@ -4485,27 +4515,144 @@ def build_truck(b):
         b.tube([(s * 1.16, y1c + 0.03, 3.1), (s * 1.0, y1c + 0.06, 2.8), (s * 1.16, y1c + 0.03, 2.5)], 0.006, st, seg=4, den=0)
     for z in (1.42, 2.82):
         b.add(rbox("strap", (2.26, 0.024, 0.07), (0, y1c + 0.02, z), r=0.006, seg=1), st, den=0.3)
-    # tail lamps, plate and mud flaps on a bar under the bed
-    b.add(rbox("tailbar", (2.2, 0.08, 0.14), (0, 3.68, 1.06), r=0.012, seg=1), blk, den=0.25)
-    for s in (1, -1):
-        round_lamp(b, (s * 0.9, 3.725, 1.06), 0.058, "red", direction=1, den=0.45, bezel=blk)
-        round_lamp(b, (s * 0.74, 3.725, 1.06), 0.046, "amber", direction=1, den=0.35, bezel=blk)
-        b.empty("light_RL" if s > 0 else "light_RR", (s * 0.9, 3.77, 1.06))
-    b.empty("plate_R", (0, 3.732, 1.06))
-    mudm = paint("mudflap", "#101010", rough=0.8, dust=0.5, chips=0, scratch=0.2, edge=0)
-    for s in (1, -1):
-        b.add(rbox("flap", (0.48, 0.015, 0.46), (s * 0.85, 2.42, 0.42), r=0.004, seg=1), mudm, den=0.25)
-        b.add(fender("rfender", (s * 0.83, yr, R), R + 0.09, 0.56, 8, 172, n=12, drop=0.03), postm, den=0.7)
+    f["tail"](postm)
 
-    def t_front(bb, c):
-        wheel_truck(bb, c, R, 0.25, 0.30, bolts=8, seg=24, den=1.1, disc_col="#d6d2c2", lugs=26, holes=8)
 
-    def t_rear(bb, c):
-        wheel_truck(bb, c, R, 0.235, 0.30, bolts=8, seg=24, den=0.95, disc_col="#d6d2c2", lugs=26, holes=8, dual=True)
+@vehicle
+def build_garbage_truck(b):
+    """The city corporation's: a dented steel bin on the back, heaped well past the top."""
+    f = truck_front(b)
+    st = f["st"]
+    bin_m = paint("binpaint", "#3d5a44", rough=0.6, dust=0.55, chips=0.7, scratch=0.7, edge=1.0, chip_col="#3a3026", grime=0.7)
+    post = paint("binrib", "#2c4232", rough=0.6, dust=0.5, chips=0.5, scratch=0.4, edge=1.0, chip_col="#3a3026", grime=0.5)
+    x, y0, y1, zf, zt = 1.14, -1.7, 3.7, 1.2, 2.75
+    b.add(rbox("binfloor", (2.3, 5.45, 0.1), (0, 1.0, zf), r=0.01, seg=1), bin_m, den=0.25)
 
-    b.add_wheels([("wheel_FL", (txf, yf, R), False), ("wheel_FR", (-txf, yf, R), True)], t_front)
-    b.add_wheels([("wheel_RL", (txr, yr, R), False), ("wheel_RR", (-txr, yr, R), True)], t_rear)
-    b.variant("default")
+    def side(s_):
+        b.add(plate("binside", [(y0, zf), (y1, zf), (y1, zt), (y0, zt)], 0.03, origin=(s_ * x, 0, 0), u=(0, 1, 0), v=(0, 0, 1)), bin_m, den=0.9)
+        for y in np.arange(y0 + 0.2, y1, 0.8):
+            b.add(rbox("binrib", (0.05, 0.1, zt - zf), (s_ * (x + 0.03), y, (zf + zt) / 2), r=0.012, seg=1), post, den=0.25)
+
+    b.both(side)
+    b.add(plate("binhead", [(-x, zf), (x, zf), (x, zt + 0.35), (-x, zt + 0.35)], 0.03, origin=(0, y0, 0), u=(1, 0, 0), v=(0, 0, 1)), bin_m, den=0.6)
+    b.add(plate("bingate", [(-x, zf), (x, zf), (x, zt), (-x, zt)], 0.03, origin=(0, y1, 0), u=(-1, 0, 0), v=(0, 0, 1)), bin_m, den=0.6)
+    # The load.
+    rubbish = ("#4a4538", "#6a5a44", "#2e2c28", "#7c7a6a", "#58603a", "#3c3a44", "#8a7a5a", "#384a58")
+    mats = [paint(f"rub{i}", c, rough=0.9, dust=0.6, chips=0, scratch=0, edge=0) for i, c in enumerate(rubbish)]
+    rng = np.random.RandomState(3)
+    for i in range(70):
+        px, py = rng.uniform(-0.95, 0.95), rng.uniform(y0 + 0.3, y1 - 0.3)
+        hump = 0.32 * (1 - (px / 1.1) ** 2) * (1 - ((py - 1) / 2.8) ** 2)
+        o = bo.uv_sphere("rub", rng.uniform(0.14, 0.3), 7, 5, (px, py, zt - 0.08 + hump + rng.uniform(-0.1, 0.12)), (rng.uniform(0.9, 1.5), rng.uniform(0.9, 1.5), rng.uniform(0.5, 0.9)))
+        b.add(o, mats[i % len(mats)], den=0.1)
+    f["tail"](post)
+
+
+@vehicle
+def build_goods_van(b):
+    """A covered van: a tall tin box on a lorry's chassis, for whatever needs keeping dry."""
+    f = truck_front(b)
+    st = f["st"]
+    box_m = paint("boxpaint", "#d7d4c8", rough=0.46, dust=0.4, chips=0.3, scratch=0.45, edge=0.8, chip_col="#7a6a50", grime=0.45, slot="box")
+    band = paint("boxband", "#20529a", rough=0.46, dust=0.35, chips=0.3, scratch=0.3, edge=0.8, chip_col="#7a6a50", grime=0.3, slot="band")
+    x, y0, y1, zf, zt = 1.16, -1.75, 3.72, 1.2, 3.35
+    b.add(rbox("boxfloor", (2.34, 5.5, 0.1), (0, 0.98, zf), r=0.01, seg=1), box_m, den=0.25)
+    b.add(rbox("boxroof", (2.36, 5.52, 0.06), (0, 0.98, zt), r=0.02, seg=1), box_m, den=0.35)
+
+    def side(s_):
+        b.add(plate("boxside", [(y0, zf), (y1, zf), (y1, zt), (y0, zt)], 0.03, origin=(s_ * x, 0, 0), u=(0, 1, 0), v=(0, 0, 1)), box_m, den=0.9)
+        b.add(rbox("boxband", (0.02, y1 - y0, 0.42), (s_ * (x + 0.02), (y0 + y1) / 2, 2.1), r=0.004, seg=1), band, den=0.3)
+        for y in np.arange(y0 + 0.1, y1, 0.92):
+            b.add(rbox("boxrib", (0.03, 0.05, zt - zf), (s_ * (x + 0.02), y, (zf + zt) / 2), r=0.008, seg=1), st, den=0.15)
+
+    b.both(side)
+    b.add(plate("boxhead", [(-x, zf), (x, zf), (x, zt), (-x, zt)], 0.03, origin=(0, y0, 0), u=(1, 0, 0), v=(0, 0, 1)), box_m, den=0.5)
+    for s_ in (1, -1):
+        b.add(plate("boxdoor", [(0, zf), (x, zf), (x, zt), (0, zt)] if s_ > 0 else [(-x, zf), (0, zf), (0, zt), (-x, zt)], 0.03, origin=(0, y1, 0), u=(-1, 0, 0), v=(0, 0, 1)), box_m, den=0.5)
+        b.tube([(s_ * 0.18, y1 + 0.04, zf + 0.1), (s_ * 0.18, y1 + 0.04, zt - 0.1)], 0.018, st, seg=5, den=0.1)
+    f["tail"](band)
+    b.variant("green", {"box": "#3f8a5a", "band": "#e8e2c8"})
+    b.variant("red", {"box": "#b03a2e", "band": "#e8e2c8"})
+
+
+@vehicle
+def build_wrecker(b):
+    """The police's tow lorry: a flat bed, a short crane at the back, a lamp bar on the cab."""
+    f = truck_front(b)
+    st, blk = f["st"], f["blk"]
+    bed = paint("wreckbed", "#c6c3b6", rough=0.5, dust=0.5, chips=0.6, scratch=0.6, edge=1.0, chip_col="#3a3026", grime=0.5)
+    boom = paint("wreckboom", "#c7a11c", rough=0.42, dust=0.4, chips=0.5, scratch=0.45, edge=1.0, chip_col="#3a3026", grime=0.4)
+    b.add(rbox("wbed", (2.3, 4.8, 0.14), (0, 0.65, 1.22), r=0.015, seg=1), bed, den=0.6)
+    for s_ in (1, -1):
+        b.add(rbox("wrail", (0.06, 4.8, 0.12), (s_ * 1.13, 0.65, 1.34), r=0.012, seg=1), boom, den=0.25)
+    b.add(rbox("wpost", (0.5, 0.5, 1.5), (0, 3.2, 2.0), r=0.04, seg=1), boom, den=0.4)
+    b.tube([(0, 3.2, 2.7), (0, 4.1, 3.2), (0, 4.5, 2.9)], 0.09, boom, seg=8, den=0.4)
+    b.tube([(0, 4.5, 2.85), (0, 4.5, 1.4)], 0.014, st, seg=4, den=0.1)
+    b.add(rbox("whook", (0.12, 0.05, 0.16), (0, 4.5, 1.32), r=0.012, seg=1), st, den=0.1)
+    siren_bar(b, -2.75, 2.76, wide=1.5)
+    f["tail"](boom)
+
+
+def siren_bar(b, y, z, wide=1.1, red=True):
+    """The lamp bar on a roof, for anyone with somewhere urgent to be."""
+    bar = paint("sirenbase", "#22242a", rough=0.5, dust=0.2, chips=0.1, scratch=0.1, edge=0.3)
+    r_ = paint("sirenred", "#d81c28", rough=0.26, dust=0.05, chips=0, scratch=0, edge=0)
+    bl = paint("sirenblue", "#1c4ed8", rough=0.26, dust=0.05, chips=0, scratch=0, edge=0)
+    b.add(rbox("sbar", (wide, 0.3, 0.05), (0, y, z), r=0.01, seg=1), bar, den=0.2)
+    b.add(rbox("slampL", (wide * 0.44, 0.26, 0.11), (wide * 0.25, y, z + 0.08), r=0.03, seg=1), r_, den=0.2)
+    b.add(rbox("slampR", (wide * 0.44, 0.26, 0.11), (-wide * 0.25, y, z + 0.08), r=0.03, seg=1), bl if not red else r_, den=0.2)
+
+
+@vehicle
+def build_ambulance(b):
+    """The microbus, in white with a red band and a cross on each side."""
+    build_microbus(b)
+    b.variants = {}
+    b.variant("default", {"paint": "#f0f0ea"})
+    red = paint("ambred", "#c8202c", rough=0.34, dust=0.15, chips=0.15, scratch=0.15, edge=0.3)
+    white = paint("ambwhite", "#f2f2ec", rough=0.34, dust=0.2, chips=0.2, scratch=0.2, edge=0.4)
+    hw = b.spec.get("width", 1.85) / 2 + 0.004
+    for s_ in (1, -1):
+        b.add(rbox("ambband", (0.012, 3.6, 0.2), (s_ * hw, 0.25, 0.92), r=0.002, seg=1), red, den=0.3)
+        b.add(rbox("ambsq", (0.012, 0.74, 0.74), (s_ * (hw + 0.002), 0.75, 1.42), r=0.002, seg=1), white, den=0.2)
+        b.add(rbox("crossv", (0.012, 0.18, 0.58), (s_ * (hw + 0.006), 0.75, 1.42), r=0.001, seg=1), red, den=0.2)
+        b.add(rbox("crossh", (0.012, 0.58, 0.18), (s_ * (hw + 0.006), 0.75, 1.42), r=0.001, seg=1), red, den=0.2)
+    siren_bar(b, -0.8, b.spec.get("height", 2.06) + 0.02)
+
+
+@vehicle
+def build_police_car(b):
+    """A sedan in blue and white with a lamp bar. No badge: nothing here copies a real force's markings."""
+    build_car_sedan(b)
+    b.variants = {}
+    b.variant("default", {"paint": "#eeeeea"})
+    blue = paint("polband", "#17356e", rough=0.3, dust=0.12, chips=0.12, scratch=0.12, edge=0.3)
+    hw = b.spec.get("width", 1.71) / 2 - 0.002
+    for s_ in (1, -1):
+        b.add(rbox("polband", (0.012, 2.9, 0.22), (s_ * hw, 0.0, 0.62), r=0.002, seg=1), blue, den=0.3)
+    siren_bar(b, 0.1, 1.45, wide=1.05, red=False)
+
+
+@vehicle
+def build_leguna(b):
+    """A human hauler: a small van run on a fixed route, green and yellow, roof rack and all, a helper on the step."""
+    build_microbus(b)
+    b.variants = {}
+    b.variant("default", {"paint": "#1f8a4c"})
+    b.variant("yellow", {"paint": "#d8a71c"})
+    st = b.mat("steel", lambda: steel())
+    yellow = paint("legband", "#e8c02a", rough=0.38, dust=0.25, chips=0.3, scratch=0.3, edge=0.6)
+    hw = b.spec.get("width", 1.85) / 2 + 0.004
+    top = b.spec.get("height", 2.06) + 0.04
+    for s_ in (1, -1):
+        b.add(rbox("legband", (0.012, 3.9, 0.14), (s_ * hw, 0.2, 0.88), r=0.002, seg=1), yellow, den=0.25)
+        b.tube([(s_ * 0.72, -1.2, top), (s_ * 0.72, 1.9, top)], 0.016, st, seg=5, den=0.1)
+    for y in np.arange(-1.2, 1.95, 0.5):
+        b.tube([(-0.72, y, top), (0.72, y, top)], 0.012, st, seg=4, den=0.05)
+    # The step at the back the helper rides on, and the rail he hangs from.
+    b.add(rbox("legstep", (1.4, 0.3, 0.05), (0, 2.3, 0.42), r=0.008, seg=1), st, den=0.15)
+    for s_ in (1, -1):
+        b.tube([(s_ * 0.74, 2.14, 0.9), (s_ * 0.74, 2.26, 1.05), (s_ * 0.74, 2.2, 1.7)], 0.014, st, seg=5, den=0.1)
 
 
 # ---------------------------------------------------------------------------
@@ -5073,6 +5220,8 @@ def build_motorbike(b):
     b.variant("red", {"paint": "#c0141c"})
     b.variant("black", {"paint": "#1b1c1f"})
     b.variant("blue", {"paint": "#124aa8"})
+    b.variant("rideshare", {"paint": "#1b8f54"})
+    b.empty("seat_p1", (0, 0.36, 0.86))
 
 
 # ---------------------------------------------------------------------------

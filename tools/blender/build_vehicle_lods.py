@@ -19,7 +19,7 @@ import bo_common as bo
 VEHICLE_DIR = os.path.join(bo.PUBLIC_ASSETS, "vehicles")
 TARGET = {
     "bicycle": 260, "motorbike": 420, "rickshaw": 800, "easybike": 800, "cng": 800,
-    "car_sedan": 800, "microbus": 900, "bus_city": 1400, "truck": 1100,
+    "car_sedan": 800, "microbus": 900, "bus_city": 1400, "truck": 1100, "police_car": 800, "ambulance": 900, "leguna": 900, "garbage_truck": 1100, "goods_van": 1000, "wrecker": 1000,
 }
 
 

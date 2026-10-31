@@ -5,6 +5,8 @@
 //   node tools/test/edge.mjs eval "<js expression>" (async allowed; prints JSON)
 //   node tools/test/edge.mjs shot <file.png> [width height]
 //   node tools/test/edge.mjs key <code> <ms>        hold a key, e.g. KeyW 2000
+//   node tools/test/edge.mjs profile <seconds> [lines]  where script time goes, by function
+//   node tools/test/edge.mjs sized <w> <h> "<js>" [file.png]   the same at another window size
 //   node tools/test/edge.mjs stop
 import { spawn } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -50,7 +52,7 @@ async function withSession(fn) {
   }
 }
 
-const KEY_CODES = { KeyW: 87, KeyA: 65, KeyS: 83, KeyD: 68, KeyF: 70, KeyE: 69, KeyH: 72, KeyR: 82, KeyC: 67, KeyT: 84, Space: 32, ShiftLeft: 16, Escape: 27 };
+const KEY_CODES = { KeyW: 87, KeyA: 65, KeyS: 83, KeyD: 68, KeyF: 70, KeyE: 69, KeyH: 72, KeyR: 82, KeyC: 67, KeyT: 84, KeyM: 77, KeyV: 86, KeyG: 71, KeyQ: 81, Digit1: 49, Digit2: 50, Digit3: 51, Digit4: 52, Digit5: 53, Digit6: 54, Enter: 13, Space: 32, ShiftLeft: 16, Escape: 27 };
 
 if (cmd === "start") {
   const dir = join(tmpdir(), "bow-edge-profile");
@@ -78,11 +80,52 @@ if (cmd === "start") {
   ], { detached: true, stdio: "ignore" });
   child.unref();
   console.log("started", child.pid);
+} else if (cmd === "sized") {
+  // Runs some js with the window at this size, and optionally saves a picture. The size only lasts
+  // as long as the connection, which is why it isn't a command of its own.
+  const [w, h, expression, file] = args;
+  await withSession(async (send) => {
+    await send("Emulation.setDeviceMetricsOverride", { width: Number(w), height: Number(h), deviceScaleFactor: 1, mobile: false });
+    await new Promise((r) => setTimeout(r, 600));
+    const r = await send("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true });
+    console.log(r.result?.exceptionDetails ? "EXC " + JSON.stringify(r.result.exceptionDetails).slice(0, 800) : JSON.stringify(r.result?.result?.value));
+    if (file) {
+      await new Promise((res) => setTimeout(res, 450));
+      const img = await send("Page.captureScreenshot", { format: "png" });
+      if (img.result?.data) writeFileSync(file, Buffer.from(img.result.data, "base64"));
+    }
+  });
+} else if (cmd === "profile") {
+  // Where script time goes, by function: the running page sampled for this many seconds.
+  const seconds = Number(args[0] ?? 4);
+  const r = await withSession(async (send) => {
+    await send("Profiler.enable");
+    await send("Profiler.setSamplingInterval", { interval: 500 });
+    await send("Profiler.start");
+    await new Promise((res) => setTimeout(res, seconds * 1000));
+    return send("Profiler.stop");
+  });
+  const p = r.result.profile;
+  const self = new Map();
+  const dt = p.timeDeltas;
+  const byId = new Map(p.nodes.map((n) => [n.id, n]));
+  p.samples.forEach((id, i) => {
+    const f = byId.get(id).callFrame;
+    const name = `${f.functionName || "(anon)"} ${f.url.split("/").pop().split("?")[0]}:${f.lineNumber}`;
+    self.set(name, (self.get(name) ?? 0) + dt[i] / 1000);
+  });
+  const total = [...self.values()].reduce((a, b) => a + b, 0);
+  for (const [name, ms] of [...self.entries()].sort((a, b) => b[1] - a[1]).slice(0, Number(args[1] ?? 28))) console.log(`${((ms / total) * 100).toFixed(1).padStart(5)}%  ${(ms / seconds).toFixed(1).padStart(6)} ms/s  ${name}`);
 } else if (cmd === "goto") {
   await withSession((send) => send("Page.navigate", { url: args[0] }));
   console.log("ok");
 } else if (cmd === "eval") {
   const r = await withSession((send) => send("Runtime.evaluate", { expression: args[0], awaitPromise: true, returnByValue: true }));
+  if (r.result?.exceptionDetails) console.log("EXC", JSON.stringify(r.result.exceptionDetails).slice(0, 800));
+  else console.log(JSON.stringify(r.result?.result?.value, null, 1));
+} else if (cmd === "gesture") {
+  // The same as eval, but it counts as the player having clicked: audio and pointer lock need that.
+  const r = await withSession((send) => send("Runtime.evaluate", { expression: args[0], awaitPromise: true, returnByValue: true, userGesture: true }));
   if (r.result?.exceptionDetails) console.log("EXC", JSON.stringify(r.result.exceptionDetails).slice(0, 800));
   else console.log(JSON.stringify(r.result?.result?.value, null, 1));
 } else if (cmd === "shot") {

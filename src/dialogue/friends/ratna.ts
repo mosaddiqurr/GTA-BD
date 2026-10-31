@@ -1,0 +1,255 @@
+import type { FriendDef } from "../types";
+
+export const RATNA: FriendDef = {
+  key: "ratna",
+  name: ["রত্না", "Ratna"],
+  id: "npc_woman_plum",
+  region: "dhaka_mirpur10",
+  hangout: "tea",
+  bio: ["গার্মেন্টসের লাইন সুপারভাইজার। সহকর্মীদের টাকার ঝামেলার খাতাটাও তার হাতে।", "A garment line supervisor, who also keeps the notebook of her coworkers' money troubles."],
+  firstMeet: [
+    ["o", ["দাঁড়ান, এই চায়ের দাম দশ টাকা। আপনাকে পনেরো বলল কেন, নতুন দেখে?", "Wait, this tea is ten taka. Why did he say fifteen to you, because you're new?"]],
+    ["h", ["খেয়াল করিনি।", "I didn't notice."]],
+    ["o", ["খেয়াল করবেন। রোজ পাঁচ টাকা মানে মাসে দেড়শো, আমার লাইনের একজনের এক সপ্তাহের বাসভাড়া।", "Notice next time. Five taka a day is a hundred and fifty a month. That's a week's bus fare for someone on my line."]],
+    ["o", ["আমি রত্না, সামনের গার্মেন্টসে লাইন সুপারভাইজার। হাতে এটা খাতা, গোয়েন্দাগিরি না।", "I'm Ratna, line supervisor at the garment factory ahead. This is a notebook, I'm not spying."]],
+    ["h", ["কিসের খাতা?", "A notebook of what?"]],
+    ["o", ["কে কত ধার করল, কার কিস্তি কবে, কে কোন সমিতিতে ফেঁসেছে। ছিয়াশি জনের হিসাব।", "Who borrowed how much, whose instalment is when, who's caught in which society. Accounts for eighty-six people."]],
+    ["o", ["আপনার পাঁচ টাকা আজ বাঁচল। একদিন ওটা দিয়ে আমাকে চা খাওয়াবেন, বাকিটা পকেট থেকে।", "You saved five taka today. One day you'll buy me tea with it, and put in the rest yourself."]],
+  ],
+  smallTalk: [
+    ["আজ টার্গেট ছিল নয়শো পিস, হলো আটশো নব্বই। দশটা পিস সারা রাত স্বপ্নে আসবে।", "Today's target was nine hundred pieces and we did eight ninety. Those ten will visit me in my dreams all night."],
+    ["বেতনের দিন এলে আমার খাতা মোটা হয়, মানিব্যাগ না।", "On payday my notebook gets fat. My purse doesn't."],
+    ["শোনো, কেউ যদি বলে মাসে হাজার দিলে বছরে দ্বিগুণ, তাকে আমার কাছে পাঠিয়ো।", "Listen, if anyone says a thousand a month doubles in a year, send them to me."],
+    ["আমার লাইনের মরিয়ম আবার ধার করেছে। ধার শোধ করতে ধার, এর শেষ কোথায়?", "Moriom on my line has borrowed again. Borrowing to pay off borrowing. Where does it end?"],
+    ["গার্মেন্টসের মেয়েদের পা দেখলে বুঝবে, ঢাকা শহর কত হেঁটে চলে।", "Look at the feet of garment workers and you'll see how much of Dhaka runs on walking."],
+    ["বাসে ওঠার চেয়ে হেঁটে যাওয়া তাড়াতাড়ি, আর পাঁচ টাকা বাঁচে। লিখে রাখো।", "Walking's faster than taking the bus, and it saves five taka. Write that down."],
+    ["ছুটির দিন আমি সাড়ে নয়টা পর্যন্ত ঘুমাই। এটাই আমার বিলাসিতা।", "On my day off I sleep till half past nine. That's my luxury."],
+    ["রাস্তায় মানুষের শার্ট দেখলেই সেলাই গুনি। রোগ হয়ে গেছে।", "I count the stitches on strangers' shirts in the street. It's become a disease."],
+    ["সুপারভাইজার মানে কী জানো? ওপরের বকাও খাই, নিচের কান্নাও শুনি।", "Know what supervisor means? I take the scolding from above and hear the crying from below."],
+    ["ঝটপট টাকায় বেতন এলে প্রথমে পিন বদলাও, তারপর ভাত খাও। এটাই আমার নিয়ম।", "When your pay lands on Jhotpot Taka, first change the PIN, then eat. That's my rule."],
+    ["কালশীতে এক ঘরে ছয়জন থাকি। রাতে কেউ কাশলে সবাই ওষুধের কথা ভাবে।", "Six of us share one room in Kalshi. When someone coughs at night, everyone thinks about medicine."],
+    ["চায়ের সাথে একটা বিস্কুট নিলাম। আজ একটু বড়লোক।", "I got a biscuit with my tea. A little rich today."],
+    ["বৃষ্টিতে ছাতা আমার, ভেজে আরও তিনজন। ছাতাও জানে আমি সুপারভাইজার।", "In the rain the umbrella's mine and three others get wet under it. Even the umbrella knows I'm the supervisor."],
+    ["নতুন মেয়েটা প্রথম বেতন পেয়ে আমাকে একটা লজেন্স দিল। রেখে দিয়েছি, খাইনি।", "The new girl got her first pay and gave me a sweet. I've kept it, I haven't eaten it."],
+    ["শিপমেন্টের সময় আমরা ঘড়ি দেখি না, ঘড়িই আমাদের দেখে ভয় পায়।", "During shipment we don't watch the clock. The clock watches us, and gets scared."],
+    ["কাউকে টাকা ধার দিলে আমি লিখে রাখি। বন্ধুত্ব বাঁচে, টাকাও।", "When I lend money I write it down. That saves the friendship and the money."],
+    ["লোকে বলে খাতা নিয়ে ঘোরে। ঘুরি, কারণ মানুষ ভুলে যায়, খাতা ভোলে না।", "People say she walks around with a notebook. I do, because people forget and notebooks don't."],
+    ["ওভারটাইমের টাকা হিসাব করে নিয়ো। ঘণ্টা তোমার, ভুল হলে ক্ষতিও তোমার।", "Always check your overtime pay. The hours are yours, so the mistake costs you too."],
+    ["এই দোকানে এখন দাম দশ টাকাই রাখে। আমি ওর হিসাব দেখি, ও আমাকে ভয় পায়।", "This stall keeps the price at ten now. I've seen his accounts, and he's scared of me."],
+  ],
+  teaTalks: [
+    [
+      ["o", ["শিফট শেষে এখানে দশ মিনিট বসি। এই দশ মিনিটই আমার মাসের সবচেয়ে দামি সময়।", "After my shift I sit here for ten minutes. Those ten minutes are the most expensive time I have."]],
+      ["o", ["জুতা খুলে রাখি, কেউ কিছু বলে না। দোকানদার জানে, রাগলে আমি ওর খাতাও দেখি।", "I take my shoes off and nobody says a word. The owner knows that when I'm cross I read his books too."]],
+      ["h", ["ওর খাতাও?", "His books too?"]],
+      ["o", ["হ্যাঁ, বাকির হিসাবে ভুল ধরে দিয়েছিলাম, ওর নিজের পক্ষেই। তারপর থেকে চা ভালো হয়েছে।", "Yes. I found a mistake in his credit list, in his own favour. The tea's been better ever since."]],
+      ["o", ["তুমি বলি, কেমন? যার সাথে তিনবার চা খাই, তাকে আমি খাতায় তুমি লিখি।", "I'll drop the formal you, all right? Anyone I've had tea with three times gets written down that way."]],
+    ],
+    [
+      ["o", ["আমার লাইনে ছিয়াশি জন। মেশিনের শব্দ শুনেই বলে দিতে পারি, কে আজ বকা খাবে।", "Eighty-six people on my line. From the sound of the machines I can tell who's getting scolded today."]],
+      ["o", ["বিদেশের বায়ার আসে, এক ইঞ্চিতে সেলাই গুনে দেখে। মাপ ভুল হলে পুরো লট ফেরত।", "The foreign buyer comes and counts the stitches per inch. If the measure's off, the whole lot comes back."]],
+      ["h", ["সেলাই গুনে?", "Counts them?"]],
+      ["o", ["হ্যাঁ, গুনে। তাই আমিও এখন সব গুনি, দাওয়াতে গিয়ে ভাতের দানাও গুনেছি।", "Yes, counts. That's why I count everything now. At a feast I've counted the grains of rice."]],
+      ["o", ["একবার এক লট শার্টের পকেট এক সুতা বাঁকা হলো। সারা রাত আমরা পকেট সোজা করলাম।", "Once a lot of shirts came out with pockets one thread crooked. We straightened pockets all night."]],
+      ["o", ["সেই শার্ট বিদেশের কেউ পরে। ওর পকেটে আমার একটা না ঘুমানো রাত আছে, সে জানে না।", "Someone abroad wears that shirt. There's a sleepless night of mine in that pocket, and they don't know."]],
+    ],
+    [
+      ["o", ["খাতাটা শুরু হলো মরিয়মকে দিয়ে। ও ফোনের একটা অ্যাপ থেকে তিন হাজার টাকা ধার নিল।", "The notebook started with Moriom. She borrowed three thousand from an app on her phone."]],
+      ["o", ["দুই মাসে সেটা হলো নয় হাজার। অ্যাপ ওর ফোনের সব নম্বরে বার্তা পাঠাল, ও ধার নিয়েছে।", "In two months it became nine thousand. The app messaged every number on her phone to say she'd borrowed."]],
+      ["h", ["সবার ফোনে?", "Everyone's phone?"]],
+      ["o", ["ওর মায়ের ফোনেও। মরিয়ম সারা দুপুর কাঁদল, মেশিন চালাতে চালাতে।", "Her mother's too. Moriom cried all afternoon, working her machine the whole time."]],
+      ["o", ["আমি বসে হিসাব করে দেখালাম কাকে কত। সংখ্যাটা দেখে ওর ভয় অর্ধেক কমে গেল।", "I sat down and showed her who was owed what. Once she saw the number, her fear halved."]],
+      ["o", ["পরদিন আরও দুইজন এলো, তারপর পাঁচজন। এখন খাতাটা আমার আরেকটা শিফট।", "The next day two more came, then five. Now the notebook is my second shift."]],
+    ],
+    [
+      ["o", ["বেতনের দিন দুপুরে নিলুফার ফোন ধরে কাঁপছে। বলছে, বেতন আটকে গেছে, কোড দিলে ছাড়বে।", "Payday afternoon, Nilufar's shaking with the phone in her hand. They're saying her pay is stuck until she gives a code."]],
+      ["o", ["আমি ফোনটা নিয়ে বললাম, জি, আমি তার ম্যানেজার, আপনার অফিসের ঠিকানাটা বলুন।", "I took the phone and said: yes, I'm her manager, please give me your office address."]],
+      ["h", ["কী বলল?", "What did they say?"]],
+      ["o", ["প্রথমে খুব ভদ্র, তারপর তোতলাতে লাগল। শেষে লাইন কেটে দিল।", "Very polite at first, then he began to stammer. Then he hung up."]],
+      ["o", ["পুরো ফ্লোর হাততালি দিল। আসল ম্যানেজার এসে জিজ্ঞেস করল, আমি কবে ম্যানেজার হলাম।", "The whole floor clapped. The real manager came and asked when I'd become manager."]],
+      ["o", ["বলেছি, ওই তিন মিনিটের জন্য। বেতন কাটেনি, এটাই এই মাসের ভালো খবর।", "I said, for those three minutes. He didn't dock my pay, and that's this month's good news."]],
+    ],
+    [
+      ["o", ["আমার বাড়ি গাইবান্ধা, চরে। পনেরো বছর বয়সে এলাম হেল্পার হয়ে, সুতা কাটতাম।", "I'm from the river islands in Gaibandha. I came at fifteen as a helper, trimming threads."]],
+      ["o", ["প্রথম বেতন ছিল তিন হাজার টাকা। পুরোটা বাড়িতে পাঠিয়ে সইয়ের কাছ থেকে ভাত ধার করলাম।", "My first pay was three thousand taka. I sent it all home and borrowed rice from a friend."]],
+      ["h", ["তখন একা?", "On your own then?"]],
+      ["o", ["ছয়জন এক ঘরে, তবু একা। রাতে কেউ কাঁদলে সবাই ঘুমের ভান করত, সম্মান রাখার জন্য।", "Six in one room, and still alone. If someone cried at night, everyone pretended to be asleep, out of respect."]],
+      ["o", ["সেলাই শিখলাম, তারপর মেশিন, তারপর লাইন। চব্বিশ বছরে সুপারভাইজার হলাম।", "I learned to sew, then the machine, then the line. I became a supervisor at twenty-four."]],
+      ["o", ["গ্রামে সবাইকে আমার মা বলে, মেয়ে বড় অফিসে কাজ করে। আমি ঠিক করে দিই না, খুশি থাকুক।", "My mother tells the whole village her girl works in a big office. I don't correct her. Let her be happy."]],
+    ],
+    [
+      ["o", ["খাতা কেন রাখি, আসল কারণটা বলি। সাত বছর আগে আমি নিজে একটা সমিতিতে ছিলাম।", "I'll tell you the real reason for the notebook. Seven years ago I was in a savings society myself."]],
+      ["o", ["মাসে দুই হাজার দিলে পাঁচ বছরে দ্বিগুণ। অফিস ছিল, রসিদ ছিল, বাজারের ওপর সাইনবোর্ড ছিল।", "Two thousand a month, doubled in five years. It had an office, receipts, a signboard over the bazaar."]],
+      ["o", ["আমি সুপারভাইজার, আমার কথা লোকে শোনে। লাইনের একুশ জনকে আমিই ঢুকিয়েছিলাম।", "I'm a supervisor, people listen to me. I'm the one who brought in twenty-one from my line."]],
+      ["h", ["সমিতিটা টিকল?", "Did the society last?"]],
+      ["o", ["তিন বছর পর একদিন সকালে তালা। সাইনবোর্ডটাও খুলে নিয়ে গেছে, এত গোছানো লোক।", "Three years later, one morning, a padlock. They even took the signboard. Such tidy people."]],
+      ["o", ["একুশ জন আমার দিকে তাকাল। কেউ কিছু বলেনি, ওটাই সবচেয়ে কঠিন ছিল।", "Twenty-one people looked at me. Nobody said anything. That was the hardest part."]],
+      ["o", ["আমার জমানো গেল, তারপর চার বছর ওদের টাকা অল্প অল্প শোধ করলাম। আইনে না, মনে।", "My savings went, and then for four years I paid them back bit by bit. Not by law. By conscience."]],
+    ],
+    [
+      ["o", ["আমার একটা ছেলে আছে, নয় বছর, গ্রামে আমার মায়ের কাছে থাকে। বছরে দুইবার দেখি।", "I have a son. He's nine and lives in the village with my mother. I see him twice a year."]],
+      ["o", ["ওর বাবা আর ফেরেনি, সে অন্য গল্প। ওই গল্পের খাতা আমি রাখি না।", "His father never came back. That's another story, and I don't keep a notebook for it."]],
+      ["h", ["ফোনে কথা হয়?", "Do you talk on the phone?"]],
+      ["o", ["রোজ রাতে তিন মিনিট। ও বলে আজ মাছ ধরেছি, আমি জিজ্ঞেস করি কত বড়।", "Three minutes every night. He says he caught a fish today, and I ask how big."]],
+      ["o", ["গত ঈদে বাড়ি গেলে প্রথমে নানির পেছনে লুকাল। আমার কাছে আসতে এক ঘণ্টা লাগল।", "Last Eid when I got home he hid behind his grandmother. It took him an hour to come to me."]],
+      ["o", ["ওই এক ঘণ্টার হিসাব আমি কোথাও লিখিনি। লেখার মতো কলম নেই।", "I've never written that hour down anywhere. There's no pen for it."]],
+    ],
+    [
+      ["o", ["সবাই ফোন করে জিজ্ঞেস করে, এটা কী করি, রাত বারোটায়ও। আমি রাগ করি না।", "Everyone calls to ask what to do, even at midnight. I don't get angry."]],
+      ["o", ["কিন্তু ছিয়াশিটা পাতার খাতায় আমার নিজের কোনো পাতা নেই।", "But in a notebook of eighty-six pages, there isn't a single page for me."]],
+      ["h", ["নিজের পাতায় কী থাকবে?", "What would be on that page?"]],
+      ["o", ["একটা সেলাইয়ের দোকান, গাইবান্ধা বাজারে, দুইটা মেশিন। নিচে দোকান, ওপরে টিনের ঘর।", "A tailoring shop in Gaibandha bazaar, two machines. The shop below, a tin room above."]],
+      ["o", ["ছেলে স্কুল থেকে এসে দোকানে বসবে। আমাকে দেখে আর লুকাবে না।", "My son will come from school and sit in the shop. He won't hide from me any more."]],
+      ["o", ["আরও সাড়ে তিন লাখ লাগবে, বছরে ত্রিশ হাজার জমলে বারো বছর। হিসাব করা আছে।", "It needs three and a half lakh more. At thirty thousand a year, twelve years. I've done the sums."]],
+      ["o", ["আজ খাতায় একটা পাতা খুলব। প্রথম লাইনে লিখব, একজন জিজ্ঞেস করেছিল।", "Today I'll open a page in the notebook. The first line will say: someone asked."]],
+    ],
+  ],
+  callHello: [
+    ["হ্যাঁ বলো, দুই মিনিট আছে। টিফিনের ঘণ্টা বাজলে রাখব।", "Yes, go on, I have two minutes. I'll hang up when the lunch bell goes."],
+    ["রত্না বলছি। টাকা না চাইলে বলো, আজ এটা শুনতে চাই।", "Ratna here. Go ahead, as long as you're not asking for money. I'd like to hear that today."],
+    ["ওহ, তুমি! ভাবলাম আবার কারো কিস্তি, বলো কেমন আছ।", "Oh, it's you! I thought it was someone's instalment again. Tell me, how are you?"],
+    ["শুনছি, খাতা বন্ধ করলাম। বলো।", "I'm listening. I've closed the notebook. Go on."],
+    ["ফোন করলে, ভালো লাগল। আজ সবাই শুধু সমস্যা নিয়ে ফোন করেছে।", "You called, that's nice. Everyone else has only called with problems today."],
+  ],
+  callBusy: [
+    ["শিপমেন্টের দিন, মাথার ওপর ম্যানেজার দাঁড়িয়ে। পরে ফোন দিই।", "It's shipment day and the manager's standing over me. I'll ring later."],
+    ["লাইনে আছি, মেশিনের শব্দে কিছু শুনছি না। রাতে কথা হবে।", "I'm on the line and I can't hear a thing over the machines. We'll talk tonight."],
+    ["একজনের কিস্তির হিসাব করছি, সে পাশে বসে কাঁদছে। রাখি।", "I'm working out someone's instalments and she's crying beside me. Got to go."],
+    ["ওভারটাইম চলছে। ফোন ব্যাগে রাখার নিয়মটা আমারই বানানো, রাখলাম।", "It's overtime. The rule about phones in bags is my own rule, so I'm going."],
+  ],
+  callYes: [
+    ["আসছি, দশ মিনিটের জন্য। আমার দশ মিনিট মানে দশ মিনিট।", "Coming, for ten minutes. My ten minutes means ten minutes."],
+    ["চা? হ্যাঁ, তবে দাম যেন দশ টাকা থাকে, পনেরো বললে আমাকে ডাকবে।", "Tea? Yes. Make sure it stays ten taka, and call me if he says fifteen."],
+    ["গেট খুললেই চলে আসব। আজ পা দুটো একটু বসতে চাইছে।", "I'll come as soon as the gate opens. My feet would like to sit down today."],
+    ["চলো। আজ খাতা রেখে আসব, মানে ব্যাগে থাকবে, খুলব না।", "Let's go. I'll leave the notebook behind today. I mean it'll be in my bag, but I won't open it."],
+  ],
+  theyCall: [
+    {
+      key: "ratna_call_samity",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["এলাকায় নতুন একটা সমিতি ঘুরছে। মাসে হাজার দিলে দুই বছরে দ্বিগুণ, মিষ্টি কথা, সুন্দর রসিদ।", "There's a new society going round here. A thousand a month, doubled in two years. Sweet talk, lovely receipts."],
+          options: [
+            { text: ["দ্বিগুণ কীভাবে হয়?", "How can it double?"], go: "how", out: { sense: 2, lesson: ["অস্বাভাবিক লাভের কথা শুনলে টাকা দেওয়ার আগে নিবন্ধন আর অফিস যাচাই করুন।", "When you hear of unusual profits, check the registration and the office before you pay."] } },
+            { text: ["ওদের কাগজ দেখা দরকার।", "Someone should see their papers."], go: "paper", out: { sense: 1, rep: 1 } },
+          ],
+        },
+        how: { who: "o", say: ["হয় না। নতুন লোকের টাকা দিয়ে পুরনো লোককে দেয়, যতদিন লোক আসে, তারপর তালা।", "It can't. They pay old members with new members' money for as long as people keep coming. Then a padlock."] },
+        paper: { who: "o", say: ["আমারও তাই মত। রসিদ যে কেউ ছাপাতে পারে, সরকারি নিবন্ধনটা দেখতে চাইতে হবে।", "That's what I say too. Anyone can print a receipt. Ask to see the government registration."] },
+      },
+    },
+    {
+      key: "ratna_call_loanapp",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["রুবিনার ফোনে ধার দেওয়া অ্যাপ সব নম্বরে বার্তা পাঠাচ্ছে। ও খুব ভেঙে পড়েছে, কী করি বলো তো?", "A loan app is messaging every number on Rubina's phone. She's in pieces. What should I do?"],
+          options: [
+            { text: ["অনুমতি বন্ধ করে অভিযোগ করা যায়।", "Turn off its permissions and report it."], go: "report", out: { sense: 2, lesson: ["ধার দেওয়া অ্যাপ যদি ফোনের নম্বর দেখতে চায়, ওটা নামাবেন না।", "If a loan app wants to see your phone's contacts, don't install it."] } },
+            { text: ["গিয়ে পাশে বসতে পারি।", "I can go and sit with her."], go: "sit", out: { rep: 2 } },
+          ],
+        },
+        report: { who: "o", say: ["ঠিক, অনুমতি বন্ধ করব, থানায় জিডি করব। আমি ওর সাথে যাব, শিফটের পরে।", "Right, we'll turn off the permissions and file a report at the police station. I'll go with her after my shift."] },
+        sit: { who: "o", say: ["এসো, চা নিয়ে এসো। আমি হিসাবটা করি, তুমি শুধু বসে থাকবে, ওটাই কাজ।", "Come, bring tea. I'll do the sums. You just sit there, that's the job."] },
+      },
+    },
+    {
+      key: "ratna_call_payday",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["আজ বেতন হলো, সব কিস্তি মিটিয়ে দেখি বিশ টাকা বেশি। চলো, তোমাকে চা খাওয়াই।", "Payday. After all the instalments I've got twenty taka left over. Come on, tea's on me."],
+          options: [
+            { text: ["আসছি, বিস্কুট আমার।", "Coming, the biscuits are on me."], go: "yes", out: { money: -10, rep: 2 } },
+            { text: ["আজ সময় নেই।", "No time today."], go: "no" },
+          ],
+        },
+        yes: { who: "o", say: ["বিস্কুটের দাম লিখে রাখব, না, আজ রাখব না। আজ বেতনের দিন।", "I'll write down the biscuit money. No, not today. Today is payday."] },
+        no: { who: "o", say: ["আচ্ছা, বিশ টাকা তাহলে ছেলের জন্য রইল। খাতায় তোমার নামে একটা চা লিখলাম।", "All right, the twenty goes to my son then. I've put one tea under your name in the notebook."] },
+      },
+    },
+    {
+      key: "ratna_call_rent",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["নতুন মেয়েটার মেসের ভাড়া দুইশো কম, বেতন আসতে তিন দিন। আমি একশো দিয়েছি, আরেকটু দেখা যায়?", "The new girl's rent is two hundred short and pay is three days off. I've given a hundred. Could you manage a bit?"],
+          options: [
+            { text: ["একশো দিচ্ছি।", "I'll give a hundred."], go: "yes", out: { money: -100, rep: 3 } },
+            { text: ["এখন পারছি না।", "I can't right now."], go: "no" },
+          ],
+        },
+        yes: { who: "o", say: ["লিখে রাখলাম, তিন দিন পরে ফেরত, আমি নিজে আনব। আমার খাতায় কারো টাকা হারায় না।", "Written down. Back in three days, and I'll bring it myself. Nobody's money gets lost in my notebook."] },
+        no: { who: "o", say: ["ঠিক আছে, জোর নেই। যার নেই, সে না বললে খাতায় কোনো দাগ পড়ে না।", "That's all right, no pressure. When someone hasn't got it and says so, it leaves no mark in the notebook."] },
+      },
+    },
+    {
+      key: "ratna_call_salary_sms",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["সবাই এসএমএস পেয়েছে, বেতন বাড়ছে, লিংকে চাপ দিয়ে ফরম পূরণ করুন। কোম্পানির নামও আছে।", "Everyone on the line got an SMS: pay rise, tap the link and fill in the form. It even has the company's name."],
+          options: [
+            { text: ["ওই লিংকে চাপ দেওয়া যাবে না।", "Nobody should tap that link."], go: "right", out: { sense: 2, lesson: ["অফিসের খবর অফিসেই যাচাই করুন। অচেনা লিংকে ব্যক্তিগত তথ্য দেবেন না।", "Check office news at the office. Never give personal details on an unknown link."] } },
+            { text: ["বেতন বাড়লে তো ভালোই।", "A pay rise would be nice, though."], go: "hope", out: { sense: 1 } },
+          ],
+        },
+        right: { who: "o", say: ["আমিও তাই ভাবছিলাম। বেতন বাড়লে নোটিশ বোর্ডে লাগে, ফোনে আসে না।", "That's what I thought. When pay goes up it's on the notice board, not on your phone."] },
+        hope: { who: "o", say: ["ভালো তো, কিন্তু আমাদের বেতন কোনোদিন লিংকে বাড়েনি। অফিসে জিজ্ঞেস করে আসি।", "Nice, yes, but our pay has never gone up by link. I'll go and ask at the office."] },
+      },
+    },
+    {
+      key: "ratna_call_son",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["ছেলে ক্লাসে তৃতীয় হয়েছে, ফোনে তিনবার বলল। আমি বাথরুমে গিয়ে একটু হেসে এলাম।", "My son came third in class, and told me three times on the phone. I went to the bathroom and had a little smile."],
+          options: [
+            { text: ["দারুণ খবর!", "That's great news!"], go: "glad", out: { rep: 1 } },
+            { text: ["ওর জন্য পেনসিল পাঠানো যায়?", "Can I send him some pencils?"], go: "pencil", out: { money: -60, rep: 3 } },
+          ],
+        },
+        glad: { who: "o", say: ["তোমাকেই প্রথম বললাম। মানে খাতার বাইরে প্রথম।", "You're the first one I've told. Outside the notebook, I mean."] },
+        pencil: { who: "o", say: ["পাঠাবে? পরের ঈদে আমি নিজে নিয়ে যাব, বলব ঢাকা থেকে একজন পাঠিয়েছে।", "You will? I'll take them myself next Eid. I'll say they're from someone in Dhaka."] },
+      },
+    },
+  ],
+  favours: [
+    {
+      kind: "carry",
+      ask: ["এই ওষুধের প্যাকেটটা নতুন মেয়েটার মেসে দিয়ে আসবে? জ্বর নিয়েও ও আজ কাজে আসতে চেয়েছিল।", "Can you take this medicine to the new girl's hostel? She tried to come to work today with a fever."],
+      goal: ["ওষুধের প্যাকেটটা চিহ্নিত জায়গায় নিয়ে যাও", "Take the medicine to the marked spot"],
+      done: ["দিয়েছ? ওকে বলেছ তো, কাল কাজে এলে আমি বকব?", "Delivered? Did you tell her I'll scold her if she comes in tomorrow?"],
+    },
+    {
+      kind: "message",
+      ask: ["মরিয়মকে বলে এসো, কাল কিস্তি দেওয়ার আগে যেন আমার সাথে কথা বলে। আবার নতুন অ্যাপ ধরেছে।", "Tell Moriom to talk to me before she pays her instalment tomorrow. She's picked up another new app."],
+      goal: ["মরিয়মকে রত্নার কথা জানাও", "Give Moriom Ratna's message"],
+      done: ["বলেছ? ও এখন দুই দিন আমার ওপর রেগে থাকবে, তৃতীয় দিন চা খাবে।", "You told her? She'll be angry with me for two days, and on the third she'll have tea with me."],
+    },
+    {
+      kind: "find",
+      ask: ["আমার খাতাটা পাচ্ছি না, ছিয়াশি জনের হিসাব! চায়ের দোকান থেকে ফেরার পথে কোথাও পড়েছে।", "I can't find my notebook, that's eighty-six people's accounts! It fell somewhere on the way back from the tea stall."],
+      goal: ["আশেপাশে খাতাটা খুঁজে দেখো", "Look around for the notebook"],
+      done: ["এই তো, বুকটা ধড়ফড় করছিল! শেষ পাতায় লিখে রাখলাম, একজন খুঁজে দিয়েছে।", "There it is! My heart was racing. I've written on the last page: someone found it for me."],
+    },
+  ],
+  closer: [
+    ["তোমার নামে খাতায় একটা পাতা খুলেছি। দেনা নেই, পাওনা নেই, শুধু নাম।", "I've opened a page in your name in the notebook. Nothing owed either way, just the name."],
+    ["আমি কাউকে ধারে বিশ্বাস করি না। তোমাকে পুরোটাই করলাম, হাতে হাতে।", "I don't trust people on credit. You I trust in full, paid on the spot."],
+    ["লাইনের মেয়েরা জিজ্ঞেস করে, ওই মানুষটা কে। বলি, আমার হিসাবের বাইরের লোক।", "The girls on the line ask who you are. I say: someone outside my accounts."],
+  ],
+  hurt: [
+    ["আসবে বলেছিলে। দশ মিনিট রেখেছিলাম, তুমি জানো ওই দশ মিনিটের দাম।", "You said you'd come. I kept ten minutes for you, and you know what those ten minutes cost."],
+    ["খাতায় লিখলাম, তিনবার ফোন, ধরেনি। নিচে দাগ দিইনি, এখনো।", "I wrote in the notebook: called three times, no answer. I haven't underlined it. Yet."],
+    ["কাজ থাকতে পারে, বুঝি। আমারও কাজ থাকে, আমি তবু ফোন ধরি।", "You might have been busy, I understand. I'm busy too, and I still pick up."],
+    ["রাগ করিনি। শুধু হিসাবটা একদিকে ভারী হয়ে গেছে, দেখে নিয়ো।", "I'm not angry. It's just that the accounts have got heavy on one side. Have a look."],
+  ],
+  gift: [
+    ["এর দাম কত? বলো না, আমি আন্দাজ করি, নইলে রাতে ঘুম হবে না।", "How much was this? Don't tell me, let me guess, or I won't sleep tonight."],
+    ["আমার জন্য কেউ কিছু কিনলে খাতায় কোথায় লিখব? এই ঘরটা নেই।", "Where do I write it down when someone buys me something? There's no column for it."],
+    ["এটা ঈদে ছেলের কাছে নিয়ে যাব। বলব, ঢাকায় মায়ের একজন বন্ধু আছে।", "I'll take this to my son at Eid. I'll tell him his mother has a friend in Dhaka."],
+    ["এত খরচ কেন? আচ্ছা, আজ এর দাম হিসাব করব না।", "Why spend so much? All right, today I won't work out what it cost."],
+  ],
+};

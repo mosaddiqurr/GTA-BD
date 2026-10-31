@@ -5,6 +5,8 @@ export class Input {
   lookX = 0;
   lookY = 0;
   wheel = 0;
+  /** The mouse button went down on the game this frame. */
+  clicked = false;
   locked = false;
   dragging = false;
   enabled = false;
@@ -21,6 +23,7 @@ export class Input {
     canvas.addEventListener("mousedown", () => {
       if (this.enabled && !this.locked) this.requestLock();
       this.dragging = true;
+      this.clicked = true;
     });
     window.addEventListener("mouseup", () => (this.dragging = false));
     window.addEventListener("mousemove", (e) => {
@@ -70,5 +73,6 @@ export class Input {
     this.lookX = 0;
     this.lookY = 0;
     this.wheel = 0;
+    this.clicked = false;
   }
 }

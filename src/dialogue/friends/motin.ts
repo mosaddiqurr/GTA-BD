@@ -1,0 +1,257 @@
+import type { FriendDef } from "../types";
+
+export const MOTIN: FriendDef = {
+  key: "motin",
+  name: ["মতিন সাহেব", "Motin Saheb"],
+  id: "npc_elder_date",
+  region: "dhaka_gulshan",
+  hangout: "park",
+  bio: ["অবসরপ্রাপ্ত ব্যাংক কেরানি। পার্কে দাবা খেলেন, আর জানেন ব্যাংক আসলে কীভাবে চলে।", "A retired bank clerk. Plays chess in the park, and knows how banks really work."],
+  firstMeet: [
+    ["o", ["দাঁড়িয়ে দেখছেন যখন, বসে পড়ুন। দাঁড়িয়ে দাবা দেখলে কোমরেরও ক্ষতি, খেলারও।", "Since you're standing there watching, do sit. Watching chess on your feet is bad for the back and the game."]],
+    ["h", ["খেলতে পারি না।", "I can't play."]],
+    ["o", ["সেটা ভালো। যে জানে না সে ধীরে চলে, আর ধীরে চললে মানুষ ঠকে কম।", "That's good. Those who don't know move slowly, and slow people get cheated less."]],
+    ["o", ["আমি মতিন, চৌত্রিশ বছর ব্যাংকের কাউন্টারে ছিলাম। লোকে সাহেব বলে, আমি আপত্তি করি না।", "I am Motin. Thirty-four years at a bank counter. People say Saheb, and I raise no objection."]],
+    ["h", ["একাই দুই পক্ষ?", "Playing both sides alone?"]],
+    ["o", ["আজকাল এই আমার প্রতিপক্ষ। জিতলেও আমি, হারলেও আমি, চা দেওয়ার কেউ নেই।", "These days this is my opponent. I win, I lose, and nobody brings the tea."]],
+    ["o", ["কাল বিকেলে আসবেন। ঘোড়ার চাল শিখিয়ে দেব, সাথে ব্যাংকের চালও।", "Come tomorrow afternoon. I'll teach you how the knight moves, and how the bank moves as well."]],
+  ],
+  smallTalk: [
+    ["ঘোড়া আড়াই ঘর চলে। জীবনেও সোজা পথে কম লোকই আসে।", "The knight moves two and a half squares. In life too, few people arrive by the straight road."],
+    ["ব্যাংক কখনো ফোন করে পিন চায় না। চৌত্রিশ বছরে একবারও চায়নি, লিখে রাখুন।", "A bank never telephones for your PIN. Not once in thirty-four years. Write that down."],
+    ["আমাদের সময়ে চেক বইয়ের পাতা গুনে রাখতাম। এখন লোকে ওটিপি বিলিয়ে বেড়ায়।", "In my day we counted the leaves in a chequebook. Now people go around handing out OTPs."],
+    ["এই পার্কে সকালে সবাই হাঁটে, ডাক্তারের ভয়ে। আমিও হাঁটি, একই ভয়ে।", "Everyone walks in this park in the morning, for fear of the doctor. So do I, for the same fear."],
+    ["গুলশানের লোকের গাড়ি বড়, কিন্তু ব্যাংকে এসে সবাই একই ফরম ভুল করে।", "People in Gulshan have big cars, but at the bank they all fill in the same form wrong."],
+    ["দাবায় যে তাড়া দেয়, সে সাধারণত হারছে। ফোনেও তাই।", "In chess, the one who hurries you is usually losing. On the phone too."],
+    ["সুদের হিসাব মুখে মুখে করে ফেলি। রোগ বলতে পারেন।", "I work out interest in my head. You might call it an illness."],
+    ["আমার স্ত্রী বলতেন, তুমি সংসারের হিসাবও ব্যালান্স শিটে রাখো। মিথ্যা বলতেন না।", "My wife used to say I kept the household on a balance sheet. She did not lie."],
+    ["চা দুধ ছাড়া, চিনি অল্প। বয়স হলে জিভও ডাক্তারের কথা শোনে।", "Tea without milk, a little sugar. With age, even the tongue obeys the doctor."],
+    ["বৃষ্টিতে পার্কে আসি না। ঘুঁটি ভিজলে খেলার মর্যাদা থাকে না।", "I don't come to the park in the rain. Wet pieces rob the game of its dignity."],
+    ["ব্যাংকের লাইনে দাঁড়ানো এক ধরনের শিক্ষা। ধৈর্য আর পরচর্চা দুটোই শেখা যায়।", "Standing in a bank queue is an education. One learns both patience and gossip."],
+    ["কেউ বেশি লাভের কথা বললে জিজ্ঞেস করবেন, এত লাভ আপনি নিজে নিচ্ছেন না কেন?", "If someone promises high profits, ask him why he isn't taking all that profit himself."],
+    ["নতুন টাকার গন্ধ এখনো পাই। কাউন্টার ছেড়েছি, অভ্যাস ছাড়েনি।", "I can still smell new banknotes. I left the counter, but the habit didn't leave me."],
+    ["গরম পড়েছে। আমাদের সময়েও গরম ছিল, তবে এত আলোচনা ছিল না।", "It's turned hot. We had heat in my day too, only without so much discussion."],
+    ["দাবায় রাজা সবচেয়ে কম চলে, অথচ আগে তাকে বাঁচাতে হয়। সঞ্চয়ও তাই।", "In chess the king moves least, and yet he must be protected first. So it is with savings."],
+    ["পেনশনের দিন ব্যাংকে যাই। আসলে যাই পুরনো চেয়ারটা একবার দেখতে।", "On pension day I go to the bank. Really I go to take a look at my old chair."],
+    ["নিজের সই নিজে চিনুন। বহু লোক দেখেছি, নিজের সই মেলাতে পারে না।", "Know your own signature. I've seen many who can't match their own."],
+    ["সই করার আগে পড়বেন, পড়ার আগে চশমা পরবেন। এই দুটোই আসল ব্যাংকিং।", "Read before you sign, and put your glasses on before you read. That's all of banking."],
+    ["আজকের প্রতিপক্ষ বলছিলেন, তিনি কখনো হারেন না। আমি তাঁর লেজারটা দেখতে চাই।", "Today's opponent says he never loses. I should like to see his ledger."],
+  ],
+  teaTalks: [
+    [
+      ["o", ["দুধ ছাড়া চা, চিনি অল্প। ডাক্তার এই চাও নিষেধ করতে চেয়েছিলেন, আমি শুনিনি।", "Tea without milk, little sugar. The doctor wanted to forbid even this. I did not listen."]],
+      ["o", ["আপনি বলছি বলে অবাক হবেন না। ছোট বড় সবাইকে আপনি বলি, কাউন্টারের অভ্যাস।", "Don't be surprised at the formal you. I use it for young and old alike, a habit from the counter."]],
+      ["h", ["চৌত্রিশ বছরের অভ্যাস!", "A thirty-four-year habit!"]],
+      ["o", ["কাউন্টারের ওপারে কেউ ছোট থাকে না। সবাই কিছু একটা হারানোর ভয়ে থাকে।", "Nobody is small on the far side of a counter. Everyone there is afraid of losing something."]],
+      ["o", ["এবার ঘোড়াটা ধরুন, আড়াই ঘর। মনে আছে তো?", "Now take the knight, two and a half squares. You remember?"]],
+    ],
+    [
+      ["o", ["উনিশশো আটাত্তর সালে চাকরিতে ঢুকি। মতিঝিলের শাখায়, হাতে ঝরনা কলম, সামনে মোটা লেজার।", "I joined in nineteen seventy-eight. The Motijheel branch, a fountain pen in hand, a fat ledger in front of me."]],
+      ["o", ["তখন কম্পিউটার ছিল না। মাসের শেষে এক পয়সা না মিললে সবাই সারা রাত বসে থাকতাম।", "There were no computers then. If the month's end was one paisa out, we all sat there all night."]],
+      ["h", ["এক পয়সার জন্য?", "For one paisa?"]],
+      ["o", ["এক পয়সার জন্য। একবার রাত দুইটায় পাওয়া গেল, কে যেন সাত লিখেছে, দেখতে এক।", "For one paisa. Once we found it at two in the morning. Someone had written a seven that looked like a one."]],
+      ["o", ["ম্যানেজার নিজের পয়সায় চা আনালেন। ওই চায়ের স্বাদ আর পাইনি।", "The manager sent for tea out of his own pocket. I've never tasted tea like it again."]],
+      ["o", ["এখন সবাই বলে ব্যাংক মানে যন্ত্র। যন্ত্রের পেছনে কিন্তু এখনো একজন ক্লান্ত মানুষ বসে থাকে।", "Now everyone says a bank is a machine. Behind that machine there's still a tired person sitting."]],
+    ],
+    [
+      ["o", ["একটা জিনিস শিখে রাখুন। ব্যাংক আপনার পিন জানে না, জানতে চায়ও না।", "Learn one thing. The bank doesn't know your PIN, and doesn't want to."]],
+      ["o", ["ব্যাংকের লোক ফোন করে পিন চাইবে? রেলের টিকিট মাস্টার কি আপনার ঘরের চাবি চায়?", "A bank man phoning to ask your PIN? Does the railway ticket master ask for your house keys?"]],
+      ["h", ["তাহলে ফোন আসে কেন?", "Then why do the calls come?"]],
+      ["o", ["কারণ ওরা জানে, মানুষ ব্যাংককে ভয় পায়। ব্যাংকের নাম শুনলেই লোকে সোজা হয়ে বসে।", "Because they know people fear banks. Say the word bank and people sit up straight."]],
+      ["o", ["ব্যাংকে কোনো সমস্যা হলে আপনাকে চিঠি দেবে, ডাকবে, সময় দেবে। ব্যাংক তাড়া দেয় না।", "If there's a problem the bank will write, call you in, give you time. A bank doesn't rush you."]],
+      ["o", ["কেউ তাড়া দিলে, সে ব্যাংক না। এই এক লাইনেই আমার পুরো চাকরিটা পেয়ে গেলেন।", "Whoever rushes you is not a bank. In that one line you have my entire career."]],
+    ],
+    [
+      ["o", ["উনিশশো নিরানব্বই সাল। এক বিধবা এলেন, সব টাকা তুলবেন, একাশি হাজার।", "Nineteen ninety-nine. A widow came in to withdraw everything, eighty-one thousand."]],
+      ["o", ["জিজ্ঞেস করলাম, এত টাকা কেন? বললেন, এক ভদ্রলোক সোনা অর্ধেক দামে দিচ্ছে।", "I asked why so much. She said a gentleman was offering gold at half price."]],
+      ["h", ["আটকানো গেল না?", "Couldn't you stop her?"]],
+      ["o", ["নিয়ম নেই, টাকা তাঁর, সই তাঁর। শুধু বললাম একটু ভেবে দেখুন, উনি বিরক্ত হলেন।", "There's no rule. Her money, her signature. I only asked her to think it over, and she was annoyed."]],
+      ["o", ["নোট গুনে দিলাম, সুন্দর করে, রাবার ব্যান্ড দিয়ে। এটাই আমার চাকরি ছিল।", "I counted out the notes, neatly, with a rubber band. That was my job."]],
+      ["o", ["তিন সপ্তাহ পর উনি কাউন্টারে এসে দাঁড়ালেন, কিছু চাইলেন না। ওই ছবিটা আমার এখনো আছে।", "Three weeks later she came and stood at the counter, and asked for nothing. I still carry that picture."]],
+    ],
+    [
+      ["o", ["এক ব্যবসায়ী একবার খামে কিছু দিলেন, ঋণের ফাইলটা আগে তোলার জন্য। বেশ মোটা খাম।", "A businessman once handed me an envelope to move his loan file up. Rather a fat envelope."]],
+      ["o", ["ফেরত দিলাম। পরের বছর পদোন্নতির তালিকায় আমার নাম ছিল না, ওনার বড় কর্তার সাথে চেনাজানা।", "I returned it. The next year my name wasn't on the promotion list. He knew the big boss."]],
+      ["h", ["আফসোস হয়?", "Any regrets?"]],
+      ["o", ["হয়, মাঝে মাঝে, বিশেষ করে ওষুধের দোকানে গেলে। মিথ্যা বলব না।", "Yes, now and then, particularly in the pharmacy. I won't lie."]],
+      ["o", ["আমার স্ত্রী সে রাতে কিছু বললেন না, শুধু ডালে একটু বেশি ঘি দিলেন। ঘি মানে ছিল অনেক কথা।", "My wife said nothing that night, only put a little extra ghee in the dal. Ghee said a great deal."]],
+      ["o", ["কেরানি হিসেবেই অবসরে গেলাম। তবে রাতে ঘুম ভালো হয়, এটা কোনো ব্যাংকে জমা রাখা যায় না।", "I retired a clerk. But I sleep well at night, and no bank can hold that on deposit."]],
+    ],
+    [
+      ["o", ["একটা অনুমতি চাই, মাঝে মাঝে তুমি বলি? চৌত্রিশ বছরে মাত্র চারজনকে বলেছি।", "May I ask permission to use the familiar you now and then? In thirty-four years I've done so with four people."]],
+      ["h", ["অবশ্যই।", "Of course."]],
+      ["o", ["আমার স্ত্রী চলে গেছেন ছয় বছর হলো। এখনো দুইটা কাপ বের করি, একটায় চা দিই।", "My wife passed away six years ago. I still take out two cups and pour tea into one."]],
+      ["o", ["ছেলে থাকে বিদেশে, ভালো চাকরি। ঈদে ফোন করে, জিজ্ঞেস করে ওষুধ খাচ্ছি কি না।", "My son lives abroad, a good job. He calls at Eid to ask if I'm taking my medicine."]],
+      ["o", ["আমি বলি খাচ্ছি। সে জিজ্ঞেস করে টাকা লাগবে কি না, আমি না বলি, তিন মিনিটে শেষ।", "I say I am. He asks if I need money, I say no, and it's over in three minutes."]],
+      ["o", ["ও ভালো ছেলে, আমিই শিখিয়েছি হিসাব মিলিয়ে কথা বলতে। এখন হিসাব মেলে, কথা হয় না।", "He's a good boy. I'm the one who taught him to talk in balanced accounts. Now the accounts balance and nobody talks."]],
+    ],
+    [
+      ["o", ["এই কথা আজ পর্যন্ত কাউকে বলিনি। দুই বছর আগে আমি, মতিন, ব্যাংকের লোক, ঠকেছি।", "I've told this to nobody until today. Two years ago I, Motin, a bank man, was cheated."]],
+      ["o", ["রাত এগারোটায় ফোন। এক ছেলে কাঁদতে কাঁদতে বলল, আপনার ছেলে বিমানবন্দরে আটকা, কাগজের ঝামেলা।", "A call at eleven at night. A young man, crying, said my son was stuck at the airport over his papers."]],
+      ["o", ["বলল, ভোরের আগে পঞ্চাশ হাজার না দিলে সব শেষ, আর ওকে ফোনে পাওয়া যাবে না।", "He said unless fifty thousand came before dawn all would be lost, and my son couldn't be reached."]],
+      ["h", ["তখন কী করা হলো?", "What did you do then?"]],
+      ["o", ["চৌত্রিশ বছর মানুষকে এই জিনিস থেকে সাবধান করেছি। তবু সেই রাতে আমার হাত কাঁপছিল।", "For thirty-four years I warned people about exactly this. Even so, my hands shook that night."]],
+      ["o", ["পাঠিয়ে দিলাম। সকালে ছেলে ফোন ধরল, ঘুম ঘুম গলায়, সে ঘরেই ছিল।", "I sent it. In the morning my son picked up, half asleep. He'd been at home all along."]],
+      ["o", ["ওকে বলিনি। জ্ঞান দিয়ে ভয় ঠেকানো যায় না, তাই আগে ফোনটা রাখতে হয়, তারপর ভাবতে হয়।", "I never told him. Knowledge can't hold off fear, so first put the phone down, and only then think."]],
+    ],
+    [
+      ["o", ["বয়স হলে মানুষ টাকা নিয়ে ভাবে না, ভাবে কে আসবে।", "When you grow old you stop thinking about money and start thinking about who will come."]],
+      ["o", ["এই পার্কে আমার একটা জায়গা আছে, তৃতীয় বেঞ্চ। ভাবি, একদিন খালি থাকলে কে খেয়াল করবে।", "I have a place in this park, the third bench. I wonder who would notice if it were empty one day."]],
+      ["h", ["আমি করব।", "I will."]],
+      ["o", ["জানি, সেজন্যই বলছি। একটা ছোট বই লিখতে চাই, ব্যাংক কীভাবে চলে, সহজ বাংলায়।", "I know, that's why I'm telling you. I want to write a small book on how banks work, in simple Bangla."]],
+      ["o", ["চৌত্রিশ বছরের সব, ওই বিধবার কথা, আর আমার নিজের কথাও। এবার লিখতে পারব।", "All thirty-four years, that widow's story, and my own too. Now I can write it."]],
+      ["o", ["বইয়ের নাম ঠিক করেছি, তাড়া দিলে থামুন। খুব ভালো নাম না, কিন্তু সত্যি।", "I've chosen the title: If They Rush You, Stop. Not a very good title, but a true one."]],
+      ["o", ["এই নাও, সাদা ঘোড়াটা। ফেরত দিতে হলে তো আসতেই হবে।", "Here, take the white knight. You'll have to come back to return it."]],
+    ],
+  ],
+  callHello: [
+    ["জি, মতিন বলছি। ফোনটা ঠিক শব্দ করে না, একটু জোরে বলবেন।", "Yes, Motin speaking. This telephone is not quite clear, please speak up."],
+    ["আসসালামু আলাইকুম। এই অসময়ে ফোন, সব ভালো তো?", "Assalamu alaikum. A call at this hour, is everything well?"],
+    ["ফোন পেয়ে খুশি হলাম। আজকাল এই ফোনে শুধু ওষুধের দোকান ফোন করে।", "I'm glad of the call. These days only the pharmacy rings this number."],
+    ["কে, ও আচ্ছা, চিনেছি। দাবার চাল ভেবে বের করলেন নাকি?", "Who is it? Ah yes, I know you. Have you thought of your next move?"],
+    ["বলুন, শুনছি। আগে জানিয়ে রাখি, আমি কোনো কোড কাউকে বলি না।", "Go on, I'm listening. I'll state up front that I give no codes to anyone."],
+  ],
+  callBusy: [
+    ["এই মুহূর্তে কিস্তিমাতের কাছে আছি, প্রতিপক্ষ ঘামছেন। একটু পরে ফোন করি?", "At this moment I'm close to checkmate and my opponent is perspiring. May I call back shortly?"],
+    ["ডাক্তারের লাইনে আছি, আমার নম্বর আসছে। পরে কথা হবে।", "I'm in the doctor's queue and my number's coming up. We'll speak later."],
+    ["পেনশনের লাইনে দাঁড়িয়ে আছি। এখানে ফোন ধরলে জায়গা চলে যায়, রাখছি।", "I'm in the pension queue. Take a call here and you lose your place. Goodbye."],
+    ["নামাজে যাচ্ছি। ফিরে এসে ফোন করব, ভুলব না, খাতায় লিখে রাখলাম।", "I'm off to prayers. I'll ring when I'm back. I won't forget, I've written it down."],
+  ],
+  callYes: [
+    ["চা? অবশ্যই, বিকেল পাঁচটায়, এর আগেও না, পরেও না।", "Tea? Certainly. Five in the afternoon, neither before nor after."],
+    ["আসছি, আস্তে আস্তে। হাঁটুর সাথে আমার একটা সমঝোতা আছে।", "I'm coming, slowly. My knees and I have an understanding."],
+    ["বেশ, পার্কের গেটে অপেক্ষা করুন। বোর্ডটা আমি নিয়ে আসছি।", "Very well, wait at the park gate. I'll bring the board."],
+    ["চলুন। চায়ের বিল আমি দেব, এটা নিয়ে তর্ক করলে চাল নষ্ট হবে।", "Let's go. I'll settle the bill. To argue would be a wasted move."],
+  ],
+  theyCall: [
+    {
+      key: "motin_call_kyc",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["একটা খবর দিই। ব্যাংকের কর্মকর্তা সেজে ফোন আসছে, বলে তথ্য হালনাগাদ না করলে একাউন্ট বন্ধ।", "A word of warning. Calls are coming from people posing as bank officers, saying update your details or the account closes."],
+          options: [
+            { text: ["ব্যাংক এভাবে ফোন করে?", "Do banks call like that?"], go: "how", out: { sense: 2, lesson: ["ব্যাংকের কাজ ব্যাংকে গিয়ে করুন। ফোনে কেউ তাড়া দিলে সে ব্যাংক না।", "Do bank business at the bank. Whoever rushes you on the phone is not a bank."] } },
+            { text: ["আমাকে করলে রেখে দেব।", "If they call me, I'll hang up."], go: "good", out: { sense: 1 } },
+          ],
+        },
+        how: { who: "o", say: ["না, তথ্য লাগলে শাখায় ডাকে, চিঠি দেয়। ফোনে তাড়া দিয়ে পিন চায় না, কখনো না।", "No. If it needs details it calls you to the branch or writes. It never hurries you for a PIN by phone, never."] },
+        good: { who: "o", say: ["উত্তম। তারপর কার্ডের পেছনের নম্বরে নিজে ফোন দেবেন, ওটাই ব্যাংকের আসল নম্বর।", "Excellent. Then ring the number on the back of your card yourself. That's the bank's real number."] },
+      },
+    },
+    {
+      key: "motin_call_chess",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["রবিবার পার্কে আমাদের ছোট্ট দাবা প্রতিযোগিতা। পুরস্কার এক প্যাকেট বিস্কুট আর সম্মান।", "Sunday is our little chess contest in the park. The prize is a packet of biscuits, and honour."],
+          options: [
+            { text: ["আসব, শুধু দেখব।", "I'll come, just to watch."], go: "watch", out: { rep: 1 } },
+            { text: ["খেলব!", "I'll play!"], go: "play", out: { rep: 2 } },
+            { text: ["এবার পারব না।", "I can't this time."], go: "no" },
+          ],
+        },
+        watch: { who: "o", say: ["দেখাও একটা বিদ্যা। শুধু পাশে বসে কাউকে চাল বলে দেবেন না, এতে বহু বন্ধুত্ব গেছে।", "Watching is an art too. Only don't whisper moves to anyone, it has ended many a friendship."] },
+        play: { who: "o", say: ["সাহস আছে। প্রথম চালেই হারলেও হাত মেলাবেন, এই পার্কে ওটাই আসল নিয়ম।", "That takes courage. Lose on the first move and you still shake hands. That's the real rule in this park."] },
+        no: { who: "o", say: ["বেশ। আপনার নামে একটা চেয়ার রাখব, কেউ বসলে বলব ওটা সংরক্ষিত।", "Very well. I'll keep a chair in your name, and tell anyone who sits that it's reserved."] },
+      },
+    },
+    {
+      key: "motin_call_sms",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["চশমাটা পাচ্ছি না, এসএমএসে যেন লিখেছে, সঞ্চয়পত্রের লাভ পেতে লিংকে চাপুন। চাপব?", "I can't find my glasses, and an SMS seems to say tap the link to collect your savings profit. Shall I tap it?"],
+          options: [
+            { text: ["চাপা যাবে না।", "Don't tap it."], go: "no", out: { sense: 1, rep: 1 } },
+            { text: ["আগে চশমাটা খোঁজা হোক।", "Find the glasses first."], go: "glasses", out: { rep: 1 } },
+          ],
+        },
+        no: { who: "o", say: ["আমিও তাই ভাবছিলাম, শুধু দেখছিলাম আপনি কী বলেন। পুরনো অভ্যাস।", "That's what I thought too. I only wanted to see what you'd say. An old habit."] },
+        glasses: { who: "o", say: ["ঠিক, ও, মাথার ওপরেই আছে। লিংকে আমি চাপতাম না, এই বলে রাখলাম।", "Quite right. Ah, they're on my head. I wasn't going to tap it, let the record show."] },
+      },
+    },
+    {
+      key: "motin_call_son",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["আজ একটা অদ্ভুত ব্যাপার, ছেলে ফোন করল, ঈদ ছাড়াই। আধা ঘণ্টা কথা হলো, পুরোটাই দাবা নিয়ে।", "A curious thing today. My son called, and it isn't even Eid. We spoke for half an hour, all about chess."],
+          options: [
+            { text: ["খুব ভালো খবর!", "That's very good news!"], go: "glad", out: { rep: 1 } },
+            { text: ["এই খুশিতে চা হবে।", "This calls for tea."], go: "tea", out: { money: -40, rep: 3 } },
+          ],
+        },
+        glad: { who: "o", say: ["আমার হাত এখনো একটু কাঁপছে। ভয়ে না, এবার অন্য কারণে।", "My hands are still trembling a little. Not from fear, this time."] },
+        tea: { who: "o", say: ["চা আমার, আপনি আসুন। ছেলেকে আপনার কথা বলেছি, জিজ্ঞেস করল এই মানুষটি কে।", "The tea's on me, you just come. I told my son about you, and he asked who this person is."] },
+      },
+    },
+    {
+      key: "motin_call_scheme",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["পাশের বাসার হালিম পেনশনের সব টাকা এক কোম্পানিতে দেবেন। মার্বেল মেঝে, বছরে চল্লিশ শতাংশ।", "Halim next door is giving his entire pension to a company. Marble floors, forty percent a year."],
+          options: [
+            { text: ["চল্লিশ শতাংশ কি সম্ভব?", "Is forty percent possible?"], go: "math", out: { sense: 2, lesson: ["লাভের হার ব্যাংকের চেয়ে অনেক বেশি হলে ঝুঁকিও অনেক বেশি। মেঝে দেখে ভুলবেন না।", "When the return is far above a bank's, so is the risk. Don't be fooled by the floors."] } },
+            { text: ["আমি সাথে যেতে পারি।", "I can go along with you."], go: "come", out: { rep: 2, sense: 1 } },
+          ],
+        },
+        math: { who: "o", say: ["কোনো ব্যাংক এত দিতে পারে না। যে চল্লিশ দেবে বলে, সে আসল টাকাটাই ফেরত দিতে চায় না।", "No bank could pay that. Whoever promises forty doesn't intend to return even the principal."] },
+        come: { who: "o", say: ["আসুন। দুজন গেলে ওরা দুজনকে চা দেবে, আর আমি নিবন্ধনের কাগজ দেখতে চাইব।", "Do come. They'll give us both tea, and I shall ask to see the registration papers."] },
+      },
+    },
+    {
+      key: "motin_call_medicine",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["লজ্জার কথা, পেনশন দুই দিন দেরি, আর ওষুধের দোকানে তিনশো টাকা কম পড়েছে। দুই দিনের ধার হবে?", "This is embarrassing. The pension's two days late and I'm three hundred short at the pharmacy. A loan for two days?"],
+          options: [
+            { text: ["তিনশো নিয়ে আসছি।", "I'm bringing three hundred."], go: "yes", out: { money: -300, rep: 3 } },
+            { text: ["আজ আমার হাতেও নেই।", "I don't have it either today."], go: "no" },
+          ],
+        },
+        yes: { who: "o", say: ["দুই দিন পরে ফেরত, লিখে দেব। আপত্তি শুনব না, এটা আমার শেষ অহংকার।", "Back in two days, and I'll put it in writing. I won't hear objections. It's my last vanity."] },
+        no: { who: "o", say: ["বেশ, কোনো অসুবিধা নেই। দোকানদারকে বলি, আমার সই তার খাতায় এখনো চলে।", "Very well, no trouble at all. I'll speak to the owner. My signature is still good in his book."] },
+      },
+    },
+  ],
+  favours: [
+    {
+      kind: "carry",
+      ask: ["এই বোর্ডটা ওই দিকের ভদ্রলোককে দিয়ে আসবেন? বলবেন, কাল আমি সাদা নেব, ওনার কপালে কালো।", "Would you take this board to the gentleman over there? Tell him tomorrow I take white, and black is his fate."],
+      goal: ["দাবার বোর্ডটা চিহ্নিত জায়গায় নিয়ে যাও", "Take the chessboard to the marked spot"],
+      done: ["ধন্যবাদ। উনি নিশ্চয়ই কিছু বলেছেন, ওনার কথায় কান দেবেন না।", "Thank you. He'll have said something. Pay him no mind."],
+    },
+    {
+      kind: "message",
+      ask: ["গেটের চাওয়ালাকে বলে আসবেন, কাল থেকে আমার চায়ে চিনি আরও অল্প। ডাক্তারের হুকুম।", "Would you tell the tea man at the gate that from tomorrow my tea has even less sugar? Doctor's orders."],
+      goal: ["চাওয়ালাকে খবরটা দাও", "Give the tea man the message"],
+      done: ["বলেছেন? এই বয়সে চিনিও হিসাব করে খেতে হয়।", "You told him? At this age even sugar must be budgeted."],
+    },
+    {
+      kind: "find",
+      ask: ["সাদা ঘোড়াটা পাচ্ছি না। বেঞ্চের আশেপাশে কোথাও গড়িয়ে গেছে, বয়স হলে ঘোড়াও পালায়।", "I can't find the white knight. It's rolled off somewhere near the bench. With age even the horses run away."],
+      goal: ["আশেপাশে সাদা ঘোড়াটা খুঁজে দেখো", "Look around for the white knight"],
+      done: ["এই তো! গত সপ্তাহে বোতলের ছিপি দিয়ে চালিয়েছি, প্রতিপক্ষ খুব হেসেছিলেন।", "There it is! Last week I played with a bottle cap in its place, and my opponent laughed a great deal."],
+    },
+  ],
+  closer: [
+    ["অনেক হিসাব মিলিয়েছি জীবনে। আপনার সাথে চা খাওয়াটা কখনো লেজারে তুলিনি, ওটা শুধু লাভ।", "I've balanced many accounts in my life. Tea with you I've never entered in the ledger. That's pure profit."],
+    ["আজ আমাকে প্রায় হারিয়ে দিয়েছিলেন। এটা প্রশংসা, আমি সহজে প্রশংসা করি না।", "You nearly beat me today. That's praise, and I don't give it easily."],
+    ["তৃতীয় বেঞ্চে এতদিন একজনের জায়গা ছিল। এখন দেখি দুজনের।", "The third bench has had room for one all these years. Now I find it seats two."],
+  ],
+  hurt: [
+    ["অপেক্ষা করেছিলাম, বোর্ড সাজিয়ে। বয়স হলে অপেক্ষায় অভ্যাস হয়, তবু জানিয়ে রাখলাম।", "I waited with the board set up. One gets used to waiting at my age, but I'll put it on record."],
+    ["কথা দিয়ে না আসাকে আমরা বলতাম চেক ফেরত। আপনার একটা ফেরত গেছে।", "Promising and not coming, we used to call that a bounced cheque. One of yours has bounced."],
+    ["ঠিক আছে। কথা না হলে দাবা থামে না, শুধু একদিকে একটু নীরব থাকে।", "It's all right. Chess doesn't stop for want of talk. One side of the board just goes a little quiet."],
+    ["আমি মনে রাখি না, বয়স হয়েছে। তবে লেজার রাখি, ওটা ভোলে না।", "I don't remember such things, I'm old. But I do keep a ledger, and it doesn't forget."],
+  ],
+  gift: [
+    ["আমার জন্য? রেখে দিলাম, বহুদিন পরে কেউ কিছু দিল।", "For me? I'll keep it. It's been a long time since anyone gave me anything."],
+    ["ধন্যবাদ। আমাদের সময়ে উপহার কাগজে মুড়ে দিত, কাগজটাও রেখে দিতাম।", "Thank you. In my day gifts came wrapped in paper, and I'd keep the paper too."],
+    ["এটা আমি ব্যবহার করব না, যত্ন করে রাখব। এটাই আমাদের প্রজন্মের সমস্যা।", "I won't use this, I'll put it away carefully. That's the trouble with my generation."],
+    ["আমার স্ত্রী থাকলে বলতেন, দেখলে, তোমাকেও কেউ কিছু দেয়।", "If my wife were here she'd say: see, even you get given things."],
+  ],
+};

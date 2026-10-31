@@ -1,4 +1,4 @@
-import { CellName, cell, patch, shopCell } from "./atlas";
+import { CELLS, CellName, ShopKind, cell, patch, shopCell } from "./atlas";
 import { Rng } from "./cityLayout";
 import { Geo, RGB } from "./geo";
 import type { SignAtlas } from "./signs";
@@ -18,6 +18,16 @@ export interface BuildingSpec {
   base: number; // ground level under the building
   /** Stands behind the street frontage, so it needs no shopfronts or balconies. */
   back?: boolean;
+  /** A house, not a business: windows on the ground floor instead of shops. */
+  plain?: boolean;
+  /** Has a door people can use, and what's behind it. */
+  door?: string;
+  /** The sort of shops it has, where they're all one trade: a bazaar's worth of saris, say. */
+  trades?: ShopKind[];
+  /** Boards stacked up the front above the shops, and what they're for. */
+  boards?: { kind: string; share: number };
+  /** The open shops in its ground floor, listed when it's built near the player. */
+  shops?: { u: number; w: number; kind: string }[];
 }
 
 const PAINTS: RGB[] = [
@@ -27,7 +37,10 @@ const PAINTS: RGB[] = [
 ];
 
 const WINDOW_CELLS: CellName[] = ["winGrillA", "winGrillA", "winGrillB", "winGrillB", "winSlideB", "winCurtainA", "winCurtainB", "winSlideA", "winDark"];
-const SHOP_KINDS: CellName[] = ["shopGrocery", "shopPharmacy", "shopMobile", "shopClothes", "shopTea", "shopHardware", "shopSweets", "shopBooks"];
+const SHOP_KINDS: ShopKind[] = [
+  "shopGrocery", "shopGrocery", "shopPharmacy", "shopMobile", "shopClothes", "shopTea", "shopHardware", "shopSweets", "shopBooks",
+  "shopBarber", "shopTailor", "shopRepair", "shopPhoto", "shopAgent", "shopDiagnostic", "shopBiryani", "shopRice", "shopRice", "shopSari", "shopGold", "shopElectronics",
+];
 
 const GROUND_H = 4.25;
 const FLOOR_H = 3.05;
@@ -43,11 +56,14 @@ export interface BuildingGeo {
   cutout: Geo;
   sign: Geo;
   shop: Geo;
+  /** Shutters down over the open shops, shown when they've shut for the night. */
+  shutters: Geo;
 }
 
 /** Full-detail building, with real recesses, slabs and hung signs. Used near the player. */
 export function buildDetailed(s: BuildingSpec, g: BuildingGeo, signs: SignAtlas): void {
   const r = new Rng(s.seed);
+  s.shops = [];
   g.opaque.setFrame(s.x, s.z, s.angle);
   g.cutout.setFrame(s.x, s.z, s.angle);
   g.sign.setFrame(s.x, s.z, s.angle);
@@ -70,6 +86,7 @@ export function buildDetailed(s: BuildingSpec, g: BuildingGeo, signs: SignAtlas)
 
   // Ground floor.
   if (s.style === "frame") frameGround(s, r, g, bay, nBays, x0, y0);
+  else if (s.plain) houseGround(r, g, tint, wallCell, bay, nBays, x0, y0);
   else shopRow(s, r, g, signs, tint, wallCell, bay, nBays, x0, y0);
 
   // Upper floors.
@@ -117,6 +134,18 @@ export function buildDetailed(s: BuildingSpec, g: BuildingGeo, signs: SignAtlas)
     g.opaque.box(side + 0.3, side + 0.5, sy + 4, sy + 4.1, -0.45, 0, cell("metal"), [0.3, 0.3, 0.3]);
   }
 
+  // Layer on layer of boards up the front: every floor has somebody selling something.
+  if (s.boards) {
+    for (let floor = 0; floor < Math.min(s.floors - 1, 4); floor++) {
+      const y = y0 + GROUND_H + 0.5 + floor * FLOOR_H;
+      for (let b = 0; b < nBays; b++) {
+        if (!r.chance(s.boards.share)) continue;
+        const px = x0 + b * bay + 0.15, bw = bay - 0.3;
+        g.sign.wallFront(px, px + bw, y, y + bw * 0.2, -0.06, signs.shop(s.boards.kind as CellName, r));
+      }
+    }
+  }
+
   // Rental and tutoring notices pasted on the pillars between shops.
   for (let b = 0; b <= nBays; b++) {
     if (!r.chance(0.3)) continue;
@@ -160,6 +189,16 @@ function hangSign(g: BuildingGeo, x0: number, x1: number, y0: number, y1: number
   g.opaque.box(x0 + 0.03, x1 - 0.03, y0 + 0.03, y1 - 0.03, v + 0.01, 0.02, cell("metal", 0, 0, 0.2, 0.2), [0.2, 0.2, 0.22]);
 }
 
+/** A ground floor with windows, and a little more height of wall above them. */
+function houseGround(r: Rng, g: BuildingGeo, tint: RGB, wallCell: CellName, bay: number, nBays: number, x0: number, y0: number): void {
+  const win = r.pick(WINDOW_CELLS);
+  for (let b = 0; b < nBays; b++) {
+    const bx0 = x0 + b * bay, bx1 = bx0 + bay;
+    windowBay(r, g, tint, wallCell, bx0, bx1, y0, win);
+    wall(g.opaque, r, wallCell, tint, bx0, bx1, y0 + FLOOR_H, y0 + GROUND_H);
+  }
+}
+
 function shopRow(s: BuildingSpec, r: Rng, g: BuildingGeo, signs: SignAtlas, tint: RGB, wallCell: CellName, bay: number, nBays: number, x0: number, y0: number): void {
   const openH = 3.05;
   let b = 0;
@@ -167,7 +206,7 @@ function shopRow(s: BuildingSpec, r: Rng, g: BuildingGeo, signs: SignAtlas, tint
     const span = nBays - b >= 2 && r.chance(0.3) ? 2 : 1;
     const bx0 = x0 + b * bay;
     const bx1 = bx0 + span * bay;
-    const kind = r.pick(SHOP_KINDS);
+    const kind = r.pick(s.trades ?? SHOP_KINDS);
     const pil = 0.26;
     wall(g.opaque, r, wallCell, tint, bx0, bx0 + pil, y0, y0 + GROUND_H, 0, 0.7);
     wall(g.opaque, r, wallCell, tint, bx1 - pil, bx1, y0, y0 + GROUND_H, 0, 0.7);
@@ -178,6 +217,8 @@ function shopRow(s: BuildingSpec, r: Rng, g: BuildingGeo, signs: SignAtlas, tint
       g.opaque.wallFront(ix0, ix1, y0, y0 + openH, 0.1, cell(r.chance(0.5) ? "shutter" : "shutterBlue"), [1, 1, 1], 0.75);
     } else {
       // Recessed shop: back wall of goods, sides, ceiling, floor and the rolled-up shutter.
+      s.shops!.push({ u: (bx0 + bx1) / 2, w: bx1 - bx0, kind });
+      g.shutters.wallFront(ix0, ix1, y0, y0 + openH, 0.05, cell(r.chance(0.5) ? "shutter" : "shutterBlue"), [1, 1, 1], 0.75);
       const pick = r.next();
       g.shop.wallFront(ix0, ix1, y0, y0 + openH, SHOP_DEPTH, shopCell(kind, pick), [0.92, 0.9, 0.86]);
       g.shop.wallSide(ix0, 0, SHOP_DEPTH, y0, y0 + openH, true, shopCell(kind, pick, 0, 0, 0.5, 1), [0.68, 0.66, 0.63]);
@@ -189,7 +230,7 @@ function shopRow(s: BuildingSpec, r: Rng, g: BuildingGeo, signs: SignAtlas, tint
       // Fluorescent tube, the signature light of every shop at dusk.
       g.opaque.box(ix0 + 0.5, ix1 - 0.5, y0 + openH - 0.1, y0 + openH - 0.04, 0.9, 1.0, cell("winCurtainB", 0.3, 0.3, 0.5, 0.5), [1, 1, 1], false);
     }
-    const signRect = signs.shop(kind, r);
+    const signRect = signs.shop(kind as CellName, r);
     hangSign(g, bx0 + 0.08, bx1 - 0.08, y0 + openH + 0.1, y0 + GROUND_H - 0.1, -0.14, signRect);
     // Awnings: tarp or striped.
     if (!closed && r.chance(0.6)) {
@@ -332,10 +373,11 @@ function tinShed(s: BuildingSpec, r: Rng, g: BuildingGeo, signs: SignAtlas): voi
   const bay = s.w / n;
   for (let b = 0; b < n; b++) {
     const bx0 = x0 + b * bay, bx1 = bx0 + bay;
-    const kind = r.pick(SHOP_KINDS);
+    const kind = r.pick(s.trades ?? SHOP_KINDS);
     if (r.chance(0.2)) {
       o.wallFront(bx0 + 0.1, bx1 - 0.1, y0, y0 + h, 0.08, cell("shutterBlue"), [1, 1, 1], 0.8);
     } else {
+      s.shops!.push({ u: (bx0 + bx1) / 2, w: bx1 - bx0, kind });
       g.shop.wallFront(bx0 + 0.1, bx1 - 0.1, y0, y0 + h, 2.0, shopCell(kind, r.next()), [0.92, 0.9, 0.86]);
       o.wallSide(bx0 + 0.1, 0, 2, y0, y0 + h, true, cell("wood", 0, 0, 0.5, 1));
       o.wallSide(bx1 - 0.1, 0, 2, y0, y0 + h, false, cell("wood", 0, 0, 0.5, 1));
@@ -343,7 +385,7 @@ function tinShed(s: BuildingSpec, r: Rng, g: BuildingGeo, signs: SignAtlas): voi
     }
     o.box(bx0, bx0 + 0.1, y0, y0 + h, 0, 0.1, cell("wood", 0, 0, 0.3, 1));
     o.box(bx1 - 0.1, bx1, y0, y0 + h, 0, 0.1, cell("wood", 0, 0, 0.3, 1));
-    hangSign(g, bx0 + 0.1, bx1 - 0.1, y0 + h - 0.05, y0 + h + 0.55, -0.1, signs.shop(kind, r));
+    hangSign(g, bx0 + 0.1, bx1 - 0.1, y0 + h - 0.05, y0 + h + 0.55, -0.1, signs.shop(kind as CellName, r));
   }
   // Corrugated sheet roof pitched back, overhanging the front.
   const rise = 0.5;
@@ -591,7 +633,7 @@ export function buildSimple(s: BuildingSpec, g: Geo, signs?: Geo, atlas?: SignAt
   const paint = r.pick(PAINTS);
   const grime = r.range(0.72, 1);
   const tint: RGB = [paint[0] * grime, paint[1] * grime, paint[2] * grime];
-  const hasShops = s.floors > 1 && s.base > 0;
+  const hasShops = s.floors > 1 && s.base > 0 && !s.plain;
   const groundTop = y0 + (hasShops ? GROUND_H : 0);
   const top = y0 + GROUND_H + FLOOR_H * (s.floors - 1);
   const far: CellName = s.style === "frame" ? "concrete" : r.chance(0.5) ? "farA" : "farB";
@@ -610,9 +652,11 @@ export function buildSimple(s: BuildingSpec, g: Geo, signs?: Geo, atlas?: SignAt
     const n = Math.max(1, Math.round(s.w / 7));
     const w = s.w / n;
     for (let i = 0; i < n; i++) {
-      const kind = SHOP_KINDS[(s.seed + i) % SHOP_KINDS.length];
-      g.wallFront(x0 + i * w, x0 + (i + 1) * w, y0, y0 + 3.05, 0, cell(kind));
-      if (signs && atlas) signs.wallFront(x0 + i * w + 0.1, x0 + (i + 1) * w - 0.1, y0 + 3.1, y0 + 4.15, -0.05, atlas.shop(kind, r));
+      const trades = s.trades ?? SHOP_KINDS;
+      const kind = trades[(s.seed + i) % trades.length];
+      // From a distance one shop's much like another.
+      g.wallFront(x0 + i * w, x0 + (i + 1) * w, y0, y0 + 3.05, 0, cell((kind in CELLS ? kind : "shopGrocery") as CellName));
+      if (signs && atlas) signs.wallFront(x0 + i * w + 0.1, x0 + (i + 1) * w - 0.1, y0 + 3.1, y0 + 4.15, -0.05, atlas.shop(kind as CellName, r));
     }
     const stone = cell("plasterStain");
     g.wallFront(x0, x1, y0 + 3.05, y0 + GROUND_H, 0, stone, tint);

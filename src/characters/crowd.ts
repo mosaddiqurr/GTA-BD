@@ -1,14 +1,15 @@
 import { AbstractMesh, BakedVertexAnimationManager, Material, Matrix, Mesh, PBRMaterial, Scene, VertexAnimationBaker } from "@babylonjs/core";
-import { CHARACTER_IDS, Character, CharacterId, POSE_PERIOD, Pose, characterAvailable, characterContainer } from "./character";
+import { CHARACTER_IDS, Character, CharacterId, POSE_PERIOD, Pose, characterAvailable, characterContainer, outfitMaterial, outfitsOf } from "./character";
 
 /** Baked frames per clip. Every clip needs at least two: a single frame divides by zero in the engine's shader. */
 const CLIP_FRAMES: Partial<Record<Pose, number>> = {
   walk: 32, run: 24, stand: 48, idle_look: 64, talk: 60, sit_bench: 48, tea: 48, police: 64, wave: 16, dodge: 2, shrug: 16,
-  sit_drive: 2, sit_bus: 2, passenger: 40, pedal_rickshaw: 24, ride_bicycle: 24, ride_motorbike: 2,
+  drive_car: 2, drive_micro: 2, drive_bus: 2, drive_truck: 2, drive_cng: 2, drive_easybike: 2, passenger: 40, pedal_rickshaw: 24, ride_bicycle: 24, ride_motorbike: 2,
+  hang: 8, walk_u: 32, bowl: 20, bat: 20, kick: 16, cheer: 16, crouch: 12, dodge2: 2, dodge3: 2, shrug2: 16,
 };
 
-const MAX_INSTANCES = 160;
-const NEAR_LOD = 22; // full model inside this distance, the light one beyond it
+const MAX_INSTANCES = 720;
+const NEAR_LOD = 16; // full model inside this distance, the light one beyond it, for anyone seated
 
 interface Clip {
   from: number;
@@ -29,7 +30,8 @@ interface CrowdType {
   id: CharacterId;
   clips: Map<Pose, Clip>;
   manager: BakedVertexAnimationManager;
-  lods: LodSet[];
+  /** One pair of models, near and far, for each outfit. */
+  outfits: LodSet[][];
   hipHeight: number;
 }
 
@@ -80,21 +82,27 @@ export class Crowd {
     manager.texture = texture;
     const hipHeight = rig.hipHeight;
     const material = mesh.material as PBRMaterial;
-    const lods: LodSet[] = [];
-    for (const lod of [0, 1] as const) {
+    const outfits: LodSet[][] = [];
+    for (let outfit = 0; outfit < outfitsOf(id); outfit++) {
+      const lods: LodSet[] = [];
+      outfits.push(lods);
+      for (const lod of [0, 1] as const) {
       const container = characterContainer(id, lod);
       if (!container) continue;
       const entries = container.instantiateModelsToScene((n) => n, false, { doNotInstantiate: true });
       const root = entries.rootNodes[0];
       const skinned = root.getChildMeshes().find((m) => m.getTotalVertices() > 0) as Mesh;
       skinned.setParent(null);
+      // Thin instances live on the geometry, so every outfit needs its own copy.
+      if (outfit > 0) skinned.makeGeometryUnique();
       skinned.position.setAll(0);
       skinned.rotationQuaternion = null;
       skinned.rotation.setAll(0);
       skinned.scaling.setAll(1);
       skinned.isPickable = false;
-      skinned.receiveShadows = lod === 0;
-      skinned.material = material;
+      // Both models, or someone walking out of a building's shade changes brightness as the model swaps.
+      skinned.receiveShadows = true;
+      skinned.material = outfitMaterial(id, outfit, material, this.scene);
       skinned.bakedVertexAnimationManager = manager;
       skinned.alwaysSelectAsActiveMesh = true;
       // The mirror in each instance matrix reverses triangle winding, so tell the renderer.
@@ -109,9 +117,10 @@ export class Crowd {
       lods.push({ mesh: skinned, matrices, settings, count: 0 });
       if (lod === 0) this.shadow(skinned);
       root.setEnabled(false);
+      }
     }
     rig.dispose();
-    return { id, clips, manager, lods, hipHeight };
+    return { id, clips, manager, outfits, hipHeight };
   }
 
   hipHeightOf(id: CharacterId): number {
@@ -123,16 +132,30 @@ export class Crowd {
     this.time += dt;
     for (const t of this.types.values()) {
       t.manager.time = this.time;
-      for (const l of t.lods) l.count = 0;
+      for (const lods of t.outfits) for (const l of lods) l.count = 0;
     }
   }
 
-  private write(id: CharacterId, pose: Pose, distance: number, rate: number, offset: number): { lod: LodSet; i: number } | null {
+  /** Where in its loop a bulk-drawn pose is right now, 0..1, for handing over to a live character. */
+  cycleOf(pose: Pose, rate: number, offset: number): number {
+    const f = (this.time * rate) / POSE_PERIOD[pose] + offset;
+    return f - Math.floor(f);
+  }
+
+  /** The offset that makes a bulk-drawn pose carry on from this point of its loop. */
+  offsetFor(pose: Pose, rate: number, cycle: number): number {
+    const f = cycle - (this.time * rate) / POSE_PERIOD[pose];
+    return f - Math.floor(f);
+  }
+
+  private write(id: CharacterId, pose: Pose, near: boolean, rate: number, offset: number, outfit: number): { lod: LodSet; i: number } | null {
     const t = this.types.get(id);
     if (!t) return null;
     const clip = t.clips.get(pose) ?? t.clips.get("stand");
     if (!clip) return null;
-    const lod = t.lods[distance < NEAR_LOD || t.lods.length === 1 ? 0 : 1];
+    // Past the near model nobody can tell one shirt from another, and each set is another draw call.
+    const lods = near ? t.outfits[outfit] ?? t.outfits[0] : t.outfits[0];
+    const lod = lods[near || lods.length === 1 ? 0 : 1];
     if (lod.count >= MAX_INSTANCES) return null;
     const i = lod.count++;
     const s = lod.settings;
@@ -145,22 +168,22 @@ export class Crowd {
 
   /** Someone standing or walking: position and heading only. `rate` scales the clip speed, and
    *  `offset` (0..1) spreads people through the cycle so a crowd doesn't march in step. */
-  add(id: CharacterId, x: number, y: number, z: number, yaw: number, pose: Pose, distance: number, rate = 1, offset = 0): void {
-    const w = this.write(id, pose, distance, rate, offset);
+  add(id: CharacterId, x: number, y: number, z: number, yaw: number, pose: Pose, near: boolean, rate = 1, offset = 0, size = 1, outfit = 0): void {
+    const w = this.write(id, pose, near, rate, offset, outfit);
     if (!w) return;
     const m = w.lod.matrices;
     const b = w.i * 16;
-    const c = Math.cos(yaw), s = Math.sin(yaw);
-    // Mirror, then yaw, then position, written out directly because this runs for every person.
+    const c = Math.cos(yaw) * size, s = Math.sin(yaw) * size;
+    // Mirror, then size and yaw, then position, written out directly because this runs for every person.
     m[b] = -c; m[b + 1] = 0; m[b + 2] = s; m[b + 3] = 0;
-    m[b + 4] = 0; m[b + 5] = 1; m[b + 6] = 0; m[b + 7] = 0;
+    m[b + 4] = 0; m[b + 5] = size; m[b + 6] = 0; m[b + 7] = 0;
     m[b + 8] = s; m[b + 9] = 0; m[b + 10] = c; m[b + 11] = 0;
     m[b + 12] = x; m[b + 13] = y; m[b + 14] = z; m[b + 15] = 1;
   }
 
   /** Someone sitting in a vehicle. `world` is the seat's full transform, so riders lean with a bike. */
-  addSeated(id: CharacterId, world: Matrix, pose: Pose, distance: number, rate = 1, offset = 0): void {
-    const w = this.write(id, pose, distance, rate, offset);
+  addSeated(id: CharacterId, world: Matrix, pose: Pose, distance: number, rate = 1, offset = 0, outfit = 0): void {
+    const w = this.write(id, pose, distance < NEAR_LOD, rate, offset, outfit);
     if (!w) return;
     this.mirror.multiplyToRef(world, this.mirrored);
     this.mirrored.copyToArray(w.lod.matrices, w.i * 16);
@@ -168,13 +191,15 @@ export class Crowd {
 
   end(): void {
     for (const t of this.types.values()) {
-      for (const l of t.lods) {
-        const on = l.count > 0;
-        if (l.mesh.isEnabled() !== on) l.mesh.setEnabled(on);
-        l.mesh.thinInstanceCount = l.count;
-        if (on) {
-          l.mesh.thinInstanceBufferUpdated("matrix");
-          l.mesh.thinInstanceBufferUpdated("bakedVertexAnimationSettingsInstanced");
+      for (const lods of t.outfits) {
+        for (const l of lods) {
+          const on = l.count > 0;
+          if (l.mesh.isEnabled() !== on) l.mesh.setEnabled(on);
+          l.mesh.thinInstanceCount = l.count;
+          if (on) {
+            l.mesh.thinInstanceBufferUpdated("matrix");
+            l.mesh.thinInstanceBufferUpdated("bakedVertexAnimationSettingsInstanced");
+          }
         }
       }
     }
@@ -182,7 +207,7 @@ export class Crowd {
 
   get drawn(): number {
     let n = 0;
-    for (const t of this.types.values()) for (const l of t.lods) n += l.count;
+    for (const t of this.types.values()) for (const lods of t.outfits) for (const l of lods) n += l.count;
     return n;
   }
 }

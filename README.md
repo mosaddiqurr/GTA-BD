@@ -1,8 +1,12 @@
 # বাংলাদেশ ওপেন ওয়ার্ল্ড (Bangladesh Open World)
 
-A non-violent, third-person open-world browser game set in Mirpur 10, Dhaka, with a Bangla-first interface and a cast of faceless fruit people. This is the first version: free roaming, every vehicle driveable, live traffic, traffic lights and traffic police. Cybersecurity and scam-awareness missions come in later versions.
+A non-violent, third-person open-world browser game set in Dhaka, with a Bangla-first interface and a cast of faceless fruit people. You can play in Mirpur 10, Gulshan and Dhanmondi, and travel between them by road, bus, CNG, taxi or metro. Every vehicle can be driven, and there's live traffic, traffic lights, traffic police, shops and money. Cybersecurity and scam-awareness missions come in later versions.
 
-The city is an original, compressed approximation inspired by Mirpur 10. It is not survey data.
+The districts are original, compressed approximations inspired by the real places. They are not survey data.
+
+## What's in it
+
+Three districts of about 1.7 km each (Mirpur 10, Gulshan, Dhanmondi), joined by road, bus and metro. Drive anything except the police's, on real tyres with real weight. Walk into shops, a mall, restaurants, a clinic, a bank, your own flat. Haggle in the market, book a ride on your phone, get a fine and pay it at the station, get caught in the rain. Choose one of five people to be. No weapons, no fighting, nobody ever hurt.
 
 ## Run it
 
@@ -29,18 +33,69 @@ Browsers often pick the weak integrated GPU, which holds the game to about 30 FP
 | W A S D or arrows | Walk or drive |
 | Shift | Run |
 | Space | Jump; handbrake in a vehicle |
-| F | Get in and drive any vehicle, or get out. While riding, ask the driver to stop |
-| G | Ride as a passenger in a vehicle someone else is driving |
+| F | Get in and drive any vehicle, or get out. While riding, ask the driver to stop. On a platform, board the train |
+| G | Ride as a passenger: agree a place and a fare on a CNG, rickshaw or taxi, or tell the bus conductor where you're getting off |
 | V | Choose any vehicle and paint job, and have it brought to you |
-| E | Talk to people; have tea at a tea stall |
+| M | Big map of the district. Click to mark a place; see how to reach the other districts |
+| E | Talk to anyone, buy from a shop or cart, sit down at a tea stall, buy a metro ticket, or look at a landmark. Confirms a menu choice |
+| Q | Call a rickshaw, CNG or taxi to you, or ask about a bus |
+| 1 to 9 | Pick from a menu; or use the wheel or arrow keys, then E |
 | H | Horn or rickshaw bell |
 | Mouse | Look around (click the game to capture the mouse) |
 | Mouse wheel, C | Camera distance |
-| T | Change the time of day |
+| T | Jump to the next time of day; the clock also runs by itself |
 | R | Return to the safe spawn point |
 | Esc | Pause and settings |
 
 ## What is in this version
+
+New in 0.6:
+
+- Two more districts, Gulshan and Dhanmondi, and real ways to get between all three: drive out on the right road, hire a CNG or taxi, find one of the few buses that go there, or take the metro between Mirpur 10 and Shahbagh
+- Walk over the footbridge and up into the metro station. Buy a ticket and ride the train
+- A flyover on Mirpur Road, used by traffic and by you
+- Money, shopkeepers and things to buy, carried over between districts
+- Boys playing cricket and football, plus a school and a university in each district
+- Three outfits per character, and people of different heights
+- A much better map, with a mark you can place by clicking
+- Q now asks what to call, and rickshaws, CNGs and taxis drive to you
+- Far more traffic at full, drivers who shout and go round you, solid shop fronts, and no more getting squeezed into vehicles
+
+New in 0.5:
+
+- Much bigger crowds: the people and vehicle sliders go about twice as far, up to about 1,140 people and 270 vehicles around you
+- Free AI Bangla voices with six male voice types, in the game's own files, so they work in any browser
+- Separate volumes for voices, surroundings, vehicles and other sounds, plus mute and subtitles on or off
+- Hire a CNG or rickshaw: pick a place, hear the fare, haggle, and it drives you there by road
+- On a bus, the conductor asks where you're getting off and tells you when you're there
+- People climb the bus steps one at a time, and conductors call the route
+- Drivers have tempers: some speed, they overtake, bikes thread through queues
+- Crashes are real knocks: vehicles are pushed by weight and swing round, with dust and sparks, and people hop aside
+- Steadier driving and less jitter on people's legs
+
+New in 0.4:
+
+- Only male voices: the game picks the browser's male Bangla voice, and shows text alone if there is none
+- Talk to anyone with a menu of choices, with lines above their heads and an answer that depends on who they are
+- Ask the way: they point, and a marker appears on the map and on screen
+- Pull doors open by hand on the car, microbus, truck, CNG and bus, and pull them shut after you
+- Crashes get a reaction: the other vehicle rocks and is pushed, carts slide, drivers shout or climb out, people turn, police whistle
+- Sit down at a tea stall: order, drink against a timer, talk to whoever is alongside, or hurry up and leave
+- People stop to chat with one another, go and look at stalls, and stall owners call out
+- Look at landmarks, and wave down a CNG or rickshaw
+
+New in 0.3:
+
+- No more character flicker; vehicles sit level, with realistic pitch and roll
+- Drivers' hands on the real wheel or handlebars, on every vehicle
+- Solid carts, stalls and people; people walk both ways, keep left and step aside, and react when bumped
+- Traffic stays off the footpath
+- Overhead traffic signals you can see from down the street, and traffic police at every signalled junction
+- The clock runs through a full day and night, and nights are easier to see in
+- Big map on M; settings for how many people and vehicles, and how fast the day passes
+- Only some people wear glasses; others have a plain fruit face
+
+See [docs/ROADMAP.md](docs/ROADMAP.md) for what comes next.
 
 New in 0.2:
 

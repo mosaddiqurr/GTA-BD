@@ -1,0 +1,257 @@
+import type { FriendDef } from "../types";
+
+export const HASAN: FriendDef = {
+  key: "hasan",
+  name: ["হাসান", "Hasan"],
+  id: "npc_worker_jackfruit",
+  region: "dhaka_mirpur10",
+  hangout: "market",
+  bio: ["ছোট একটা গ্যারেজ চালায়, সারা গায়ে তেল, আর হাত সবসময় খোলা।", "Runs a tiny garage, covered in oil, and his hand is always open."],
+  firstMeet: [
+    ["o", ["আরে দাঁড়ান, আওয়াজ শুনেই বুঝি আপনার ইঞ্জিন খালি চলছে। খাননি, তাই না?", "Hold on, I can hear it from here, your engine's running empty. You haven't eaten, have you?"]],
+    ["h", ["আওয়াজ মানে?", "What noise?"]],
+    ["o", ["পেটের কথা বলছি। এই নিন মুড়ি আর গুড়, না না, টাকার কথা তুলবেন না।", "Your stomach, I mean. Here, puffed rice and molasses. No, no, don't bring up money."]],
+    ["o", ["আমি হাসান, গ্যারেজটা আমার, মানে ভাড়ার। তেলটা আমার, সেটা গায়ে দেখতেই পাচ্ছেন।", "I'm Hasan. The garage is mine, I mean rented. The oil is mine, as you can see all over me."]],
+    ["h", ["হাতে তেল লেগে গেল।", "Now there's oil on my hand."]],
+    ["o", ["হ্যাঁ, এখন আপনিও এই মহল্লার লোক। এই তেল সাবানে যায় না, স্মৃতি থেকেও না।", "Yes, now you're from this neighbourhood too. This oil doesn't come off with soap, or out of the memory."]],
+    ["o", ["ভ্যান হোক, গাড়ি হোক, কিছু নষ্ট হলে নিয়ে আসবেন। চা আমার, ঠিক করাটা পরে দেখা যাবে।", "Van or car, if anything breaks bring it in. The tea's on me, and the fixing we'll see about later."]],
+  ],
+  smallTalk: [
+    ["খেয়েছ? না খেলে বসো, ভাত আছে, চেয়ারটা শুধু একটু তেলতেলে।", "Have you eaten? If not, sit. There's rice, and the chair's just a bit oily."],
+    ["আজ এক বুড়ো ভ্যানওয়ালার চেইন ঠিক করে দিলাম। টাকা দিতে চাইল, আমি কানে হাত দিলাম।", "I fixed an old van puller's chain today. He tried to pay, and I covered my ears."],
+    ["রোকসানা বলে, গ্যারেজ না, তুমি দানশালা চালাও। ও হিসাবটা জানে, তাই বলে।", "Roksana says I don't run a garage, I run a charity. She's seen the accounts, that's why."],
+    ["ইঞ্জিন কখনো মিথ্যা বলে না, আওয়াজেই বোঝা যায়। মানুষের এমন একটা আওয়াজ থাকলে ভালো হতো।", "An engine never lies, you can hear it. It'd be nice if people made that kind of noise."],
+    ["এই শার্টটা আগে নীল ছিল। এখন এর রং আমি নিজেও জানি না।", "This shirt used to be blue. Now even I don't know what colour it is."],
+    ["নকল পার্টসে দাম কম, ঠিকই। কিন্তু রাস্তায় থামলে ওই সস্তাটাই তোমাকে ঠেলতে বলবে।", "Fake parts are cheap, sure. But when you stop on the road, that cheapness will ask you to push."],
+    ["রেঞ্চটা কোথায় রাখলাম? কাল পাইনি, আজও না, হাতেই ছিল।", "Where did I put the wrench? Couldn't find it yesterday, can't today. It was in my hand."],
+    ["বৃষ্টি হলে গ্যারেজে পানি ঢোকে। তখন আমি মেকানিক না, মাঝি।", "When it rains the water comes into the garage. Then I'm not a mechanic, I'm a boatman."],
+    ["গরমে টিনের চালের নিচে কাজ করলে তেল আর ঘাম আলাদা করা যায় না।", "Working under a tin roof in this heat, you can't tell oil from sweat."],
+    ["লোকে বলে আমার হাত ময়লা। হাত ময়লা হোক, টাকাটা তো পরিষ্কার।", "People say my hands are dirty. Let them be. The money's clean."],
+    ["শোনো, কেউ যদি বলে অর্ধেক দামে ইঞ্জিন তেল, আগে ড্রামের সিলটা দেখো।", "Listen, if anyone offers engine oil at half price, first look at the seal on the drum."],
+    ["পাশের দোকানের কাশেম আমার কাছে তিনশো পায়, আমি পাই পাঁচশো। দুজনেই নিজেকে ধনী ভাবি।", "Kashem next door is owed three hundred by me and owes me five hundred. We both feel rich."],
+    ["বাজারে যাচ্ছ? শাক নিয়ো ওই কোণার বুড়ির কাছ থেকে, দাম কম, মন ভালো।", "Going to the market? Get greens from the old woman in the corner. Low prices, good heart."],
+    ["একটা নতুন ক্লাচ প্লেট দেখলে আমার মন ভালো হয়ে যায়। রোকসানা এটা বোঝে না।", "A new clutch plate cheers me right up. Roksana doesn't understand this."],
+    ["চা খাও, চিনি বেশি দিয়েছি। শরীরে তেল যেমন লাগে, চিনিও লাগে।", "Have some tea, I've added extra sugar. The body needs sugar the way it needs oil."],
+    ["সাগরেদ ছেলেটা আজ স্ক্রু গুনে দিল, বারোটাকে পনেরোটা। ভবিষ্যৎ ব্যবসায়ী।", "My apprentice counted the screws today and made twelve into fifteen. A future businessman."],
+    ["কিছু না, কিছু না, এটা কিছুই না। এই কথা বলতে বলতে আমার দোকান ভাড়া বাকি পড়ে।", "It's nothing, nothing at all. Saying that is how my shop rent falls behind."],
+    ["গাড়ি আনলে আমি আগে কান পাতি, পরে হাত দিই। ডাক্তারও তো তাই করে।", "When a car comes in I listen first and touch it later. Doctors do the same."],
+    ["তোমার কাছে পাঁচ টাকা আছে? না থাক, এমনি জিজ্ঞেস করলাম, খেয়েছ তো?", "Got five taka on you? No, I don't need it, just asking. Have you eaten?"],
+  ],
+  teaTalks: [
+    [
+      ["o", ["বসো, বসো। এই চুলায় চা হয়, তাই একটু তেলের গন্ধ পাবে, ওটা আমাদের বিশেষত্ব।", "Sit, sit. The tea's made on this stove, so you'll get a little whiff of oil. That's our speciality."]],
+      ["h", ["গন্ধ তো পাচ্ছি।", "I can smell it all right."]],
+      ["o", ["খাও, কিছু হবে না। আমি বিশ বছর খাচ্ছি, দেখো, ইঞ্জিন এখনো চলে।", "Drink up, you'll be fine. I've had it for twenty years, and look, the engine still runs."]],
+      ["o", ["এই গ্যারেজে চেয়ার একটা, অতিথি দশজন। কাজ কম, গল্প বেশি, টাকা আরও কম।", "One chair in this garage, ten guests. Little work, lots of talk, even less money."]],
+      ["o", ["তুমি বলছি, কিছু মনে করো না। তেল লেগে গেলে আর কেউ পর থাকে না।", "I'm dropping the formal you, don't mind me. Once the oil's on you, nobody's a stranger."]],
+    ],
+    [
+      ["o", ["বারো বছর বয়সে এই লাইনে এলাম। ওস্তাদের গ্যারেজে প্রথম কাজ ছিল চা আনা।", "I came into this line at twelve. My first job in my master's garage was fetching tea."]],
+      ["o", ["ছয় মাস শুধু চা আনলাম, নাট ধুলাম। ভাবতাম, মেকানিক মানে কাপ ধোয়া।", "Six months of just tea and washing nuts. I thought being a mechanic meant washing cups."]],
+      ["h", ["ইঞ্জিনে হাত পড়ল কবে?", "When did you get to touch an engine?"]],
+      ["o", ["এক বছর পরে। ওস্তাদ বলল, হাত না, আগে কান, চোখ বন্ধ করে আওয়াজ শোন।", "After a year. My master said: not hands, ears first. Close your eyes and listen."]],
+      ["o", ["তিন মাস শুধু শুনলাম। একদিন বললাম, এই গাড়ির বাম দিকে কী যেন কাশছে, ওস্তাদ হাসল।", "Three months of only listening. One day I said something on the left of this car is coughing, and he laughed."]],
+      ["o", ["মানুষের কথা বোঝার চেয়ে ইঞ্জিনের কথা বোঝা সহজ। ইঞ্জিন কিছু লুকায় না, শুধু তেল চায়।", "Engines are easier to understand than people. An engine hides nothing, it only wants oil."]],
+    ],
+    [
+      ["o", ["গত ঈদের আগে এক রিকশাওয়ালা এসে বলল, চাকা নষ্ট, টাকা নেই, বাড়ি যাব।", "Before last Eid a rickshaw puller came in and said: the wheel's gone, no money, I need to get home."]],
+      ["h", ["কী করা হলো?", "What did you do?"]],
+      ["o", ["নতুন টিউব দিলাম, ব্রেক দেখলাম, হাতে পঞ্চাশ টাকা দিলাম। রোকসানার ঈদের টাকা থেকে।", "A new tube, a look at the brakes and fifty taka in his hand. All from Roksana's Eid money."]],
+      ["o", ["রাতে রোকসানা জিজ্ঞেস করল, টাকা কই। আমি বললাম, মানুষের মধ্যে আছে।", "That night Roksana asked where the money was. I said: it's among the people."]],
+      ["o", ["তিন দিন ও কথা বলেনি। চতুর্থ দিন ভাত বেড়ে বলল, ওই লোকটা বাড়ি পৌঁছেছে তো?", "Three days she didn't speak. On the fourth she served the rice and said: did that man get home?"]],
+      ["o", ["এই মানুষকে নিয়ে আমি সংসার করি, বুঝলে। হিসাব ওর ভালো, মন আমার মতোই।", "That's who I share my life with, you see. Better at sums than me, but the same heart."]],
+    ],
+    [
+      ["o", ["এক লোক গাড়ি আনল, ব্রেক প্যাড বদলাবে। বলল, নিজেই কিনে এনেছি, অর্ধেক দামে।", "A man brought his car in for new brake pads. He said he'd bought them himself, at half price."]],
+      ["o", ["প্যাকেট সুন্দর, কিন্তু ওজনে হালকা। বললাম, এটা আমি লাগাব না।", "The packet was lovely, but too light in the hand. I told him I wouldn't fit those."]],
+      ["h", ["লোকটা রাগল?", "Did he get angry?"]],
+      ["o", ["রেগে অন্য গ্যারেজে গেল। দুই দিন পর ফিরে এলো, গাড়ি ঠেলতে ঠেলতে।", "He went off to another garage in a huff. Two days later he came back, pushing the car."]],
+      ["o", ["বললাম, দেখলেন, অর্ধেক দাম মানে অর্ধেক ব্রেক। তবু মজুরি নিলাম না, দেখে মায়া হলো।", "I said: you see, half the price means half the brake. I still didn't charge him. I felt sorry for him."]],
+      ["o", ["রোকসানা শুনলে আবার কথা বন্ধ করবে। এটা শুধু তুমি আর আমি জানি।", "If Roksana hears she'll stop talking again. This stays between you and me."]],
+    ],
+    [
+      ["o", ["আমরা থাকি এগারো নম্বরে, টিনের ঘর। এক ছেলে এক মেয়ে, দুজনেই মায়ের মতো গোনে।", "We live at Number Eleven in a tin house. One boy, one girl, and both count like their mother."]],
+      ["o", ["ছেলেটা ক্লাস সেভেনে। একদিন বলল, আব্বা, এই হাত নিয়ে স্কুলে এসো না।", "My son's in class seven. One day he said: Abba, don't come to school with those hands."]],
+      ["h", ["কষ্ট লাগেনি?", "Didn't that hurt?"]],
+      ["o", ["লেগেছিল। এক রাতে এক ঘণ্টা সাবান ঘষলাম, তেল তো চামড়ার ভেতরে চলে গেছে।", "It did. I scrubbed with soap for an hour one night. The oil's gone in under the skin."]],
+      ["o", ["পরদিন রোকসানা ওকে বলল, তোর স্কুলের বেতন এই হাত থেকেই আসে।", "Next day Roksana told him: your school fees come out of those hands."]],
+      ["o", ["এখন ছেলেটা মাঝে মাঝে গ্যারেজে এসে বসে। একদিন আমার হাতে নিজের হাত মিলিয়ে দেখল।", "Now he sometimes comes and sits in the garage. One day he put his hand against mine, to compare."]],
+    ],
+    [
+      ["o", ["গ্যারেজের ভাড়া তিন মাস বাকি। মালিক ভালো মানুষ, তাই লজ্জা বেশি লাগে।", "The garage rent is three months behind. The owner's a good man, so the shame is worse."]],
+      ["o", ["আমার পাওনা আটত্রিশ হাজার টাকা, সবার কাছে অল্প অল্প। চাইতে গেলে কথা আসে না।", "I'm owed thirty-eight thousand, a little from everyone. When I go to ask, the words won't come."]],
+      ["h", ["চাওয়া কঠিন?", "Hard to ask?"]],
+      ["o", ["যাকে দিয়েছি, তার বাড়িতে রোগী আছে, ছেলের পরীক্ষা আছে। আমি কীভাবে বলি?", "The people I've given to have someone sick at home, a son with exams. How do I say it?"]],
+      ["o", ["রোকসানা একটা খাতা বানিয়েছে। আমি চুপ করে লিখি, আর পাতাটা উল্টে রাখি।", "Roksana's made a ledger. I quietly write it down and turn the page over."]],
+      ["o", ["রাতে টিনের চালে বৃষ্টি পড়ে, আমি ভাবি, ঘরের ফুটো আগে, না গ্যারেজের ভাড়া।", "At night the rain hits the tin roof and I wonder which comes first, the leak or the garage rent."]],
+    ],
+    [
+      ["o", ["বড় ঠকা ঠকেছি একবার, নিজের দোষে। এক ভদ্রলোক এলো, পরিষ্কার শার্ট, মিষ্টি কথা।", "I got badly cheated once, my own fault. A gentleman came in, clean shirt, sweet talk."]],
+      ["o", ["বলল, কোম্পানি থেকে সরাসরি ইঞ্জিন তেল আনে, অর্ধেক দামে। আগাম চল্লিশ হাজার দিলে ড্রাম আসবে।", "He said he got engine oil direct from the company at half price. Forty thousand up front and the drums would come."]],
+      ["o", ["সমিতি থেকে ধার নিলাম। ওকে চা খাওয়ালাম, ভাত খাওয়ালাম, ওর ছেলের জন্য খেলনা দিলাম।", "I borrowed from the society. I gave him tea, gave him rice, gave him a toy for his son."]],
+      ["h", ["ড্রাম এলো?", "Did the drums come?"]],
+      ["o", ["এলো দুইটা, সিলও ছিল। ভেতরে পোড়া তেল আর পানি।", "Two came, seals and all. Inside, burnt oil and water."]],
+      ["o", ["নম্বর বন্ধ, কিস্তি এখনো চলছে। আমাকে যেটা খায় তা টাকা না, ওকে খাওয়ানো ওই ভাত।", "His number's dead and I'm still paying instalments. What eats at me isn't the money, it's that rice I fed him."]],
+      ["o", ["তবু আমি ভাত খাওয়াই। শুধু এখন আগে ড্রাম খুলি, পরে ভাত।", "I still feed people. Only now I open the drum first, and then the rice."]],
+    ],
+    [
+      ["o", ["কেন সবাইকে খাওয়াই, জানতে চাও? বারো বছর বয়সে না খেয়ে গাবতলীতে নেমেছিলাম।", "Want to know why I feed everyone? At twelve I got off at Gabtoli with an empty stomach."]],
+      ["o", ["আমার বাবা ছিল না, মা গ্রামে, দুই দিন কিছু খাইনি। এক গ্যারেজের সামনে বসে পড়লাম।", "My father was gone, my mother in the village, two days without food. I sat down in front of a garage."]],
+      ["o", ["একটা তেলমাখা হাত ভাতের থালা বাড়িয়ে দিল, কিছু জিজ্ঞেস করল না। সেই আমার ওস্তাদ।", "An oily hand held out a plate of rice and asked no questions. That was my master."]],
+      ["h", ["ওনার খবর কী?", "How is he now?"]],
+      ["o", ["চলে গেছেন ছয় বছর আগে। ধারে ছিলেন, তবু জানাজায় মিরপুরের সব রিকশাওয়ালা এসেছিল।", "He passed away six years ago, deep in debt. Every rickshaw puller in Mirpur came to his funeral."]],
+      ["o", ["আমি চাই একটা বড় গ্যারেজ, সাইনবোর্ডে ওনার নাম। দশজন না খাওয়া মানুষ কাজ শিখবে, আগে ভাত।", "I want a big garage with his name on the sign. Ten hungry people will learn the trade, rice first."]],
+      ["o", ["টাকার হিসাবে আমি গরিবই থাকব, জানি। কিন্তু ভাতের থালাটা আমি থামতে দেব না।", "In money I'll stay poor, I know. But I won't let that plate of rice stop."]],
+    ],
+  ],
+  callHello: [
+    ["হ্যাঁ বলো, হাতে তেল, ফোনটা কাঁধে ধরে আছি। খেয়েছ তো?", "Yes, go on. Oily hands, phone on my shoulder. You've eaten, I hope?"],
+    ["আরে, তুমি! এক মিনিট, রেঞ্চটা রেখে আসি।", "Oh, it's you! One minute, let me put the wrench down."],
+    ["হাসান বলছি। আওয়াজটা গাড়ির, আমি ঠিক আছি।", "Hasan here. That noise is the car, I'm fine."],
+    ["কিছু নষ্ট হয়েছে, নাকি এমনিতে? এমনিতে হলে আরও ভালো।", "Is something broken, or just calling? Just calling is even better."],
+    ["ফোন করেছ, খুশি হলাম। কিছু লাগলে বলো, না লাগলেও বলো।", "You called, I'm glad. Tell me if you need anything, and tell me if you don't."],
+  ],
+  callBusy: [
+    ["গাড়ির নিচে শুয়ে আছি, মাথার ওপর গ্রিজ পড়ছে। পরে ফোন দিই?", "I'm lying under a car with grease falling on my head. Can I ring later?"],
+    ["এক বুড়ো মানুষের ভ্যান ঠিক করছি, উনি গল্প শুরু করেছেন। থামলে ফোন করব।", "I'm fixing an old man's van and he's started a story. I'll ring when he stops."],
+    ["এখন দুই হাতেই তেল, ফোনটা হাঁটু দিয়ে ধরেছি। রাখি।", "Both hands are oily and I'm holding the phone with my knee. Got to go."],
+    ["মালিক ভাড়ার কথা বলতে এসেছেন। আমি খুব ব্যস্ত হওয়ার ভান করছি।", "The owner's here to talk about the rent. I'm pretending to be very busy."],
+  ],
+  callYes: [
+    ["চা? চলে এসো, এখানেই বানাচ্ছি, না থাক, আমিই আসছি।", "Tea? Come over, I'll make it here. No, wait, I'll come to you."],
+    ["আসছি। হাত ধুয়ে আসব, মানে চেষ্টা করব।", "Coming. I'll wash my hands first. That is, I'll try."],
+    ["এই তো কাজ শেষ। বলো কোথায়, বিল কিন্তু আমি দেব, কোনো কথা না।", "Just finished. Tell me where, and the bill's mine, no arguing."],
+    ["খেয়েছ? না খেলে রোকসানার হাতের পরোটা নিয়ে আসছি।", "Have you eaten? If not, I'm bringing Roksana's parathas."],
+  ],
+  theyCall: [
+    {
+      key: "hasan_call_lunch",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["রোকসানা আজ খিচুড়ি রেঁধেছে, পুরো মহল্লার মতো। চলে এসো, না এলে ও আমাকে দোষ দেবে।", "Roksana's made khichuri today, enough for the whole neighbourhood. Come over, or she'll blame me."],
+          options: [
+            { text: ["আসছি, খিদে পেয়েছে।", "Coming, I'm hungry."], go: "yes", out: { rep: 2 } },
+            { text: ["আজ পারছি না।", "I can't today."], go: "no" },
+          ],
+        },
+        yes: { who: "o", say: ["এই তো, থালা ধুয়ে রাখছি! তেল লাগা থালাটা তোমাকে দেব না, কথা দিলাম।", "That's it! I'm washing a plate. You won't get the oily one, I promise."] },
+        no: { who: "o", say: ["আচ্ছা, তোমার ভাগেরটা বাটিতে তুলে রাখব। কাল নিয়ে যাবে, না বলো না।", "All right, I'll keep your share in a bowl. Take it tomorrow, and don't say no."] },
+      },
+    },
+    {
+      key: "hasan_call_oil",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["এক পেজে দেখছি, ইঞ্জিন তেল অর্ধেক দামে, আগাম ঝটপট টাকায় দিলেই বাড়িতে আসবে। কিনব নাকি?", "I'm looking at a page: engine oil at half price, delivered home if you pay up front on Jhotpot Taka. Should I buy?"],
+          options: [
+            { text: ["আগাম টাকা দেওয়া যাবে না।", "Don't pay anything up front."], go: "no", out: { sense: 2, rep: 1, lesson: ["অর্ধেক দাম আর আগাম টাকা একসাথে এলে আগে জিনিস চোখে দেখুন, পরে টাকা।", "When half price and payment up front come together, see the goods first and pay after."] } },
+            { text: ["কিনে দেখা যায়।", "You could try buying it."], go: "buy", out: { sense: 1 } },
+          ],
+        },
+        no: { who: "o", say: ["ঠিক বলেছ। হাত নিশপিশ করছিল, তাই তোমাকে ফোন করলাম যেন তুমি না বলো।", "You're right. My hands were itching, so I called you so that you'd say no."] },
+        buy: { who: "o", say: ["তাই? রোকসানা ঠিক উল্টোটা বলছে, আর আগের সেই ড্রাম দুটো এখনো উঠানে আছে।", "Really? Roksana says the exact opposite, and those two old drums are still in the yard."] },
+      },
+    },
+    {
+      key: "hasan_call_rent",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["বলতে লজ্জা লাগছে, ভাড়ার পাঁচশো টাকা কম পড়েছে, মালিক আজ আসবে। না পারলেও কিছু না।", "I'm ashamed to say it. I'm five hundred short on the rent and the owner's coming today. It's fine if you can't."],
+          options: [
+            { text: ["পাঁচশোই দিচ্ছি।", "I'll give you the five hundred."], go: "full", out: { money: -500, rep: 4 } },
+            { text: ["দুইশো দিতে পারি।", "I can do two hundred."], go: "part", out: { money: -200, rep: 2 } },
+            { text: ["এখন হাতে নেই।", "I don't have it right now."], go: "none" },
+          ],
+        },
+        full: { who: "o", say: ["তুমি জানো না কত বড় কাজ করলে। টাকাটা ফিরবে, আর তোমার সব মেরামত ফ্রি, যতদিন বাঁচি।", "You don't know what you've done. The money will come back, and your repairs are free for as long as I live."] },
+        part: { who: "o", say: ["দুইশোই অনেক। বাকিটা ওই রিকশাওয়ালা আজ দিয়ে গেছে, দেখো কাণ্ড, এক বছর পরে।", "Two hundred's plenty. That rickshaw puller paid the rest today, can you believe it, a year later."] },
+        none: { who: "o", say: ["আরে না না, সত্যি কিছু না, বলে ফেললাম। খেয়েছ তো?", "No, no, really, it's nothing, it just slipped out. You've eaten, I hope?"] },
+      },
+    },
+    {
+      key: "hasan_call_relative",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["এক লোক বলছে সে ওস্তাদের ছেলে, গাবতলীতে আটকা, দুই হাজার চাই। পাঠিয়ে দিই?", "A man says he's my old master's son, stranded at Gabtoli and needs two thousand. Shall I send it?"],
+          options: [
+            { text: ["আগে আসল নম্বরে ফোন দরকার।", "Ring his real number first."], go: "check", out: { sense: 2, rep: 2, lesson: ["চেনা নাম দিয়ে টাকা চাইলে ফোন রেখে আগের চেনা নম্বরে যাচাই করুন।", "If someone uses a known name to ask for money, hang up and check on the number you already know."] } },
+            { text: ["আটকে আছে যখন, পাঠানো যায়।", "If he's stranded, you could send it."], go: "send", out: { sense: 1, lesson: ["দয়া ভালো, তবে আগে যাচাই। চেনা নম্বরে একটা ফোন দুই হাজার টাকা বাঁচায়।", "Kindness is good, but check first. One call to a known number saves two thousand taka."] } },
+          ],
+        },
+        check: { who: "o", say: ["ঠিক, ওর আসল নম্বর খাতায় ছিল। ও টঙ্গীতে ভাত খাচ্ছে, কিছুই জানে না।", "Right. His real number was in the ledger. He's in Tongi eating rice and knows nothing about it."] },
+        send: { who: "o", say: ["পাঠিয়ে তারপর আসল নম্বরে ফোন দিলাম। ও টঙ্গীতে ভাত খাচ্ছে, কিছুই জানে না।", "I sent it, then rang his real number. He's in Tongi eating rice and knows nothing about it."] },
+      },
+    },
+    {
+      key: "hasan_call_van",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["বাজারের কাছে এক বুড়ো ভ্যানওয়ালা আটকে গেছে। আমি গাড়ির নিচে, তুমি একটু ঠেলে দিয়ে আসবে?", "An old van puller's stuck near the market. I'm under a car. Could you go and give him a push?"],
+          options: [
+            { text: ["যাচ্ছি এখনই।", "Going right now."], go: "yes", out: { rep: 2 } },
+            { text: ["এখন সম্ভব না।", "Not possible right now."], go: "no" },
+          ],
+        },
+        yes: { who: "o", say: ["তুমি ভালো মানুষ। ফিরে এসো, ভাত আছে, তেলও আছে, যেটা লাগে।", "You're a good person. Come back after. There's rice, there's oil, whichever you need."] },
+        no: { who: "o", say: ["আচ্ছা, থাক। আমিই গাড়ির নিচ থেকে বের হয়ে যাই, গ্রিজসহ।", "All right, never mind. I'll come out from under the car myself, grease and all."] },
+      },
+    },
+    {
+      key: "hasan_call_son",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["খবর শোনো! ছেলেটা স্কুলের বিজ্ঞান মেলায় একটা ছোট ইঞ্জিন বানিয়েছে, আর সেটা চলে!", "Listen to this! My boy built a little engine for the school science fair, and it runs!"],
+          options: [
+            { text: ["দারুণ! দেখতে যাব।", "Wonderful! I'll come and see it."], go: "see", out: { rep: 2 } },
+            { text: ["ওর জন্য কিছু একটা কিনি?", "Shall I buy him something?"], go: "gift", out: { money: -80, rep: 3 } },
+          ],
+        },
+        see: { who: "o", say: ["এসো। ও তোমাকে বোঝাবে, আমি পাশে দাঁড়িয়ে না বোঝার ভান করব।", "Come. He'll explain it to you, and I'll stand there pretending not to understand."] },
+        gift: { who: "o", say: ["কিনবে? একটা স্ক্রু ড্রাইভার এনো, আমারটা ও নিয়ে গেছে, আমি খুব খুশিতে রেগে আছি।", "You will? Bring a screwdriver, he's taken mine. I'm extremely happily angry about it."] },
+      },
+    },
+  ],
+  favours: [
+    {
+      kind: "carry",
+      ask: ["এই টিউবটা ওই রিকশা গ্যারেজে দিয়ে আসবে? টাকা দিতে চাইলে নিয়ো না, আমি জানলে রাগ করব।", "Can you take this tube to the rickshaw garage? If they try to pay, don't take it. I'd be cross."],
+      goal: ["টিউবটা চিহ্নিত জায়গায় নিয়ে যাও", "Take the tube to the marked spot"],
+      done: ["টাকা নাওনি তো? সাবাশ, এবার বসো, ভাত খাও।", "You didn't take money, did you? Well done. Now sit down and eat."],
+    },
+    {
+      kind: "message",
+      ask: ["বাজারের ওদিকে এক ভ্যানওয়ালা অপেক্ষা করছে। বলে এসো, চেইন ঠিক হয়ে গেছে, নিয়ে যেতে।", "A van puller's waiting over by the market. Tell him his chain's fixed and to come and get it."],
+      goal: ["ভ্যানওয়ালাকে খবরটা দাও", "Give the van puller the message"],
+      done: ["বলেছ? ও নিশ্চয়ই টাকার কথা তুলেছে, তুলুক, আমি শুনিনি।", "You told him? He'll have brought up money. Let him, I didn't hear it."],
+    },
+    {
+      kind: "find",
+      ask: ["বড় রেঞ্চটা পাচ্ছি না। এদিকেই কোথাও ফেলে এসেছি, ওটা আমার ওস্তাদের দেওয়া।", "I can't find the big wrench. I left it somewhere round here. My master gave it to me."],
+      goal: ["আশেপাশে রেঞ্চটা খুঁজে দেখো", "Look around for the wrench"],
+      done: ["এই তো ওস্তাদের জিনিস! তোমার হাতে তেল লেগে গেল, ওটা ফ্রি।", "There's my master's wrench! You've got oil on your hand now. That's free."],
+    },
+  ],
+  closer: [
+    ["আজ থেকে এই গ্যারেজে তোমার নিজের একটা চায়ের কাপ। তেলতেলে, কিন্তু তোমার।", "From today there's a tea cup of your own in this garage. Oily, but yours."],
+    ["রোকসানা বলল, ওই মানুষটা এলে তুমি বেশি খাও। এটা ওর সবচেয়ে বড় প্রশংসা।", "Roksana says I eat more when you come by. That's the highest praise she gives."],
+    ["তুমি আমার ওস্তাদের কথা শুনেছ। এই কথা যে শোনে, সে আর বাইরের লোক থাকে না।", "You've heard about my master. Whoever hears that isn't an outsider any more."],
+  ],
+  hurt: [
+    ["ভাত বেড়ে রেখেছিলাম। ঠান্ডা হয়ে গেছে, ঠিক আছে, আমিই খেয়ে নিয়েছি।", "I'd served you rice. It went cold. That's fine, I ate it myself."],
+    ["না না, কিছু হয়নি, আমি রাগ করি না। শুধু গ্যারেজটা আজ একটু চুপচাপ।", "No, no, nothing's wrong, I don't get angry. The garage is just a bit quiet today."],
+    ["তুমি আসবে বলে রেঞ্চ নামিয়ে বসে ছিলাম। থাক, কাজও তো ছিল।", "I'd put down the wrench and sat waiting because you said you'd come. Never mind, there was work anyway."],
+    ["ফোন ধরোনি, ভাবলাম কোনো বিপদ হলো নাকি। হয়নি, ভালো কথা।", "You didn't pick up, so I thought something had gone wrong. It hadn't. Good."],
+  ],
+  gift: [
+    ["আমাকে দিচ্ছ? হাত ধুয়ে নিই, না থাক, জিনিসটায় একটু তেল লাগুক।", "For me? Let me wash my hands. No, never mind, let it get a bit of oil on it."],
+    ["এত কিছু কেন, আমি তো কিছুই করিনি। রোকসানাকে দেখাতে হবে।", "Why all this, I haven't done anything. I'll have to show Roksana."],
+    ["কেউ আমাকে কিছু দিলে কী করব বুঝতে পারি না, অভ্যাস নেই।", "When someone gives me something I don't know what to do. I'm not used to it."],
+    ["বসো, খাও, এটার শোধ না দিয়ে তোমাকে যেতে দেব না।", "Sit, eat. I won't let you leave until I've paid you back for this."],
+  ],
+};
