@@ -29,8 +29,8 @@ export class NightLights {
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, s, s);
       const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
-      g.addColorStop(0, "rgb(255,190,110)");
-      g.addColorStop(0.35, "rgb(150,105,58)");
+      g.addColorStop(0, "rgb(255,226,180)");
+      g.addColorStop(0.35, "rgb(140,120,92)");
       g.addColorStop(1, "rgb(0,0,0)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, s, s);
@@ -86,6 +86,8 @@ export class NightLights {
 
     const s = new Geo();
     for (const b of city.frontages) {
+      // Houses behind their walls don't light up the pavement.
+      if (b.plain) continue;
       s.setFrame(b.x, b.z, b.angle);
       // The texture's bright edge goes against the shop wall (v = 0 here).
       s.flat(-b.w / 2, b.w / 2, -3.8, 0, KERB_H + 0.03, true, [0, 1, 1, 0]);
@@ -143,19 +145,28 @@ export class NightLights {
     this.setLevel(0);
   }
 
-  private setLevel(k: number): void {
-    if (k === this.level) return;
+  private setLevel(k: number, force = false): void {
+    if (k === this.level && !force) return;
     this.level = k;
     const on = k > 0.08;
-    this.pools?.setEnabled(on);
-    this.spill?.setEnabled(on);
-    this.lampHeads.setEnabled(on);
+    const lit = on && this.power;
+    this.pools?.setEnabled(lit);
+    this.spill?.setEnabled(lit);
+    this.lampHeads.setEnabled(lit);
     this.front.setEnabled(on);
     this.rear.setEnabled(on);
     this.beams.setEnabled(on);
-    this.poolMat.alpha = 0.75 * k;
+    this.poolMat.alpha = 0.42 * k;
     this.spillMat.alpha = 0.26 * k;
     this.beamMat.alpha = 0.5 * k;
+  }
+
+  private power = true;
+
+  /** Street lamps and lit shop fronts go off together when the power does. Headlights don't. */
+  setPower(on: boolean): void {
+    this.power = on;
+    this.setLevel(this.level, true);
   }
 
   update(night: number, vehicles: Vehicle[], own: Vehicle | null): void {

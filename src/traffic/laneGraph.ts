@@ -8,6 +8,7 @@ export const DIR: readonly (readonly [number, number])[] = [[0, 1], [1, 0], [0, 
 export const leftOf = (h: Heading): readonly [number, number] => [-DIR[h][1], DIR[h][0]];
 
 export const STOP_BACK = 4.2;
+const KERB_CLEARANCE = 2.25;
 
 export interface Path {
   /** x, z pairs along the path. */
@@ -27,6 +28,10 @@ export interface Lane extends Path {
   to: Junction;
   out: Connector[];
   kind: "lane";
+  /** On the flyover: above ground for at least part of its length. */
+  raised?: boolean;
+  /** Runs straight over the junction at its far end, without stopping for it. */
+  through?: boolean;
 }
 
 export interface Connector extends Path {
@@ -36,6 +41,8 @@ export interface Connector extends Path {
   junction: Junction;
   turn: 0 | 1 | 3; // straight, right, left
   kind: "connector";
+  /** Crosses the junction on the flyover, high above it. */
+  through?: boolean;
 }
 
 export function pointOn(p: Path, s: number, out: { x: number; z: number; dx: number; dz: number }): void {
@@ -78,6 +85,32 @@ export class LaneGraph {
   constructor(readonly layout: CityLayout) {
     this.buildLanes();
     this.buildConnectors();
+    this.raiseFlyover();
+  }
+
+  /** The inner lanes along the flyover go up over the junctions. They only join the road at either
+   *  end: there's no turning onto or off them in between. */
+  private raiseFlyover(): void {
+    const f = this.layout.data.flyover;
+    if (!f) return;
+    const pos = (j: Junction): number => (f.axis === "h" ? j.x : j.z);
+    const within = (j: Junction): boolean => pos(j) > f.start && pos(j) < f.end;
+    const road = this.layout.data.roads.find((r) => r.nameBn === f.roadName);
+    if (!road) return;
+    const raised = this.lanes.filter((l) => l.road === road && l.index === 0 && (within(l.from) || within(l.to) || (pos(l.from) <= f.start && pos(l.to) >= f.end)));
+    for (const l of raised) l.raised = true;
+    for (const l of raised) {
+      if (!within(l.to)) continue;
+      l.through = true;
+      l.out = l.out.filter((c) => c.turn === 0 && c.next.raised);
+      for (const c of l.out) c.through = true;
+    }
+    for (const l of this.lanes) {
+      if (l.through) continue;
+      // Nothing joins from the road below, at the junctions it passes over.
+      const kept = l.out.filter((c) => !(c.next.raised && within(c.junction)));
+      if (kept.length) l.out = kept;
+    }
   }
 
   private addLaneSet(road: RoadDef, a: Junction, b: Junction, heading: Heading): void {
@@ -165,6 +198,37 @@ export class LaneGraph {
     }
   }
 
+  /** Eases a turn away from any kerb it passes too close to. The body of the widest bus has to fit
+   *  between the path and the kerb, and the tail cuts inside the path on a tight corner. */
+  private keepOffKerb(flat: number[]): void {
+    const n = flat.length / 2;
+    if (n < 4) return;
+    const { layout } = this;
+    const eps = 0.25;
+    for (let iter = 0; iter < 8; iter++) {
+      let moved = false;
+      for (let i = 1; i < n - 1; i++) {
+        const x = flat[i * 2], z = flat[i * 2 + 1];
+        const d = layout.kerbDistance(x, z);
+        if (d >= KERB_CLEARANCE) continue;
+        const gx = layout.kerbDistance(x + eps, z) - layout.kerbDistance(x - eps, z);
+        const gz = layout.kerbDistance(x, z + eps) - layout.kerbDistance(x, z - eps);
+        const g = Math.hypot(gx, gz) || 1;
+        flat[i * 2] = x + (gx / g) * (KERB_CLEARANCE - d);
+        flat[i * 2 + 1] = z + (gz / g) * (KERB_CLEARANCE - d);
+        moved = true;
+      }
+      if (!moved) return;
+      // Pushed points leave kinks; smooth them so the steering stays calm. Ends stay on their lanes.
+      for (let pass = 0; pass < 2; pass++) {
+        for (let i = 1; i < n - 1; i++) {
+          flat[i * 2] += (0.5 * (flat[i * 2 - 2] + flat[i * 2 + 2]) - flat[i * 2]) * 0.5;
+          flat[i * 2 + 1] += (0.5 * (flat[i * 2 - 1] + flat[i * 2 + 3]) - flat[i * 2 + 1]) * 0.5;
+        }
+      }
+    }
+  }
+
   private makeConnector(lane: Lane, next: Lane, junction: Junction, turn: 0 | 1 | 3): Connector {
     const n = lane.pts.length;
     const p0x = lane.pts[n - 2], p0z = lane.pts[n - 1];
@@ -202,6 +266,7 @@ export class LaneGraph {
         );
       }
     }
+    this.keepOffKerb(flat);
     const conn: Connector = { ...makePath(flat), id: this.connectors.length, lane, next, junction, turn, kind: "connector" };
     this.connectors.push(conn);
     return conn;

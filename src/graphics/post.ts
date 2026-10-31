@@ -68,9 +68,14 @@ export class PostStack {
     }
   }
 
+  /** The player's own preference, on top of whatever the time of day calls for. */
+  brightness = 1;
+
   setGrade(exposure: number, contrast: number): void {
-    const ip = this.pipeline.imageProcessing;
-    ip.exposure = exposure;
-    ip.contrast = contrast;
+    // Written straight to the settings: the shader reads them every frame anyway, and the public
+    // setters tell every material to re-check itself and rebuild the effect, a 50 ms stall each time.
+    const cfg = this.pipeline.imageProcessing.imageProcessingConfiguration as unknown as { _exposure: number; _contrast: number };
+    cfg._exposure = exposure * this.brightness;
+    cfg._contrast = contrast;
   }
 }

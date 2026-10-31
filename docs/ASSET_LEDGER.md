@@ -6,7 +6,7 @@ Every asset shipped with the game must be listed here. Rule: original work or a 
 
 | Asset | Path | Made by | Notes |
 | --- | --- | --- | --- |
-| Characters | `public/assets/characters/*.glb` | `tools/blender/build_characters.py` | Procedural Blender models and baked textures. No third-party meshes or images. |
+| Characters | `public/assets/characters/*.glb` | `tools/blender/build_characters.py` | Procedural Blender models and baked textures. No third-party meshes or images. Rebuilt in 0.3 so six of the cast have no glasses. |
 | Vehicles | `public/assets/vehicles/*.glb` | `tools/blender/build_vehicles.py` | Includes original generated rickshaw and truck art. No brands. |
 | Street props | `public/assets/props/*.glb` | `tools/blender/build_props.py` | Procedural, baked. |
 | Pedal van with jute sacks | `public/assets/props/van_cart.glb` | `tools/blender/build_props.py` | Procedural, baked. Original geometry. |
@@ -26,6 +26,18 @@ Every asset shipped with the game must be listed here. Rule: original work or a 
 | Far vehicle models | `public/assets/vehicles/*_lod1.glb` | `tools/blender/build_vehicle_lods.py` | Reduced from this project's own vehicles. |
 | Far character models | `public/assets/characters/*_lod1.glb` | `tools/blender/build_lods.py` | Reduced from this project's own characters. |
 | Loading screen picture | `public/assets/ui/loading.webp` | Captured from the game | A screenshot of this project's own world. |
+| Traffic signal mast | `public/assets/props/traffic_mast.glb` | `tools/blender/build_props.py` | Procedural, baked. Original geometry, no markings. |
+| Opening vehicle doors | `public/assets/vehicles/{car_sedan,microbus,truck,cng,bus_city}.glb` | `tools/blender/build_doors.py` | Cut from this project's own baked vehicle models. Nothing added from elsewhere. |
+| Street trades, boats, zoo animals, dog, crow | `public/assets/props/{nouka,zoo_elephant,zoo_deer,paan_stall,fuchka_cart,jhalmuri_stand,pitha_stall,coconut_cart,cane_press,cobbler_kit,barber_chair,fish_table,meat_table,veg_stall,clothes_heap,dog,crow}.glb` | `tools/blender/build_props.py` | Procedural and original. The animals have no faces, the same as the cast. |
+| New vehicles | `public/assets/vehicles/{leguna,goods_van,garbage_truck,ambulance,police_car,wrecker}.glb` | `tools/blender/build_vehicles.py` | Built from this project's own microbus, sedan and lorry. No real markings: the police car and flags are invented. |
+| New cast | `public/assets/characters/npc_{woman_apple,woman_peach,woman_plum,girl_pear,kid_berry,granny_fig,doctor_kiwi,guard_melon,sweeper_tamarind,boss_quince}*.glb` | `tools/blender/build_characters.py` | Original, plain fruit faces. |
+| Stadium, zoo, embassies, towers, open-air stage, river, ponds, police station, filling station, insides of buildings, umbrellas, raincoats, rain | Built in code, `src/world/`, `src/graphics/weather.ts`, `src/npc/rainGear.ts` | This project | Generated at load from the project's own textures. Names of real places appear as words only: no logos, no copied designs. |
+| Phone | Built in code, `src/ui/phone.ts` | This project | Icons drawn as plain shapes. The mobile-money service is invented and has a made-up name. |
+| Tea glass, biscuit, singara | Built in code, `src/interaction/teaBreak.ts` | This project | Simple original shapes with plain colours. No files. |
+| AI voice pack | `public/assets/voice/` | Generated offline by `tools/voice/generate.py` with [bangla-speech-processing/bangla_tts_male](https://huggingface.co/bangla-speech-processing/bangla_tts_male) | Model card tag: MIT. **Caution:** the card says it was trained partly on an IIT Madras corpus "processed for research purposes" and on Mozilla Common Voice. The IIT Madras terms have not been checked, so settle this before selling the game or releasing it commercially. Pitch and pace are varied per character with FFmpeg. The model is not included in the game, only the audio made with it. |
+| Extra outfits | `public/assets/characters/*__a_albedo.webp`, `*__b_albedo.webp` | This project, from `tools/textures/build_outfits.py` | Recoloured from the project's own character textures. Faces and fruit are untouched. |
+| Flyover, lake, villas, campuses, station interior, playing field | Built in code, `src/world/` | This project | Generated at load from the project's own textures. No files. |
+| Crash dust and sparks | Built in code, `src/graphics/crashFx.ts` | This project | A soft dot drawn at runtime. No files. |
 | Sky panoramas | `public/assets/sky/*` | `tools/blender/build_sky.py` | Rendered from Blender's sky model and procedural clouds. |
 | Surface textures | `public/assets/textures/*` | `tools/textures/build_textures.py` | Generated with numpy and Pillow. No photos. |
 | Sound | none shipped | `src/audio/audio.ts` | Synthesised live with Web Audio. |
@@ -63,3 +75,11 @@ Concept boards in `Guide Docs/character_and_asset_reference_sheets/` were used a
 - Road names other than Begum Rokeya Sarani are plausible local names placed by hand, not checked against a map.
 - All Bangla text should be reviewed by a native speaker. It was written and proofread by the AI developer.
 - The traffic police reflective vest and cap are an artistic choice; no source confirmed the exact traffic uniform.
+
+## Stage B
+
+| What | Source | Licence |
+| --- | --- | --- |
+| About 6,000 lines of dialogue, scams, books, radio and mission text | Written for this game by AI | Original |
+| Radio music and the cash, chime sounds | Generated in code at runtime | Original |
+| New voice clips | Same offline male Bangla voice model as before, same caution about its training corpus | See the voice entry above |

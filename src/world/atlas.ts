@@ -46,15 +46,18 @@ export interface FacadeMaterials {
 }
 
 // Must match PAINTERS in tools/textures/build_shops.py.
-const SHOP_CELLS: Partial<Record<CellName, number[]>> = {
+export type ShopKind = CellName | "shopBarber" | "shopTailor" | "shopRepair" | "shopPhoto" | "shopAgent" | "shopDiagnostic" | "shopBiryani" | "shopRice" | "shopSari" | "shopGold" | "shopElectronics";
+
+const SHOP_CELLS: Partial<Record<ShopKind, number[]>> = {
   shopGrocery: [0, 8], shopPharmacy: [1], shopMobile: [2], shopClothes: [3], shopTea: [4], shopHardware: [5, 8], shopSweets: [6], shopBooks: [7],
+  shopBarber: [9], shopTailor: [10], shopRepair: [11], shopPhoto: [12], shopAgent: [13], shopDiagnostic: [14], shopBiryani: [15], shopRice: [16], shopSari: [17], shopGold: [18], shopElectronics: [19],
 };
-const SHOP_COLS = 3;
-const SHOP_ROWS = 3;
-const SHOP_INSET = 2 / 1365;
+const SHOP_COLS = 5;
+const SHOP_ROWS = 4;
+const SHOP_INSET = 2 / 819;
 
 /** Texture rect inside the shop atlas. `pick` (0..1) chooses between a kind's painted variants. */
-export function shopCell(kind: CellName, pick: number, fx0 = 0, fy0 = 0, fx1 = 1, fy1 = 1): Rect {
+export function shopCell(kind: ShopKind, pick: number, fx0 = 0, fy0 = 0, fx1 = 1, fy1 = 1): Rect {
   const options = SHOP_CELLS[kind] ?? [0];
   const i = options[Math.floor(pick * options.length) % options.length];
   const cx = i % SHOP_COLS, cy = Math.floor(i / SHOP_COLS);

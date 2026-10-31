@@ -2271,6 +2271,69 @@ def _lens_object(name, loc, radius, color):
     return obj
 
 
+@asset("traffic_mast")
+def build_traffic_mast():
+    """A signal you can see from down the street: a tall pole, an arm reaching out over the lanes
+    (towards +X, the driver's right), two big heads above the road and one at eye height."""
+    k = Kit("traffic_mast", "props")
+    pole = banded("tm_pole", rgb("#e0ddd0"), rgb("#1c1b1a"), 0.42, axis="z", wear=0.4, rust=0.2, rough=0.5, metallic=0.1)
+    pole_up = painted("tm_pole2", rgb("#3d4345"), wear=0.3, rust=0.3, rough=0.5, metallic=0.4, drip=0.5)
+    housing = painted("tm_house", rgb("#23282a"), under=rgb("#55524a"), wear=0.25, fade=0.25, dirt=0.25, rust=0.1, rough=0.42, drip=0.5, bevel=0.004)
+    board = painted("tm_board", rgb("#141716"), under=rgb("#55524a"), wear=0.2, fade=0.2, dirt=0.2, rust=0.08, rough=0.45, drip=0.7, bevel=0.002)
+    trim = painted("tm_trim", rgb("#e8c52c"), under=rgb("#55524a"), wear=0.3, fade=0.3, dirt=0.25, drip=0.5, bevel=0.002)
+    base = concrete("tm_base", c1=rgb("#a39a88"), c2=rgb("#7e7565"), seam_h=0, drip=0.3, grime=1.0, grime_h=0.4, dust=0.6, bevel=0.015)
+    steel_c = steel("tm_steel", rgb("#6a6b68"), rust=0.5, metallic=0.6, drip=0.3)
+    lens_r = flat("tm_lens_r", rgb("#4a0b08"), rough=0.25)
+    lens_a = flat("tm_lens_a", rgb("#4f3206"), rough=0.25)
+    lens_g = flat("tm_lens_g", rgb("#06371f"), rough=0.25)
+
+    k.box((0.7, 0.7, 0.2), (0, 0, 0.1), base)
+    k.cyl(0.16, 0.03, (0, 0, 0.215), steel_c, seg=6)
+    k.loft([{"c": (0, 0, 0.2), "rx": 0.09, "ry": 0.09}, {"c": (0, 0, 2.0), "rx": 0.08, "ry": 0.08}], pole, seg=8, start=False, end=False)
+    k.loft([{"c": (0, 0, 2.0), "rx": 0.08, "ry": 0.08}, {"c": (0, 0, 6.5), "rx": 0.065, "ry": 0.065}], pole_up, seg=8, start=False)
+    # The arm rises gently from the pole out over the road, with a brace beneath.
+    k.tube([(0, 0, 6.2), (2.4, 0, 6.42), (5.0, 0, 6.58), (7.45, 0, 6.66)], 0.05, pole_up, seg=6)
+    k.tube([(0, 0, 5.1), (0.9, 0, 5.75), (2.0, 0, 6.34)], 0.022, steel_c, seg=4)
+
+    def head(x, cz, pitch, r, hood, name):
+        y = -0.26
+        w, h = r * 3.1, pitch * 3.2
+        k.box((r * 2.5, 0.2, pitch * 3.05), (x, y + 0.1, cz), housing, bevel=0.012, seg=1)
+        k.box((w + r * 1.3, 0.025, h + r * 0.9), (x, y + 0.215, cz), board)
+        bw, bh = w + r * 1.3, h + r * 0.9
+        for sz in (-1, 1):
+            k.box((bw + 0.01, 0.012, 0.035), (x, y + 0.197, cz + sz * (bh / 2 - 0.016)), trim)
+        for sx in (-1, 1):
+            k.box((0.035, 0.012, bh), (x + sx * (bw / 2 - 0.016), y + 0.197, cz), trim)
+        for (z, mat) in ((cz + pitch, lens_r), (cz, lens_a), (cz - pitch, lens_g)):
+            k.loft([{"c": (x, y + 0.002, z), "rx": r * 1.12, "ry": r * 1.12, "axis": "y"}, {"c": (x, y - 0.012, z), "rx": r * 1.06, "ry": r * 1.06, "axis": "y"}], housing, seg=12, start=False)
+            k.loft([{"c": (x, y - 0.004, z), "rx": r, "ry": r, "axis": "y"}, {"c": (x, y - 0.012, z), "rx": r * 0.5, "ry": r * 0.5, "axis": "y"}], mat, seg=12, start=False)
+            n = 7
+            sec_out, sec_in = [], []
+            for i in range(n + 1):
+                a = math.radians(-20) + math.radians(220) * i / n
+                sec_out.append((x + r * 1.14 * math.cos(a), z + r * 1.14 * math.sin(a)))
+                sec_in.append((x + r * 1.07 * math.cos(a), z + r * 1.07 * math.sin(a)))
+            sec = sec_out + list(reversed(sec_in))
+            k.section_loft([(y - hood, sec), (y, sec)], housing, cap1=False)
+        k.empty(name, (x, y - 0.016, cz))
+
+    # Eye height on the pole.
+    k.box((0.12, 0.1, 0.05), (0, -0.1, 2.72), steel_c)
+    k.box((0.12, 0.1, 0.05), (0, -0.1, 3.3), steel_c)
+    head(0, 3.02, 0.285, 0.1, 0.15, "head_low")
+    # Two big heads hanging from the arm, above the lanes.
+    for x, z_arm in ((3.5, 6.5), (7.1, 6.64)):
+        k.box((0.06, 0.06, 0.24), (x, 0, z_arm - 0.15), steel_c)
+        k.box((0.1, 0.16, 0.05), (x, -0.08, z_arm - 0.26), steel_c)
+    head(3.5, 5.5, 0.36, 0.145, 0.22, "head_mid")
+    head(7.1, 5.64, 0.36, 0.145, 0.22, "head_end")
+    k.preview((3.6, -13, 3.4), (3.4, 0, 4), 40, "front")
+    k.preview((9, 3, 5), (3.5, 0, 5), 42, "back")
+    k.finish(size=512, normal=512, rm=256, ao=256, samples=10, ao_dist=0.3, ao_strength=0.7, angle=62.0)
+    k.export(quality=84)
+
+
 @asset("traffic_light")
 def build_traffic_light():
     """Budget under 900 tris. Lenses, hoods and bezels keep their shape with fewer sides."""
@@ -6333,6 +6396,380 @@ def build_cable_bundle():
 
 
 # === ASSETS END ===
+
+
+@asset("nouka")
+def build_nouka():
+    """A country boat: a long crescent of tarred planks, with a rounded bamboo roof over the middle."""
+    k = Kit("nouka", "props")
+    tar = wood("nk_hull", rgb("#3a2c20"), rgb("#1c1510"), axis="y", rough=0.8)
+    plank = wood("nk_plank", rgb("#8a6a44"), rgb("#553f28"), axis="x", rough=0.8)
+    mat = bamboo("nk_mat", rgb("#b39a62"))
+    L = 5.6
+    stations = []
+    for i in range(25):
+        t = -1 + 2 * i / 24
+        y = t * L
+        w = 0.98 * (1 - abs(t) ** 2.6) ** 0.72 + 0.03
+        keel = 0.02 + 0.7 * abs(t) ** 4
+        top = 0.56 + 1.05 * abs(t) ** 3.4
+        stations.append((y, [(-w, top), (-w * 0.72, keel + 0.14), (0, keel), (w * 0.72, keel + 0.14), (w, top), (max(w - 0.06, 0.005), top - 0.02), (w * 0.62, keel + 0.24), (0, keel + 0.13), (-w * 0.62, keel + 0.24), (-max(w - 0.06, 0.005), top - 0.02)]))
+    k.section_loft(stations, tar, smooth=True)
+    for y in (-3.6, -2.2, 2.4, 3.6):
+        k.box((1.5 * (1 - (abs(y) / L) ** 2.4), 0.26, 0.05), (0, y, 0.44), plank)
+    # The roof: an arch of woven bamboo over hoops.
+    arc = []
+    for i in range(11):
+        a = math.pi * i / 10
+        arc.append((-0.93 * math.cos(a), 0.54 + 0.86 * math.sin(a)))
+    inner = [(x * 0.95, 0.54 + (z - 0.54) * 0.95) for x, z in reversed(arc)]
+    k.prism(arc + inner, -1.5, 1.9, mat, chunks=2, closed=True)
+    for y in (-1.5, 0.2, 1.9):
+        k.tube([(x, y, z) for x, z in arc], 0.03, plank, seg=5)
+    # A long oar over the stern.
+    k.rod((0.3, -3.1, 0.7), (0.62, -6.6, 0.2), 0.035, plank)
+    k.box((0.26, 0.7, 0.03), (0.66, -6.9, 0.17), plank)
+    k.preview((6.5, -8.0, 4.2), (0, 0, 0.8), 34, "front")
+    k.finish(size=512, normal=256, rm=256, ao=256, samples=8, ao_dist=0.4, ao_strength=0.7, angle=50.0)
+    k.export(quality=82)
+    k.run_previews()
+
+
+@asset("zoo_elephant")
+def build_zoo_elephant():
+    """A toy-like elephant in the same spirit as the cast: round shapes and no face at all."""
+    k = Kit("zoo_elephant", "props")
+    skin = bo.pbr("el_skin", rgb("#6f6a66"), 0.85)
+    light = bo.pbr("el_light", rgb("#8b857f"), 0.85)
+    tusk = bo.pbr("el_tusk", rgb("#e8dcc2"), 0.5)
+    k.sphere(1.0, (0, -0.1, 1.72), skin, seg=20, rings=14, scale=(0.92, 1.45, 0.98))
+    k.sphere(0.72, (0, 1.32, 2.12), skin, seg=18, rings=12, scale=(0.95, 0.92, 1.0))
+    for sx in (-1, 1):
+        k.sphere(0.72, (sx * 0.86, 1.14, 2.2), light, seg=14, rings=10, scale=(0.14, 0.72, 0.95))
+        k.rod((sx * 0.24, 1.72, 1.82), (sx * 0.3, 2.3, 1.48), 0.05, tusk)
+        for y in (-0.92, 0.72):
+            k.cyl(0.33, 1.3, (sx * 0.5, y, 0.65), skin, seg=14)
+    pts = [(0, 1.86, 2.1), (0, 2.14, 1.78), (0, 2.24, 1.3), (0, 2.2, 0.82), (0, 2.34, 0.42)]
+    k.tube(pts, 0.17, skin, seg=10)
+    k.rod((0, -1.5, 1.95), (0, -1.74, 1.02), 0.04, skin)
+    k.preview((4.4, 3.8, 3.2), (0, 0.2, 1.5), 34, "front")
+    k.finish(size=512, normal=256, rm=128, ao=256, samples=8, ao_dist=0.6, ao_strength=0.7, angle=50.0)
+    k.export(quality=82)
+    k.run_previews()
+
+
+@asset("zoo_deer")
+def build_zoo_deer():
+    """A spotted deer, made the same way."""
+    k = Kit("zoo_deer", "props")
+    coat = bo.pbr("dr_coat", rgb("#a8743c"), 0.8)
+    g = G(coat)
+    spot = g.smooth(g.noise(scale=26.0, detail=1.0), 0.66, 0.7)
+    g.color(g.mix(rgb("#a8743c"), rgb("#e9ddc4"), g.mul(spot, g.smooth(g.z, 0.82, 0.92))))
+    pale = bo.pbr("dr_pale", rgb("#e0d3ba"), 0.8)
+    horn = bo.pbr("dr_horn", rgb("#6c5238"), 0.7)
+    k.sphere(0.33, (0, 0, 0.86), coat, seg=16, rings=10, scale=(0.82, 1.85, 0.98))
+    k.tube([(0, 0.46, 0.98), (0, 0.66, 1.28)], 0.11, coat, seg=8)
+    k.sphere(0.14, (0, 0.72, 1.36), coat, seg=12, rings=8, scale=(0.82, 1.25, 0.9))
+    for sx in (-1, 1):
+        for y in (-0.46, 0.44):
+            k.rod((sx * 0.14, y, 0.8), (sx * 0.15, y, 0.02), 0.038, coat)
+        k.sphere(0.07, (sx * 0.12, 0.66, 1.46), pale, seg=8, rings=6, scale=(0.4, 0.8, 1.2))
+        k.tube([(sx * 0.05, 0.7, 1.46), (sx * 0.12, 0.66, 1.72), (sx * 0.2, 0.74, 1.88)], 0.012, horn, seg=5)
+        k.rod((sx * 0.12, 0.66, 1.72), (sx * 0.06, 0.8, 1.84), 0.01, horn, seg=4)
+    k.rod((0, -0.6, 1.0), (0, -0.7, 0.82), 0.04, pale)
+    k.preview((1.9, 1.6, 1.4), (0, 0.1, 0.9), 34, "front")
+    k.finish(size=256, normal=128, rm=128, ao=128, samples=8, ao_dist=0.2, ao_strength=0.7, angle=50.0)
+    k.export(quality=82)
+    k.run_previews()
+
+
+def _small(k, size=256):
+    k.finish(size=size, normal=128, rm=128, ao=128, samples=8, ao_dist=0.2, ao_strength=0.7, angle=50.0)
+    k.export(quality=80)
+    k.run_previews()
+
+
+def _mats(prefix, **colors):
+    return {n: bo.pbr(f"{prefix}_{n}", rgb(c), 0.7) for n, c in colors.items()}
+
+
+def _table(k, w, d, h, top, leg):
+    k.box((w, d, 0.05), (0, 0, h), top, bevel=0.008)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            k.box((0.05, 0.05, h), (sx * (w / 2 - 0.05), sy * (d / 2 - 0.05), h / 2), leg)
+
+
+@asset("paan_stall")
+def build_paan_stall():
+    k = Kit("paan_stall", "props")
+    m = _mats("pn", wood="#7b5a38", dark="#4d3722", leaf="#3f8a33", leaf2="#62a53a", tin="#c9c5b8", red="#b03028", cloth="#c8452c")
+    k.box((1.0, 0.6, 0.85), (0, 0, 0.45), m["wood"], bevel=0.01)
+    k.box((1.08, 0.68, 0.04), (0, 0, 0.9), m["dark"])
+    for i in range(16):
+        k.sphere(0.075, (-0.34 + (i % 8) * 0.1, -0.1 + (i // 8) * 0.14, 0.935), m["leaf"] if i % 2 else m["leaf2"], seg=8, rings=5, scale=(1, 1.3, 0.14))
+    for i, x in enumerate((-0.3, -0.1, 0.1, 0.3)):
+        k.cyl(0.05, 0.14, (x, 0.22, 0.99), m["tin"] if i % 2 else m["red"], seg=10)
+    for sx in (-1, 1):
+        k.rod((sx * 0.48, 0.28, 0.9), (sx * 0.48, 0.28, 2.0), 0.018, m["dark"])
+        k.rod((sx * 0.48, -0.28, 0.9), (sx * 0.48, -0.28, 2.0), 0.018, m["dark"])
+    k.box((1.2, 0.86, 0.03), (0, 0, 2.02), m["cloth"])
+    k.preview((1.8, -2.2, 1.6), (0, 0, 0.9), 34, "front")
+    _small(k)
+
+
+@asset("fuchka_cart")
+def build_fuchka_cart():
+    k = Kit("fuchka_cart", "props")
+    m = _mats("fc", paint="#d8a31f", red="#b5302a", dark="#2b2925", glass="#b9d3d4", puri="#c99a55", tin="#aaa79f", white="#e8e4d8")
+    k.box((1.5, 0.72, 0.5), (0, 0, 0.72), m["paint"], bevel=0.01)
+    k.box((1.56, 0.78, 0.05), (0, 0, 0.99), m["red"])
+    k.box((1.5, 0.72, 0.03), (0, 0, 0.47), m["dark"])
+    for sx in (-1, 1):
+        k.cyl(0.27, 0.05, (sx * 0.45, 0.38, 0.27), m["dark"], seg=16, rot=(math.pi / 2, 0, 0))
+        k.cyl(0.27, 0.05, (sx * 0.45, -0.38, 0.27), m["dark"], seg=16, rot=(math.pi / 2, 0, 0))
+    # The glass case, full of round shells.
+    k.box((1.0, 0.5, 0.42), (-0.15, 0.03, 1.24), m["glass"])
+    for i in range(28):
+        k.sphere(0.05, (-0.56 + (i % 7) * 0.14, -0.14 + (i // 7) * 0.12, 1.32), m["puri"], seg=7, rings=5)
+    k.cyl(0.17, 0.24, (0.52, 0.0, 1.13), m["tin"], seg=14)
+    k.cyl(0.1, 0.16, (0.52, 0.26, 1.09), m["white"], seg=10)
+    for sx in (-1, 1):
+        k.rod((sx * 0.72, 0.34, 1.0), (sx * 0.72, 0.34, 2.15), 0.018, m["dark"])
+        k.rod((sx * 0.72, -0.34, 1.0), (sx * 0.72, -0.34, 2.15), 0.018, m["dark"])
+    k.box((1.72, 0.9, 0.03), (0, 0, 2.16), m["red"])
+    k.preview((2.2, -2.4, 1.7), (0, 0, 1.0), 34, "front")
+    _small(k)
+
+
+@asset("jhalmuri_stand")
+def build_jhalmuri_stand():
+    k = Kit("jhalmuri_stand", "props")
+    m = _mats("jm", tin="#b6b3aa", red="#b5302a", wood="#6d5034", puffed="#e6d7a8", jar="#b48b34", paper="#d8d2c0")
+    for a in (0.5, 2.6, 4.7):
+        k.rod((math.cos(a) * 0.26, math.sin(a) * 0.26, 0.0), (0, 0, 0.72), 0.018, m["wood"])
+    k.cyl(0.3, 0.42, (0, 0, 0.93), m["tin"], seg=18)
+    k.cyl(0.3, 0.03, (0, 0, 0.78), m["red"], seg=18)
+    k.sphere(0.27, (0, 0, 1.12), m["puffed"], seg=14, rings=8, scale=(1, 1, 0.34))
+    for i, a in enumerate((0.2, 1.3, 2.4, 3.5, 4.6, 5.7)):
+        k.cyl(0.04, 0.13, (math.cos(a) * 0.34, math.sin(a) * 0.34, 1.0), m["jar"] if i % 2 else m["red"], seg=8)
+    k.box((0.26, 0.14, 0.1), (0.42, 0, 0.85), m["paper"])
+    k.preview((1.4, -1.6, 1.2), (0, 0, 0.8), 34, "front")
+    _small(k)
+
+
+@asset("pitha_stall")
+def build_pitha_stall():
+    k = Kit("pitha_stall", "props")
+    m = _mats("pt", wood="#6d5034", clay="#a35b37", dark="#2b2925", white="#e9e4d4", brown="#8a5a2c", cloth="#2f6f62", fire="#d8622a")
+    _table(k, 1.5, 0.7, 0.5, m["wood"], m["wood"])
+    for x in (-0.42, 0.42):
+        k.cyl(0.24, 0.2, (x, 0, 0.62), m["clay"], seg=16, rt=0.2)
+        k.cyl(0.26, 0.02, (x, 0, 0.73), m["dark"], seg=16)
+        k.sphere(0.1, (x, 0, 0.75), m["white"], seg=10, rings=6, scale=(1, 1, 0.42))
+        k.cyl(0.1, 0.02, (x, -0.2, 0.54), m["fire"], seg=8)
+    for i in range(10):
+        k.sphere(0.07, (-0.14 + (i % 5) * 0.07, -0.18 + (i // 5) * 0.2, 0.58), m["brown"] if i % 3 else m["white"], seg=8, rings=5, scale=(1, 1, 0.45))
+    k.box((1.6, 0.04, 0.3), (0, 0.38, 0.3), m["cloth"])
+    k.box((0.3, 0.3, 0.26), (0, -0.8, 0.13), m["wood"])
+    k.preview((1.9, -2.0, 1.4), (0, 0, 0.5), 34, "front")
+    _small(k)
+
+
+@asset("coconut_cart")
+def build_coconut_cart():
+    k = Kit("coconut_cart", "props")
+    m = _mats("co", wood="#7b5a38", dark="#2b2925", green="#4d8f36", green2="#6aa63c", blade="#a9a79e", straw="#d8c88e")
+    k.box((1.9, 1.0, 0.06), (0, 0, 0.62), m["wood"])
+    for sx in (-1, 1):
+        k.cyl(0.3, 0.05, (sx * 0.5, 0.56, 0.3), m["dark"], seg=16, rot=(math.pi / 2, 0, 0))
+        k.cyl(0.3, 0.05, (sx * 0.5, -0.56, 0.3), m["dark"], seg=16, rot=(math.pi / 2, 0, 0))
+    rng = random.Random(7)
+    for z, n in ((0.8, 18), (0.98, 12), (1.16, 6)):
+        for i in range(n):
+            spread = 1.0 - (z - 0.8) * 1.6
+            x = rng.uniform(-0.8, 0.8) * spread
+            y = rng.uniform(-0.38, 0.38) * spread
+            k.sphere(0.135, (x, y, z), m["green"] if i % 2 else m["green2"], seg=10, rings=7, scale=(1, 1, 1.14))
+    k.box((0.04, 0.26, 0.08), (0.92, 0.3, 0.7), m["blade"])
+    k.box((0.2, 0.2, 0.22), (-0.88, -0.32, 0.76), m["straw"])
+    k.preview((2.4, -2.8, 2.0), (0, 0, 0.8), 34, "front")
+    _small(k)
+
+
+@asset("cane_press")
+def build_cane_press():
+    k = Kit("cane_press", "props")
+    m = _mats("cp", paint="#2f7a58", steel="#7b7a76", dark="#2b2925", cane="#7d5a2a", cane2="#6e4a7c", glass="#c3d6c0", wood="#6d5034")
+    k.box((1.3, 0.7, 0.72), (0, 0, 0.62), m["paint"], bevel=0.01)
+    for sx in (-1, 1):
+        k.cyl(0.26, 0.05, (sx * 0.4, 0.38, 0.26), m["dark"], seg=16, rot=(math.pi / 2, 0, 0))
+        k.cyl(0.26, 0.05, (sx * 0.4, -0.38, 0.26), m["dark"], seg=16, rot=(math.pi / 2, 0, 0))
+    # The big hand wheel and the rollers.
+    k.cyl(0.5, 0.06, (-0.72, 0, 1.2), m["steel"], seg=24, rot=(0, math.pi / 2, 0))
+    k.cyl(0.4, 0.07, (-0.72, 0, 1.2), m["dark"], seg=24, rot=(0, math.pi / 2, 0))
+    k.box((0.5, 0.42, 0.42), (-0.32, 0, 1.2), m["steel"])
+    k.rod((-0.72, 0.42, 1.2), (-0.72, 0.42, 1.55), 0.03, m["wood"])
+    for i in range(12):
+        k.rod((0.08 + i * 0.05, 0.3 - (i % 3) * 0.1, 0.98), (0.2 + i * 0.05, 0.3 - (i % 3) * 0.1, 2.2), 0.024, m["cane"] if i % 3 else m["cane2"], seg=6)
+    for x in (-0.05, 0.1, 0.25):
+        k.cyl(0.04, 0.14, (x, -0.24, 1.05), m["glass"], seg=10)
+    k.preview((2.2, -2.6, 1.8), (0, 0, 1.0), 34, "front")
+    _small(k)
+
+
+@asset("cobbler_kit")
+def build_cobbler_kit():
+    k = Kit("cobbler_kit", "props")
+    m = _mats("cb", wood="#5e432a", black="#25231f", brown="#6a3f22", red="#a33024", tin="#a8a59c", sack="#a8956a")
+    k.box((1.5, 1.0, 0.03), (0, 0, 0.17), m["sack"])
+    k.box((0.56, 0.36, 0.34), (0.3, 0.12, 0.34), m["wood"], bevel=0.01)
+    k.box((0.34, 0.3, 0.2), (-0.45, -0.25, 0.28), m["wood"])
+    k.cyl(0.05, 0.1, (0.1, 0.12, 0.56), m["black"], seg=8)
+    k.cyl(0.05, 0.1, (0.26, 0.12, 0.56), m["red"], seg=8)
+    k.cyl(0.05, 0.1, (0.42, 0.12, 0.56), m["tin"], seg=8)
+    for i in range(6):
+        y = -0.3 + i * 0.13
+        shoe = m["black"] if i % 2 else m["brown"]
+        k.sphere(0.09, (0.05, y, 0.25), shoe, seg=8, rings=5, scale=(1.5, 0.7, 0.62))
+    k.preview((1.6, -1.8, 1.2), (0, 0, 0.3), 34, "front")
+    _small(k)
+
+
+@asset("barber_chair")
+def build_barber_chair():
+    k = Kit("barber_chair", "props")
+    m = _mats("bc", wood="#6d5034", seat="#8d2a2e", steel="#8a8984", glass="#b6d0d8", cloth="#e4e0d2", bottle="#3e7c9a")
+    k.box((0.55, 0.5, 0.08), (0, 0, 0.55), m["seat"], bevel=0.01)
+    k.box((0.55, 0.08, 0.6), (0, 0.25, 0.9), m["seat"], bevel=0.01)
+    for sx in (-1, 1):
+        k.box((0.06, 0.5, 0.05), (sx * 0.3, 0, 0.75), m["wood"])
+        for sy in (-1, 1):
+            k.box((0.05, 0.05, 0.55), (sx * 0.24, sy * 0.2, 0.27), m["wood"])
+    # A mirror nailed to a post, and what he works with on a box beside it.
+    k.box((0.08, 0.08, 1.9), (0, -0.85, 0.95), m["wood"])
+    k.box((0.56, 0.03, 0.7), (0, -0.82, 1.45), m["glass"])
+    k.box((0.62, 0.02, 0.76), (0, -0.84, 1.45), m["wood"])
+    k.box((0.5, 0.3, 0.7), (0.55, -0.6, 0.35), m["wood"])
+    for x in (0.42, 0.55, 0.68):
+        k.cyl(0.035, 0.18, (x, -0.6, 0.79), m["bottle"], seg=8)
+    k.box((0.4, 0.02, 0.34), (-0.52, 0.0, 0.92), m["cloth"])
+    k.preview((1.8, 1.8, 1.5), (0, -0.2, 0.8), 34, "front")
+    _small(k)
+
+
+@asset("fish_table")
+def build_fish_table():
+    k = Kit("fish_table", "props")
+    m = _mats("fi", wood="#5e432a", slab="#7c8284", silver="#c6ced0", dark="#5f6c70", red="#a84535", basin="#2d6ea0", ice="#dbe6e8", gold="#c89c4a")
+    _table(k, 1.9, 0.95, 0.72, m["slab"], m["wood"])
+    rng = random.Random(11)
+    for i in range(16):
+        x, y = -0.78 + (i % 8) * 0.22, -0.28 + (i // 8) * 0.5
+        k.sphere(0.1, (x, y + rng.uniform(-0.05, 0.05), 0.79), m["silver"] if i % 3 else m["dark"], seg=8, rings=5, scale=(0.46, 1.8, 0.34))
+    for x in (-0.55, 0.55):
+        k.cyl(0.22, 0.17, (x, 0.72, 0.09), m["basin"], seg=14)
+        k.sphere(0.2, (x, 0.72, 0.17), m["ice"], seg=10, rings=6, scale=(1, 1, 0.26))
+    k.box((0.34, 0.34, 0.26), (0, 0.76, 0.13), m["red"])
+    k.preview((2.2, -2.5, 1.9), (0, 0, 0.7), 34, "front")
+    _small(k)
+
+
+@asset("meat_table")
+def build_meat_table():
+    k = Kit("meat_table", "props")
+    m = _mats("mt", wood="#5e432a", block="#8d6a43", meat="#8c2f28", meat2="#b05a48", fat="#e0cdb2", steel="#8e8e8a", awn="#7a6a5a")
+    _table(k, 1.8, 0.9, 0.74, m["wood"], m["wood"])
+    k.cyl(0.32, 0.22, (0.5, 0, 0.88), m["block"], seg=18)
+    rng = random.Random(5)
+    for i in range(10):
+        k.sphere(rng.uniform(0.07, 0.12), (-0.75 + (i % 5) * 0.2, -0.2 + (i // 5) * 0.34, 0.8), m["meat"] if i % 2 else m["meat2"], seg=8, rings=5, scale=(1.2, 1, 0.5))
+    # A rail with hooks behind.
+    for sx in (-1, 1):
+        k.rod((sx * 0.85, 0.42, 0.75), (sx * 0.85, 0.42, 2.0), 0.02, m["steel"])
+    k.rod((-0.85, 0.42, 2.0), (0.85, 0.42, 2.0), 0.02, m["steel"])
+    for x in (-0.5, 0.0, 0.45):
+        k.rod((x, 0.42, 2.0), (x, 0.42, 1.85), 0.008, m["steel"], seg=4)
+        k.sphere(0.14, (x, 0.42, 1.58), m["meat"], seg=8, rings=6, scale=(0.7, 0.5, 1.7))
+        k.sphere(0.07, (x + 0.03, 0.36, 1.7), m["fat"], seg=6, rings=4, scale=(0.7, 0.4, 1.4))
+    k.preview((2.3, -2.6, 1.9), (0, 0, 1.0), 34, "front")
+    _small(k)
+
+
+@asset("veg_stall")
+def build_veg_stall():
+    k = Kit("veg_stall", "props")
+    m = _mats("vg", basket="#a8895a", wood="#6d5034", red="#b5362a", orange="#d07a24", green="#4d8a2e", green2="#7bac3a", purple="#5a2a63", white="#d9d3c0", brown="#8a6236", sack="#9f8c63")
+    k.box((2.1, 1.1, 0.12), (0, 0, 0.14), m["wood"])
+    k.box((2.2, 1.2, 0.03), (0, 0, 0.21), m["sack"])
+    heaps = [(-0.72, -0.25, m["red"], 0.06), (-0.24, -0.25, m["green2"], 0.08), (0.24, -0.25, m["purple"], 0.09), (0.72, -0.25, m["orange"], 0.11), (-0.72, 0.25, m["white"], 0.09), (-0.24, 0.25, m["brown"], 0.07), (0.24, 0.25, m["green"], 0.1), (0.72, 0.25, m["red"], 0.05)]
+    rng = random.Random(3)
+    for hx, hy, mat, r in heaps:
+        k.cyl(0.24, 0.1, (hx, hy, 0.27), m["basket"], seg=14, rt=0.26)
+        for z, n, spread in ((0.36, 7, 0.17), (0.45, 4, 0.1), (0.52, 1, 0.0)):
+            for i in range(n):
+                k.sphere(r, (hx + rng.uniform(-spread, spread), hy + rng.uniform(-spread, spread), z), mat, seg=7, rings=5)
+    k.preview((2.2, -2.5, 1.8), (0, 0, 0.3), 34, "front")
+    _small(k)
+
+
+@asset("clothes_heap")
+def build_clothes_heap():
+    k = Kit("clothes_heap", "props")
+    colors = ["#b5362a", "#2e6ea0", "#d8a31f", "#3e8a58", "#7a3a8a", "#d8d3c6", "#26262a", "#c8652a"]
+    mats = [bo.pbr(f"ch_{i}", rgb(c), 0.9) for i, c in enumerate(colors)]
+    tarp = bo.pbr("ch_tarp", rgb("#2d4c78"), 0.8)
+    pole = bo.pbr("ch_pole", rgb("#6d5034"), 0.7)
+    k.box((2.4, 1.5, 0.02), (0, 0, 0.17), tarp)
+    rng = random.Random(9)
+    for i in range(46):
+        x, y = rng.uniform(-1.0, 1.0), rng.uniform(-0.58, 0.58)
+        z = 0.2 + rng.uniform(0, 0.16) * (1.1 - abs(x)) * (1.1 - abs(y) * 1.2)
+        k.sphere(rng.uniform(0.15, 0.26), (x, y, z), mats[i % len(mats)], seg=8, rings=5, scale=(1.2, 0.9, 0.3))
+    for sx in (-1, 1):
+        k.rod((sx * 1.1, 0.75, 0.16), (sx * 1.1, 0.75, 1.7), 0.018, pole)
+    k.rod((-1.1, 0.75, 1.7), (1.1, 0.75, 1.7), 0.014, pole)
+    for i, x in enumerate((-0.8, -0.3, 0.2, 0.7)):
+        k.box((0.42, 0.03, 0.62), (x, 0.75, 1.34), mats[(i * 3) % len(mats)])
+    k.preview((2.4, -2.8, 1.8), (0, 0, 0.5), 34, "front")
+    _small(k)
+
+
+@asset("dog")
+def build_dog():
+    """A street dog, the colour of the road. No face, the same as everybody else."""
+    k = Kit("dog", "props")
+    coat = bo.pbr("dg_coat", rgb("#9b7446"), 0.85)
+    pale = bo.pbr("dg_pale", rgb("#c6a877"), 0.85)
+    k.sphere(0.13, (0, 0, 0.36), coat, seg=12, rings=8, scale=(0.82, 2.2, 0.95))
+    k.tube([(0, 0.26, 0.42), (0, 0.38, 0.52)], 0.07, coat, seg=8)
+    k.sphere(0.085, (0, 0.44, 0.56), coat, seg=10, rings=7, scale=(0.9, 1.15, 0.9))
+    k.sphere(0.042, (0, 0.53, 0.53), pale, seg=8, rings=5, scale=(0.8, 1.3, 0.7))
+    for sx in (-1, 1):
+        k.sphere(0.035, (sx * 0.055, 0.42, 0.64), coat, seg=6, rings=4, scale=(0.7, 0.4, 1.3))
+        for y in (-0.2, 0.2):
+            k.rod((sx * 0.07, y, 0.32), (sx * 0.07, y, 0.0), 0.022, coat, seg=6)
+    k.tube([(0, -0.28, 0.42), (0, -0.4, 0.52), (0, -0.44, 0.6)], 0.018, coat, seg=5)
+    k.preview((1.0, 0.9, 0.7), (0, 0.05, 0.3), 34, "front")
+    _small(k, 128)
+
+
+@asset("crow")
+def build_crow():
+    k = Kit("crow", "props")
+    black = bo.pbr("cr_black", rgb("#1f2024"), 0.5)
+    grey = bo.pbr("cr_grey", rgb("#4a4c52"), 0.6)
+    beak = bo.pbr("cr_beak", rgb("#121214"), 0.4)
+    k.sphere(0.06, (0, 0, 0.11), black, seg=10, rings=6, scale=(0.8, 1.6, 0.85))
+    k.sphere(0.045, (0, 0.09, 0.17), grey, seg=8, rings=6)
+    k.tube([(0, 0.13, 0.17), (0, 0.18, 0.16)], 0.012, beak, seg=5)
+    k.box((0.05, 0.14, 0.012), (0, -0.14, 0.1), black)
+    for sx in (-1, 1):
+        k.rod((sx * 0.02, 0, 0.07), (sx * 0.02, 0.01, 0.0), 0.005, beak, seg=4)
+        k.sphere(0.04, (sx * 0.05, -0.02, 0.12), black, seg=6, rings=4, scale=(0.3, 1.7, 0.7))
+    k.preview((0.45, 0.4, 0.3), (0, 0, 0.1), 34, "front")
+    _small(k, 128)
 
 
 def main():

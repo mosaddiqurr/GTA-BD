@@ -1,0 +1,257 @@
+import type { FriendDef } from "../types";
+
+export const RASEL: FriendDef = {
+  key: "rasel",
+  name: ["রাসেল", "Rasel"],
+  id: "npc_cng_guava",
+  region: "dhaka_mirpur10",
+  hangout: "terminal",
+  bio: ["সিএনজি চালায়, মিরপুরের প্রতিটা গলি চেনে, আর সারাক্ষণ একটা না একটা রসিকতা।", "Drives a CNG, knows every lane in Mirpur, and always has a joke going."],
+  firstMeet: [
+    ["o", ["এই যে, এত মন দিয়ে কী দেখছেন? সিএনজি, নাকি তার চালকের সৌন্দর্য?", "Hey, what are you studying so hard? The CNG, or its handsome driver?"]],
+    ["h", ["সিএনজিটাই দেখছিলাম।", "The CNG, really."]],
+    ["o", ["সবাই প্রথমে তাই বলে। আমি রাসেল, এই টার্মিনালে আমার চেয়ে বেশি কথা শুধু হর্ন বলে।", "Everyone says that at first. I'm Rasel. At this terminal only the horns talk more than I do."]],
+    ["o", ["আপনি নতুন মনে হচ্ছে। মিরপুরের গলি চেনেন কয়টা?", "You look new. How many lanes of Mirpur do you know?"]],
+    ["h", ["বেশি না।", "Not many."]],
+    ["o", ["তাহলে মনে রাখবেন, দশ নম্বর থেকে কালশী যাওয়ার সাতটা রাস্তা আছে, ছয়টা আমার বানানো।", "Then remember: there are seven ways from Number Ten to Kalshi, and six of them I invented."]],
+    ["o", ["কোনো গলিতে আটকে গেলে ডাকবেন। ভাড়া পরে, আগে হাসি।", "Get stuck in any lane, give me a shout. Fare later, laugh first."]],
+  ],
+  smallTalk: [
+    ["আজ জ্যাম এত বেশি, পাশের গাড়ির লোকের সাথে আত্মীয়তা হয়ে গেছে।", "The jam's so bad today I've become related to the man in the next car."],
+    ["কাজীপাড়ার মোড়ে আধা ঘণ্টা দাঁড়ালাম। একটা বিড়াল আমাকে ওভারটেক করে গেল।", "Half an hour at the Kazipara turn. A cat overtook me."],
+    ["যাত্রী বলে শর্টকাটে চলো। শর্টকাট থাকলে কি আমি এখনো গরিব থাকতাম?", "Passengers say take a shortcut. If there were shortcuts, would I still be poor?"],
+    ["পল্লবীর পেছনের গলিটা এত সরু, ঢোকার আগে সিএনজিকে দম ধরে রাখতে বলি।", "The lane behind Pallabi is so narrow, I tell the CNG to hold its breath before we go in."],
+    ["মিটার আছে তো, সাজিয়ে রেখেছি। দেখতে সুন্দর লাগে।", "Of course there's a meter. It's on display. Looks lovely."],
+    ["শেওড়াপাড়ায় এক যাত্রী বলল সামনে রাখেন। সামনে মানে কোথায়, সে নিজেও জানে না।", "A passenger in Shewrapara says stop up ahead. Up ahead where? He doesn't know either."],
+    ["বৃষ্টি হলে আমার ভাড়া বাড়ে না, আমার সম্মান বাড়ে। সবাই হাত তুলে ডাকে।", "When it rains my fare doesn't go up, my honour does. Everyone raises a hand to me."],
+    ["রূপনগরের ওই গলিতে পানি উঠলে আমি নৌকার লাইসেন্স খুঁজি।", "When that Rupnagar lane floods I go looking for a boat licence."],
+    ["আজ এক যাত্রী নেমে বলল, ভাড়াটা ঝটপট টাকায় পাঠাচ্ছি। এখনো পাঠাচ্ছে।", "A passenger got out today saying he'd send the fare on Jhotpot Taka. He's still sending it."],
+    ["সার্জেন্ট সিগন্যালে হাত তুলল, আমি ভাবলাম আমাকে সালাম দিচ্ছে। ভুল ভাবলাম।", "The sergeant raised his hand at the signal. I thought he was saying hello. I thought wrong."],
+    ["আমার হর্নটা নষ্ট হয়ে গেছে। এখন নিজেই গলায় বাজাই, শব্দ আরও ভালো।", "My horn's broken. I do it with my throat now, and it sounds better."],
+    ["গরমে সিএনজির ভেতরে বসলে মনে হয় চুলার ওপর পিঠা হচ্ছি।", "Sitting in the CNG in this heat, I feel like a pitha on the stove."],
+    ["এগারো থেকে বারো নম্বর যেতে লাগে একটা গান। জ্যাম হলে পুরো অ্যালবাম।", "Number Eleven to Number Twelve takes one song. In a jam, the whole album."],
+    ["লোকে বলে আমি বেশি কথা বলি। চুপ থাকলে ঘুম আসবে, তখন সিএনজি চালাবে কে?", "People say I talk too much. If I shut up I'll nod off, and then who drives the CNG?"],
+    ["কোন গলিতে কার মুরগি সবচেয়ে জোরে ডাকে, সেটাও আমি জানি। জিজ্ঞেস করে দেখো।", "I even know which lane has the loudest hen. Go on, ask me."],
+    ["মালিককে জমা দিয়ে হাতে থাকল এক কাপ চা আর একটা বড় স্বপ্ন।", "After paying the owner I'm left with one cup of tea and one big dream."],
+    ["রাস্তা চেনা আর মানুষ চেনা একই কথা, বুঝলা। দুইটাতেই হঠাৎ গর্ত থাকে।", "Knowing roads and knowing people, same thing. Both have sudden potholes."],
+    ["গ্যাসের লাইনে আজ দুই ঘণ্টা। সামনের লোকটার ঘাড়ের ইতিহাস এখন আমার মুখস্থ।", "Two hours in the gas queue today. I now know the full history of the neck in front of me."],
+    ["কেউ রাস্তায় বলে তোমার চাকায় সমস্যা, আগে পকেট সামলাও, পরে চাকা দেখো।", "If someone on the road says your wheel's got a problem, mind your pocket first, wheel later."],
+  ],
+  teaTalks: [
+    [
+      ["o", ["এই দোকানের চায়ে চিনি বেশি, দুধ বেশি, চা শুধু নামে। এজন্যই ভালো।", "This stall's tea is all sugar and milk. The tea's only there in name. That's why it's good."]],
+      ["o", ["দোকানদার আমাকে বাকিতে চা দেয়, আমি তাকে বাকিতে হাসাই। হিসাব সমান।", "The owner gives me tea on credit, I give him laughs on credit. The books balance."]],
+      ["o", ["বলো তো, এই শহরে সবচেয়ে অবাক লাগে কী?", "So tell me, what's the strangest thing about this city?"]],
+      ["h", ["মানুষ আর মানুষ।", "People, and more people."]],
+      ["o", ["ঠিক ধরেছ। এখানে ফুটপাতেও জ্যাম লাগে, শুধু হর্ন নেই।", "You've got it. Even the footpath gets jams here, only without the horns."]],
+    ],
+    [
+      ["o", ["গলি কীভাবে চিনলাম জানো? প্রথম মাসে আমার কাজ ছিল শুধু হারিয়ে যাওয়া।", "Know how I learned the lanes? My whole job the first month was getting lost."]],
+      ["o", ["একদিন এক যাত্রীকে নিয়ে তিনবার একই চায়ের দোকানের সামনে দিয়ে গেলাম।", "One day I took a passenger past the same tea stall three times."]],
+      ["h", ["যাত্রী কিছু বলল না?", "The passenger said nothing?"]],
+      ["o", ["বলল, আপনার মনে হয় এই দোকানের চা খুব পছন্দ, নেমে খেয়ে নিন।", "He said: you must love this stall's tea, why not get down and have some."]],
+      ["o", ["সেদিন থেকে রাতে খালি সিএনজি নিয়ে গলি মুখস্থ করতাম, পরীক্ষার আগের ছাত্রের মতো।", "After that I'd take the empty CNG out at night and memorise lanes, like a student before exams."]],
+      ["o", ["এখন গন্ধ শুঁকেই বলে দিতে পারি, এটা রূপনগর, ওটা কালশী।", "Now I can tell by the smell: this is Rupnagar, that's Kalshi."]],
+    ],
+    [
+      ["o", ["সিএনজিটা আমার ভাবছ? না, এটা মালিকের, আমি শুধু এর ওপর দুঃখ করি।", "You think this CNG's mine? No, it's the owner's. I just do the worrying on it."]],
+      ["o", ["রোজ সকালে বারোশো টাকা জমা। জ্বর হোক, বন্যা হোক, জমা জমাই।", "Twelve hundred taka to him every morning. Fever or flood, the money's the money."]],
+      ["h", ["দিনে হাতে থাকে কত?", "How much is left a day?"]],
+      ["o", ["ভালো দিনে সাতশো আটশো। খারাপ দিনে গ্যাসের লাইনে দাঁড়িয়ে জীবন নিয়ে ভাবি।", "Seven or eight hundred on a good day. On a bad one I stand in the gas queue thinking about life."]],
+      ["o", ["গ্যাসের লাইনে দুই ঘণ্টা দাঁড়ালে যে কেউ দার্শনিক হয়ে যায়, দেখে নিয়ো।", "Stand two hours in a gas queue and anybody turns philosopher, you'll see."]],
+      ["o", ["তবে হাসালে যাত্রী দুই দশ টাকা বেশি দেয়। আমি তাই পুরো হাসিতেই বিনিয়োগ করেছি।", "Mind you, make a passenger laugh and you get ten taka extra. So I've invested everything in laughs."]],
+    ],
+    [
+      ["o", ["একবার এক বুড়ো যাত্রী ফার্মগেটে নেমে ব্যাগ ফেলে গেল। খুলে দেখি বারো হাজার টাকা আর ওষুধ।", "Once an old passenger got out at Farmgate and left his bag. Inside: twelve thousand taka and medicine."]],
+      ["h", ["তারপর কী হলো?", "Then what?"]],
+      ["o", ["ওষুধের কাগজে ঠিকানা ছিল। তিনটা গলি ঘুরে বাড়ি খুঁজে দিয়ে এলাম।", "The prescription had an address. I went round three lanes and found the house."]],
+      ["o", ["উনি কেঁদে ফেললেন। আমি ভাবলাম, এবার নিশ্চয়ই বড় একটা পুরস্কার।", "He broke down crying. I thought, this is it, a big reward at last."]],
+      ["o", ["পেলাম এক কাপ লাল চা আর লম্বা একটা দোয়া। আজও বোধহয় ওই দোয়ায় গাড়ি চলে।", "I got one cup of black tea and a long prayer. I think the CNG still runs on that prayer."]],
+      ["o", ["গিন্নি শুনে বলল, বোকা। তারপর রাতে আমার পাতে মাছের বড় টুকরোটা দিল।", "My wife heard and said: fool. Then that night she put the big piece of fish on my plate."]],
+    ],
+    [
+      ["o", ["আমার বাড়ি ভোলায়। নদী এত বড়, ছোটবেলায় ভাবতাম ওপারে বিদেশ।", "I'm from Bhola. The river's so wide that as a kid I thought the far bank was abroad."]],
+      ["o", ["আমার বাবা মাছ ধরত। একবার নদী আমাদের ভিটেটাই নিয়ে গেল, ঘর, উঠান, আমগাছ সব।", "My father fished. One year the river took our whole homestead: house, yard, mango tree, all of it."]],
+      ["h", ["তখন বয়স কত?", "How old were you then?"]],
+      ["o", ["ষোলো। এক ব্যাগ জামা নিয়ে লঞ্চে উঠলাম, ঢাকায় এসে প্রথমে রিকশা চালালাম।", "Sixteen. I got on the launch with one bag of clothes and started out here on a rickshaw."]],
+      ["o", ["সদরঘাটে নেমে প্রথম দিনই হারিয়ে গিয়েছিলাম। সেই রাগেই বোধহয় এখন সব গলি চিনি।", "I got lost my very first day off the boat at Sadarghat. Maybe that's why I know every lane now, out of spite."]],
+      ["o", ["নদী তো গলি চেনে না, সোজা ঢুকে পড়ে। আমি অন্তত ঘুরে যাই।", "A river doesn't know lanes, it just walks straight in. At least I go round."]],
+    ],
+    [
+      ["o", ["হাসি দেখে ভেবো না আমি ঠকিনি। ঠকেছি, একদম বড় করে।", "Don't let the laughing fool you. I've been cheated, and in a big way."]],
+      ["o", ["এক লোক বলল, কিস্তিতে নিজের সিএনজি পাইয়ে দেবে। অফিস আছে, টেবিল আছে, সিল আছে।", "A man said he'd get me my own CNG on instalments. He had an office, a desk, a stamp."]],
+      ["o", ["তিন বছরের জমানো পঁয়ত্রিশ হাজার টাকা দিলাম। রসিদও পেলাম, খুব সুন্দর রসিদ।", "I gave him thirty-five thousand, three years of saving. I got a receipt too, a beautiful receipt."]],
+      ["h", ["আর সেই লোক?", "And the man?"]],
+      ["o", ["এক মাস পরে গিয়ে দেখি অফিসে মুরগির দোকান। মুরগিওয়ালাও ওকে খুঁজছে, ভাড়া পায়নি।", "A month later the office was a chicken shop. The chicken man was looking for him too, over the rent."]],
+      ["o", ["এখন কেউ সহজে পাইয়ে দেব বললে জিজ্ঞেস করি, অফিসটা কত দিনের, আসল কাগজ কই।", "Now if anyone says he can get me something easy, I ask how old the office is and where the real papers are."]],
+      ["o", ["গিন্নিকে এক বছর বলিনি। ও জানত টাকা জমছে, আমি রোজ হেসে বাড়ি ফিরতাম।", "I didn't tell my wife for a year. She thought the money was growing, and I came home laughing every day."]],
+    ],
+    [
+      ["o", ["আমার মেয়েটা ক্লাস ফোরে পড়ে। অঙ্কে আমার চেয়ে ভালো, ভাড়ার হিসাব ধরে ফেলে।", "My daughter's in class four. Better at sums than me, she catches me out on the fares."]],
+      ["o", ["গত মাসে স্কুলের বেতন বাকি পড়ল। মেয়ে কিছু বলল না, চুপ করে অঙ্ক করল।", "Last month her school fees went unpaid. She said nothing, just quietly did her sums."]],
+      ["h", ["খারাপ লাগল শুনে।", "I'm sorry to hear it."]],
+      ["o", ["সেই চুপটা জ্যামের চেয়ে ভারী। হাসি দিয়ে ঠেলা যায় না।", "That silence is heavier than any jam. You can't push it along with a laugh."]],
+      ["o", ["রাতে গ্যাসের লাইনে দাঁড়িয়ে হিসাব করি, এই মাসে কোনটা বাদ দেব।", "At night in the gas queue I work out what we'll do without this month."]],
+      ["o", ["সকালে আবার জোক বলি। যাত্রী তো আর আমার হিসাবের খাতা দেখতে ওঠেনি।", "In the morning, jokes again. The passenger didn't get in to look at my accounts."]],
+    ],
+    [
+      ["o", ["কেন এত রসিকতা করি, জানতে চেয়েছিলে না? চাওনি, তবু বলি।", "You wanted to know why I joke so much, didn't you? You didn't ask, but I'll tell you."]],
+      ["o", ["ভিটে ভাঙার রাতে আমার মা সবাইকে নৌকায় তুলে একটা হাসির গল্প বলেছিল।", "The night the river took our home, my mother got us all into the boat and told a funny story."]],
+      ["o", ["আমরা হাসছিলাম, পেছনে নদী উঠান খাচ্ছিল। সেদিন বুঝেছি, হাসিটা মায়ের ছাতা ছিল।", "We laughed while the river ate the yard behind us. That's when I understood: laughing was her umbrella."]],
+      ["h", ["কথাটা মনে থাকবে।", "I'll remember that."]],
+      ["o", ["একদিন একটা সিএনজি কিনব, নিজের নামে, কাগজ সব ঠিক। পেছনে লেখা থাকবে মেয়ের নাম।", "One day I'll buy a CNG in my own name, papers all proper, with my daughter's name on the back."]],
+      ["o", ["সেদিন মাকে সামনে বসিয়ে সব গলি ঘুরব। ভাড়া নেব না, শুধু একটা গল্প শুনব।", "That day I'll sit my mother up front and drive every lane. No fare, just one story."]],
+      ["o", ["কাউকে বলো না, নইলে বলব জ্যামে মাথা খারাপ হয়েছিল।", "Don't tell anyone, or I'll say the jam made me lose my head."]],
+    ],
+  ],
+  callHello: [
+    ["হ্যালো, রাসেল বলছি, মিরপুরের একমাত্র চালক যে ফোনও ধরে, গানও গায়।", "Hello, Rasel here, the only driver in Mirpur who takes calls and sings."],
+    ["বলো, বলো। জ্যামে আছি, সময়ের কোনো অভাব নেই।", "Go on, go on. I'm in a jam, I've got nothing but time."],
+    ["আরে তুমি! ভাবলাম মালিক ফোন করেছে, বুকটা ধক করে উঠেছিল।", "Oh, it's you! I thought it was the owner. My heart nearly jumped out."],
+    ["বলো কী খবর, হর্নের ফাঁকে ফাঁকে শুনছি।", "What's the news? I'm listening in between the horns."],
+    ["ফোন করেছ, ভালো করেছ। আজ কেউ আমার জোকে হাসেনি।", "Good thing you called. Nobody's laughed at my jokes today."],
+  ],
+  callBusy: [
+    ["যাত্রী আছে, আর মিটারের চেয়ে তাড়াতাড়ি গরম হচ্ছে। পরে ফোন দিই।", "I've got a passenger heating up faster than the meter. I'll call you later."],
+    ["গ্যাসের লাইনে আছি, একটু অন্যমনস্ক হলেই কেউ ঢুকে পড়বে। রাখি।", "I'm in the gas queue. Look away for a second and someone cuts in. Got to go."],
+    ["এখন সরু গলিতে ঢুকছি, দুই হাতই লাগবে। পরে কথা হবে।", "I'm going into a narrow lane, I need both hands. Talk later."],
+    ["সার্জেন্ট এদিকে তাকাচ্ছে, আমি হঠাৎ খুব ভদ্র চালক হয়ে গেলাম। রাখি।", "The sergeant's looking this way, and I've suddenly become a very polite driver. Bye."],
+  ],
+  callYes: [
+    ["চা? আমাকে চায়ের কথা বলতে হয় না, সিএনজি নিজেই ঘুরে যায়।", "Tea? You don't need to tell me. The CNG turns round by itself."],
+    ["আসছি। দশ মিনিট বলছি, মানে জ্যাম হিসাবে আধা ঘণ্টা।", "Coming. I'm saying ten minutes, which in jam time is half an hour."],
+    ["টার্মিনালের পাশের দোকানে বসো, আমি গলি দিয়ে উড়ে আসছি।", "Sit at the stall beside the terminal. I'm flying over through the lanes."],
+    ["চলো চলো, আজ বিল তোমার, জোক আমার। ন্যায্য ভাগ।", "Let's go. You get the bill, I bring the jokes. A fair split."],
+  ],
+  theyCall: [
+    {
+      key: "rasel_call_jama",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["খারাপ খবর, জমার দুইশো টাকা কম পড়েছে। মালিক আসছে, আমি গলিতে লুকিয়ে ফোন করছি।", "Bad news, I'm two hundred short for the owner. He's on his way and I'm hiding in a lane to call you."],
+          options: [
+            { text: ["দুইশো নিয়ে আসছি।", "I'm bringing two hundred."], go: "lend", out: { money: -200, rep: 2 } },
+            { text: ["আজ আমারও টানাটানি।", "Money's tight for me too today."], go: "no" },
+          ],
+        },
+        lend: { who: "o", say: ["তুমি মানুষ না, চলন্ত ব্যাংক। কাল ফেরত, সুদ হিসেবে একটা জোক ফ্রি।", "You're not a person, you're a bank on legs. Back tomorrow, with one free joke as interest."] },
+        no: { who: "o", say: ["আচ্ছা, তাহলে মালিককে জোক শোনাই। আগেরবার ত্রিশ টাকার কাজ হয়েছিল।", "Fine, I'll tell the owner a joke instead. Last time that was worth thirty taka."] },
+      },
+    },
+    {
+      key: "rasel_call_fine",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["শোনো, টার্মিনালে নতুন ফোন ঘুরছে। বলে ট্রাফিক অফিস, জরিমানা এখনই ঝটপট টাকায় পাঠান।", "Listen, a new call's going round the terminal. Says it's the traffic office: send your fine on Jhotpot Taka right now."],
+          options: [
+            { text: ["পাঠালে কী হয়?", "What if someone sends it?"], go: "explain", out: { sense: 1, lesson: ["আসল জরিমানার কাগজ থাকে, কারো ব্যক্তিগত নম্বর থাকে না। ফোন কেটে নিজে খোঁজ নিন।", "A real fine comes with papers, never someone's personal number. Hang up and check for yourself."] } },
+            { text: ["আমার তো গাড়িই নেই!", "I don't even own a car!"], go: "joke", out: { sense: 1 } },
+          ],
+        },
+        explain: { who: "o", say: ["পাঠালে ওরা খুশি, তুমি গরিব, জরিমানা কোথাও নেই। আসল জরিমানা কাগজে হয়, ব্যক্তিগত নম্বরে না।", "Send it and they're happy, you're poorer, and there never was a fine. Real fines are on paper, not a personal number."] },
+        joke: { who: "o", say: ["ওরা অত দেখে না। পাশের জনের রিকশার জরিমানাও চেয়েছে, রিকশায় নম্বরই নেই।", "They don't check. They asked the next man for a fine on his rickshaw, and it hasn't even got a number."] },
+      },
+    },
+    {
+      key: "rasel_call_daughter",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["আজ জোক না, সত্যি খবর। মেয়ে অঙ্কে ক্লাসে প্রথম হয়েছে, আমি সিগন্যালে হর্ন দিয়ে জানিয়েছি।", "No joke today, real news. My girl came first in maths, and I announced it on the horn at the signal."],
+          options: [
+            { text: ["দারুণ! মিষ্টি কোথায়?", "Wonderful! Where are the sweets?"], go: "sweet", out: { rep: 1 } },
+            { text: ["একটা ভালো খাতা কিনে দিই?", "Shall I get her a good notebook?"], go: "book", out: { money: -100, rep: 3 } },
+          ],
+        },
+        sweet: { who: "o", say: ["মিষ্টি আসছে। জ্যাম ছাড়ুক, কিংবা আগামী বছর, যেটা আগে হয়।", "Sweets are coming. When the jam clears, or next year, whichever's first."] },
+        book: { who: "o", say: ["খাতা! ও তো খুশিতে তোমাকেও অঙ্ক দেবে, ভুল করলে বকবে কিন্তু।", "A notebook! She'll be so pleased she'll set you sums, and she'll scold you if you get them wrong."] },
+      },
+    },
+    {
+      key: "rasel_call_chotpoti",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["কালশীর মোড়ে এক চটপটিওয়ালা আছে, মানুষ লাইন দিয়ে কাঁদে, ঝালে। চলো, ঘুরিয়ে আনি।", "There's a chotpoti man at the Kalshi turn. People queue up to cry from the chilli. Come on, I'll take you."],
+          options: [
+            { text: ["আসছি, ঝাল কম চাই।", "Coming, but go easy on the chilli."], go: "yes", out: { money: -80, rep: 2 } },
+            { text: ["আজ সময় নেই।", "No time today."], go: "no" },
+          ],
+        },
+        yes: { who: "o", say: ["ঝাল কম চটপটি মানে পানি ছাড়া নদী। আচ্ছা, বলে দেব, তবে ও শুনবে না।", "Mild chotpoti is a river with no water. Fine, I'll tell him, but he won't listen."] },
+        no: { who: "o", say: ["ঠিক আছে। তোমার ভাগেরটাও আমি খেয়ে নেব, আর কাঁদব দ্বিগুণ।", "All right. I'll eat your share too, and cry double."] },
+      },
+    },
+    {
+      key: "rasel_call_gas",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["বিপদে পড়েছি। মাঝরাস্তায় গ্যাস শেষ, মানিব্যাগ বাসায়, যাত্রী আমার দিকে তাকিয়ে আছে।", "I'm in trouble. Out of gas mid-road, wallet at home, and the passenger is staring at me."],
+          options: [
+            { text: ["টাকা নিয়ে আসছি।", "I'm coming with money."], go: "money", out: { money: -150, rep: 2 } },
+            { text: ["ঠেলতে আসছি।", "I'm coming to push."], go: "push", out: { rep: 1 } },
+            { text: ["জোক দিয়ে চালানো যায় না?", "Can't it run on jokes?"], go: "joke" },
+          ],
+        },
+        money: { who: "o", say: ["তুমি না এলে আজ সিএনজিসহ আমাকে বিক্রি হতে হতো। কাল শোধ করে দেব।", "If you hadn't come they'd have sold me along with the CNG. I'll pay you back tomorrow."] },
+        push: { who: "o", say: ["ঠেলতে আসবে? তুমি পেছনে ঠেলো, আমি সামনে বসে উৎসাহ দেব।", "Coming to push? You shove from behind, I'll sit up front and encourage you."] },
+        joke: { who: "o", say: ["চেষ্টা করেছি, ইঞ্জিন হাসে না। আচ্ছা, দেখি আর কাউকে পাই কি না।", "I tried, the engine doesn't laugh. All right, I'll see who else I can find."] },
+      },
+    },
+    {
+      key: "rasel_call_note",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["এক যাত্রী হাজার টাকার নোট দিয়ে ভাঙতি নিয়ে গেল। এখন নোটটা কেমন নরম নরম লাগছে।", "A passenger paid with a thousand-taka note and took his change. Now the note feels sort of soft."],
+          options: [
+            { text: ["জলছাপ আর সুতা দেখা দরকার।", "Check the watermark and the thread."], go: "check", out: { sense: 2, lesson: ["বড় নোট নেওয়ার আগে আলোর সামনে জলছাপ দেখুন, সুতায় হাত বোলান।", "Before taking a big note, hold it to the light for the watermark and feel the thread."] } },
+            { text: ["অন্য কাউকে চালিয়ে দিলেই হয়।", "Just pass it on to someone else."], go: "pass", out: { rep: -1 } },
+          ],
+        },
+        check: { who: "o", say: ["দেখলাম। জলছাপ নেই, সুতাও নেই, আটশো টাকা দিয়ে একটা ছবি কিনলাম।", "I looked. No watermark, no thread. I've paid eight hundred taka for a picture."] },
+        pass: { who: "o", say: ["না রে, ওটা করব না। আমি ঠকেছি ঠিক আছে, পরের জনও তো আমার মতোই গরিব।", "No, I won't do that. I got cheated, fine, but the next one's just as poor as me."] },
+      },
+    },
+  ],
+  favours: [
+    {
+      kind: "carry",
+      ask: ["এই টিফিন বাটিটা সামনের গ্যারেজে দিয়ে আসবে? গিন্নি রেঁধেছে, আমি এখন বেরোতে পারছি না।", "Can you take this tiffin box to the garage up ahead? My wife cooked it, and I can't get away now."],
+      goal: ["টিফিন বাটিটা চিহ্নিত জায়গায় নিয়ে যাও", "Take the tiffin box to the marked spot"],
+      done: ["পৌঁছে গেছে, যাক। খিদেয় লোকটা আমার সিএনজির সিট চিবাতে শুরু করেছিল।", "It got there? Good. He was so hungry he'd started chewing my CNG's seat."],
+    },
+    {
+      kind: "message",
+      ask: ["ওদিকে আমার এক চালক বন্ধু আছে। বলে দিয়ো, কালশীর রাস্তা খোঁড়া, ঘুরে যেতে।", "A driver friend of mine is over there. Tell him the Kalshi road's dug up and to go round."],
+      goal: ["রাসেলের বন্ধুকে রাস্তার খবরটা জানাও", "Give Rasel's friend the road news"],
+      done: ["বলেছ? ও এখন ভাববে আমি খুব দায়িত্বশীল, ভুল ধারণাটা থাকুক।", "You told him? Now he'll think I'm responsible. Let him keep that mistake."],
+    },
+    {
+      kind: "find",
+      ask: ["আমার চাবির রিংটা এদিকেই কোথাও পড়েছে। ছোট একটা প্লাস্টিকের নৌকা ঝোলানো।", "My key ring dropped somewhere round here. It's got a little plastic boat hanging off it."],
+      goal: ["আশেপাশে চাবির রিংটা খুঁজে দেখো", "Look around for the key ring"],
+      done: ["পেয়েছ! মেয়ের বানানো, এটার দাম সিএনজির চেয়ে বেশি, মালিককে বলো না।", "You found it! My daughter made it, so it's worth more than the CNG. Don't tell the owner."],
+    },
+  ],
+  closer: [
+    ["তোমার সাথে কথা বললে মনে হয় জ্যামটাও অত খারাপ না। বেশি না, একটু।", "Talking to you, the jam doesn't seem so bad. Not much better. A little."],
+    ["শোনো, আজ থেকে তোমার জন্য ভাড়া অর্ধেক। বাকি অর্ধেক চা খাইয়ে শোধ করবে।", "Listen, from today your fare's half. You'll pay the other half in tea."],
+    ["গিন্নি এখন তোমার নাম জানে। এটা বড় ব্যাপার, মালিকের নামও সে মনে রাখে না।", "My wife knows your name now. That's big, she doesn't even remember the owner's."],
+  ],
+  hurt: [
+    ["ফোন করলাম, ধরলে না। জোকটা একাই বলে একাই হাসলাম, খুব করুণ দৃশ্য।", "I called, you didn't pick up. I told the joke to myself and laughed alone. A sad sight."],
+    ["কথা দিলে, এলে না। জ্যামের দোহাইও দিলে না, ওটা তো আমার অজুহাত ছিল।", "You promised and didn't come. You didn't even blame the jam, and that one's my excuse."],
+    ["থাক, মন খারাপ করিনি। শুধু আজ কাউকে ফ্রি জোক দিচ্ছি না।", "Never mind, I'm not upset. I'm just not handing out free jokes today."],
+    ["বলে গেলে পাঁচ মিনিট, সেই পাঁচ মিনিট বারো নম্বর ঘুরে এল। রাগিনি, একটু চুপ হয়ে গেছি।", "You said five minutes, and those five minutes went round Number Twelve and back. I'm not angry, just quieter."],
+  ],
+  gift: [
+    ["আমার জন্য সত্যি? দাঁড়াও, সিএনজিকে জানিয়ে আসি।", "For me? Really? Wait, let me go tell the CNG."],
+    ["এটা দিয়ে কী করব জানি না, তবে ড্যাশবোর্ডে সাজিয়ে রাখব, যাত্রীদের দেখাব।", "I don't know what to do with it, but it's going on the dashboard for the passengers to admire."],
+    ["এত খরচ করলে কেন? পরের বার আরও বেশি করো।", "Why did you spend so much? Spend more next time."],
+    ["গিন্নি ভাববে আমি কিনেছি, খুব অবাক হবে। ধন্যবাদ, মন থেকে বলছি, জোক না।", "My wife will think I bought it and get a real shock. Thank you, from the heart, no joke."],
+  ],
+};

@@ -3,13 +3,15 @@ import type { Heading } from "./laneGraph";
 
 export type LightState = "red" | "amber" | "green";
 
-const GREEN = 13;
+const GREEN = 24;
 const AMBER = 2.2;
-const ALL_RED = 1.3;
+const ALL_RED = 1;
+/** Seconds of extra green for each step the road's class is above the one crossing it. */
+const MAIN_ROAD_EXTRA = 7;
+const RANK: Record<string, number> = { main: 2, secondary: 1, street: 0 };
 
-/** One signalised junction. Each phase is the set of arriving headings that may go.
- *  The round plaza runs one arm at a time so the ring always clears; ordinary
- *  junctions alternate the two road axes. */
+/** One signalised junction. Each phase is the set of arriving headings that may go: the two road axes
+ *  take turns, so any approach is green nearly half the time, and the bigger road gets longer. */
 export class SignalController {
   readonly phases: Heading[][];
   private phase = 0;
@@ -18,12 +20,14 @@ export class SignalController {
   onChange: (() => void) | null = null;
 
   constructor(readonly junction: Junction, offset: number) {
-    this.phases = junction.isPlaza ? [[0], [1], [2], [3]] : [[0, 2], [1, 3]];
+    this.phases = [[0, 2], [1, 3]];
     this.t = -offset % (GREEN + AMBER + ALL_RED);
   }
 
   private get greenTime(): number {
-    return this.junction.isPlaza ? GREEN * 0.75 : GREEN;
+    const { v, h } = this.junction;
+    const lead = RANK[v.cls] - RANK[h.cls];
+    return GREEN + (this.phases[this.phase][0] % 2 === 0 ? lead : -lead) * MAIN_ROAD_EXTRA;
   }
 
   update(dt: number): void {

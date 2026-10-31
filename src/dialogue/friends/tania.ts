@@ -1,0 +1,257 @@
+import type { FriendDef } from "../types";
+
+export const TANIA: FriendDef = {
+  key: "tania",
+  name: ["তানিয়া", "Tania"],
+  id: "npc_woman_apple",
+  region: "dhaka_dhanmondi",
+  hangout: "lake",
+  bio: ["ক্লিনিকে নার্সিং পড়ে, রাতের ডিউটি করে। কথা কম, খোঁচা বেশি।", "A nursing student on night shifts at a clinic. Few words, sharp ones."],
+  firstMeet: [
+    ["o", ["বসতে চাইলে বসুন। শুধু জিজ্ঞেস করবেন না আমি ঠিক আছি কি না।", "Sit if you want. Just don't ask me if I'm all right."]],
+    ["h", ["আচ্ছা, বসলাম।", "All right, sitting."]],
+    ["o", ["বারো ঘণ্টার ডিউটি শেষ করে এসেছি। এই গলাটা ক্লান্তির, রাগের না।", "I've just come off a twelve-hour shift. This voice is tired, not angry."]],
+    ["o", ["আমি তানিয়া। সামনের ক্লিনিকে নার্সিং পড়ি, রাতে ডিউটি করি।", "I'm Tania. I study nursing at the clinic up the road and work nights."]],
+    ["h", ["কঠিন কাজ নিশ্চয়ই।", "That must be hard."]],
+    ["o", ["রোগী কঠিন না। কঠিন হলো রোগীর আত্মীয়, যে ফোনে ভিডিও দেখে এসে ডাক্তারকে শেখায়।", "Patients aren't hard. Their relatives are, the ones who watch a video on their phone and come to teach the doctor."]],
+    ["o", ["আপনি কথা কম বলেন, ভালো। কাল ভোরে আবার এই বেঞ্চে বসতে পারেন।", "You don't talk much. Good. You may sit on this bench again tomorrow at dawn."]],
+  ],
+  smallTalk: [
+    ["রাত তিনটায় ক্যান্টিনের চা খেলে বোঝা যায়, জীবনে কিছুই সহজ না।", "Drink canteen tea at three in the morning and you learn that nothing in life is easy."],
+    ["এক রোগী বলল, আপনি হাসেন না কেন। বললাম, আপনার প্রেশারটা দেখে।", "A patient asked why I never smile. I said: I've seen your BP."],
+    ["ঘুমের কথা জিজ্ঞেস কোরো না। শেষ ঘুমিয়েছি গত বর্ষায়।", "Don't ask about sleep. I last slept during the previous monsoon."],
+    ["লেকের পানি দেখলে শান্তি লাগে। গন্ধ পেলে শান্তিটা চলে যায়।", "Looking at the lake is peaceful. Then you smell it and the peace goes."],
+    ["বাসে এক লোক হজমের বড়ি বেচছে। ডায়াবেটিসও সারায়, মনে হয় চাকরিও দেয়।", "A man on the bus is selling digestion pills. They cure diabetes too. Probably find you a job as well."],
+    ["নার্স শুনলেই সবাই ভাবে ফ্রি ডাক্তার। রিকশাওয়ালাও আমাকে কোমর দেখায়।", "Say nurse and everyone thinks free doctor. Even rickshaw pullers show me their backs."],
+    ["ডিউটি শেষে জুতা খুললে পা দুটো আমার কাছে ছুটির দরখাস্ত দেয়।", "When I take my shoes off after a shift, my feet hand in a leave application."],
+    ["আজ কেউ জিজ্ঞেস করেনি ডাক্তার কখন আসবে। নিশ্চয়ই স্বপ্ন দেখছি।", "Nobody asked me when the doctor's coming today. I must be dreaming."],
+    ["পানি খাও। সবাইকে বলি, কেউ খায় না, পরে স্যালাইন নিতে আসে।", "Drink water. I tell everyone, nobody does, and then they come in for saline."],
+    ["রাতে শহরটা অন্যরকম। জ্যাম নেই, শুধু জ্বর আর কাশি।", "The city's different at night. No jams, only fevers and coughs."],
+    ["বাড়ি থেকে ফোন আসে, খেয়েছিস? হ্যাঁ বলি, মিথ্যায় আমি এখন অভিজ্ঞ।", "Home calls to ask if I've eaten. I say yes. I'm experienced at lying now."],
+    ["আমাকে হাসানোর চেষ্টা কোরো না। এই রোগের ওষুধ নেই।", "Don't try to make me laugh. There's no medicine for this condition."],
+    ["কেউ বলে এক বোতল তেলে সব রোগ সারে। জিজ্ঞেস করো, ওর নিজের কাশিটা তাহলে কেন।", "Someone says one bottle of oil cures everything. Ask him why he's still got that cough."],
+    ["ধানমন্ডিতে সবাই লেকের পাশে দৌড়ায়। আমি দৌড়াই শুধু কলিংবেল বাজলে।", "In Dhanmondi everyone runs by the lake. I only run when the call bell goes."],
+    ["চা খাব, কিন্তু কথা কম। কানটাও বারো ঘণ্টা ডিউটি করেছে।", "I'll have tea, but less talk. My ears have worked twelve hours too."],
+    ["গরমে রোগী বাড়ে, বৃষ্টিতেও বাড়ে। রোগীরা আবহাওয়া খুব মেনে চলে।", "Patients go up in the heat and up in the rain. They follow the weather very closely."],
+    ["আজ একজন ধন্যবাদ বলল। আমি পেছনে তাকালাম, কাকে বলল।", "Someone said thank you today. I looked behind me to see who they meant."],
+    ["ক্লিনিকের ঘড়ি রাত দুইটায় থেমে যায়। ব্যাটারির দোষ না, ইচ্ছা করে।", "The clinic clock stops at two every night. Not the battery. On purpose."],
+    ["ডিউটির পর ঝালমুড়ি খাই। ডাক্তার জানলে বকবে, ডাক্তার নিজেও খায়।", "I have jhalmuri after a shift. The doctor would scold me, and the doctor eats it too."],
+  ],
+  teaTalks: [
+    [
+      ["o", ["তুমি বলছি, আপত্তি থাকলে জানিয়ো। ক্লান্ত মানুষের ব্যাকরণ ছোট হয়।", "I'm dropping the formal you. Object if you like. Tired people have short grammar."]],
+      ["o", ["চায়ে চিনি দিয়ো না। মিষ্টি যথেষ্ট আছে, আমাকে দেখছ না?", "No sugar in mine. There's enough sweetness already, can't you see me?"]],
+      ["h", ["দেখাই যাচ্ছে।", "Clearly."]],
+      ["o", ["ভালো, খোঁচা ধরতে পারো। অনেকে ভয় পেয়ে ক্ষমা চায়।", "Good, you can take a jab. Lots of people get scared and apologise."]],
+      ["o", ["ভোরে এখানে বসি, কারণ এখানে কেউ কিছু চায় না। ক্লিনিকে সবাই কিছু না কিছু চায়।", "I sit here at dawn because nobody here wants anything. At the clinic everybody wants something."]],
+    ],
+    [
+      ["o", ["প্রথম দিনের ডিউটি মনে আছে। সবার প্রেশার মাপলাম, যন্ত্র উল্টো ধরে।", "I remember my first shift. I checked everyone's BP with the machine the wrong way round."]],
+      ["o", ["বড় সিস্টার তাকিয়ে রইল। রোগী বলল, থাক, চেষ্টা তো করছ।", "The senior sister just stared. The patient said, never mind, at least you're trying."]],
+      ["h", ["লজ্জা লেগেছিল?", "Were you embarrassed?"]],
+      ["o", ["না। বাথরুমে গিয়ে দশ মিনিট কেঁদেছি, ওটা লজ্জা না, ওটা পানি কমানো।", "No. I cried in the bathroom for ten minutes. That isn't embarrassment, that's reducing fluids."]],
+      ["o", ["বড় সিস্টার সে রাতে আমাকে একটা সেদ্ধ ডিম দিলেন, কিছু বললেন না। ওই ডিম আমি ভুলিনি।", "That night the senior sister gave me a boiled egg and said nothing. I've never forgotten that egg."]],
+      ["o", ["এখন নতুন মেয়েরা কাঁদলে আমিও কিছু বলি না। একটা ডিম দিই, ওটাই প্রশিক্ষণ।", "Now when the new girls cry I say nothing either. I give them an egg. That's the training."]],
+    ],
+    [
+      ["o", ["সাত নম্বর বেডে এক বৃদ্ধা ছিলেন। রাত হলেই আমাকে নিজের মেয়ের নামে ডাকতেন।", "There was an old woman in bed seven. Every night she called me by her daughter's name."]],
+      ["o", ["প্রথমে ঠিক করে দিতাম, আমি নার্স। উনি বলতেন, হ্যাঁ, তুই তো বরাবরই জেদি।", "At first I corrected her: I'm the nurse. She'd say, yes, you were always stubborn."]],
+      ["h", ["সেই মেয়ে আসত?", "Did the daughter come?"]],
+      ["o", ["না। মেয়ে থাকে অনেক দূরে, রাতে ফোনটাও ধরতে পারত না।", "No. She lives very far away, and couldn't even pick up the phone at night."]],
+      ["o", ["তো আমি ওনার মেয়ে হয়ে গেলাম, রাত দুইটা থেকে চারটা পর্যন্ত। বেতন একই।", "So I became her daughter, two to four every morning. Same pay."]],
+      ["o", ["উনি বাড়ি ফিরে গেছেন। সাত নম্বর বেডে কেউ এলে এখনো একটু বেশি দেখি।", "She's gone home now. When someone's in bed seven I still look in a bit more often."]],
+    ],
+    [
+      ["o", ["ক্লিনিকের গেটে একটা লোক দাঁড়ায়, সাদা শার্ট, হাতে ফাইল। রোগীর আত্মীয় দেখলেই কাছে যায়।", "A man stands at the clinic gate, white shirt, file in hand. He goes straight for patients' relatives."]],
+      ["o", ["বলে, ডাক্তার আমার চেনা, সিরিয়াল করে দেব, তিন হাজার টাকা। সিরিয়াল আসলে ফ্রি।", "He says: I know the doctor, I'll get you a place in the queue for three thousand. The queue is free."]],
+      ["o", ["গত মাসে এক চাষি তার কাছ থেকে তেলও কিনেছে। সব রোগের তেল, আড়াই হাজার টাকা।", "Last month a farmer bought oil from him too. Oil for all diseases, two and a half thousand."]],
+      ["h", ["কেউ কিছু বলল না?", "Did nobody say anything?"]],
+      ["o", ["আমি গিয়ে জিজ্ঞেস করলাম, আপনার ফাইলে কী আছে। খুলে দেখি ফাইলে টিফিন।", "I went and asked what was in his file. He opened it. It was his lunch."]],
+      ["o", ["এখন আমাকে দেখলে সে অন্য গেটে চলে যায়। এটাই আমার একমাত্র পুরস্কার।", "Now he moves to the other gate when he sees me. That's the only award I've ever won."]],
+    ],
+    [
+      ["o", ["আমার বাড়ি নেত্রকোণায়, হাওরের ধারে। বর্ষায় স্কুলে যেতাম নৌকায়।", "I'm from Netrokona, on the edge of the wetlands. In the monsoon I went to school by boat."]],
+      ["o", ["পড়তে ঢাকায় এসেছে, এমন প্রথম মেয়ে আমি। লোকে বলল, ফিরবে না, কিংবা খুব তাড়াতাড়ি ফিরবে।", "I was the first girl from there to come to Dhaka to study. People said she won't come back, or she'll be back very soon."]],
+      ["h", ["বাড়িতে কে কে?", "Who's at home?"]],
+      ["o", ["আব্বা চাষ করেন, ছোট বোনটা পড়ে। আব্বা কথা কম বলেন, কার কাছে শিখেছি বুঝতেই পারছ।", "My father farms and my little sister studies. He doesn't talk much. You can see who I learned from."]],
+      ["o", ["আসার দিন আব্বা ঘাটে দাঁড়িয়ে ছিলেন, কিছু বলেননি। শুধু পকেটে দুইশো টাকা গুঁজে দিলেন।", "The day I left my father stood at the ghat and said nothing. He just tucked two hundred taka in my pocket."]],
+      ["o", ["ওই দুইশো টাকা খরচ করিনি, বইয়ের ভেতরে আছে। অভাবেও ছুঁইনি।", "I never spent that two hundred. It's inside a book. I haven't touched it even when I've had nothing."]],
+    ],
+    [
+      ["o", ["মাসে হাতে আসে ছয় হাজার টাকা। বোনের পড়ার জন্য তিন হাজার পাঠাই।", "I get six thousand taka a month. Three thousand goes home for my sister's studies."]],
+      ["o", ["হোস্টেলের ভাড়া দিই, খাই, আর এই চা। এই চা না থাকলে হিসাবটা মিলত।", "Then hostel rent, food and this tea. Without this tea the sums might work."]],
+      ["h", ["টানাটানি তো।", "That's tight."]],
+      ["o", ["এটাকে টানাটানি বলে না। টানাটানিতে অন্তত দুই দিকে কিছু থাকে।", "That's not tight. With tight, there's at least something at both ends."]],
+      ["o", ["দুই বছরের জুতা জোড়া দেখছ? মুচি আমাকে দেখলে উঠে দাঁড়ায়, পুরনো বন্ধুর মতো।", "See these two-year-old shoes? The cobbler stands up when he sees me, like an old friend."]],
+      ["o", ["বোনটা ফোনে জিজ্ঞেস করে নতুন জামা কিনলাম কি না। হ্যাঁ বলি, ওই মিথ্যাটা আমার একমাত্র শখ।", "My sister asks on the phone if I've bought a new dress. I say yes. That lie is my only hobby."]],
+    ],
+    [
+      ["o", ["তোমাকে বলি, কারণ তুমি বেশি দুঃখ দেখাও না। আমি ঠকেছিলাম, আশি হাজার টাকা।", "I'll tell you, because you don't overdo the sympathy. I got cheated, eighty thousand taka."]],
+      ["o", ["এক এজেন্সি বলল, বিদেশের হাসপাতালে নার্সের চাকরি, বেতন এখানকার দশ গুণ, ভিসা তিন মাসে।", "An agency said: nursing job at a hospital abroad, ten times the pay, visa in three months."]],
+      ["o", ["খুব ভদ্র লোক, বলল আপনার মতো মানুষই দরকার। ওই কথাটাতেই আমি গলে গেলাম।", "A very polite man. He said you're just the person we need. That sentence is what melted me."]],
+      ["h", ["টাকা এলো কোথা থেকে?", "Where did the money come from?"]],
+      ["o", ["আব্বা জমি বন্ধক রাখলেন। কিছু জিজ্ঞেস করলেন না, শুধু বললেন, যা।", "My father mortgaged his land. He asked nothing. He just said: go."]],
+      ["o", ["তিন মাস পর অফিসে তালা। ওই জমি এখনো ছাড়াতে পারিনি, প্রতি মাসে একটু একটু দিই।", "Three months later the office was locked. I still haven't freed that land. I pay a little every month."]],
+      ["o", ["লোকে বলে আমি কড়া, ঠিকই বলে। যে নরম ছিল, সে আশি হাজার টাকায় বিক্রি হয়ে গেছে।", "People say I'm hard, and they're right. The soft one was sold for eighty thousand taka."]],
+    ],
+    [
+      ["o", ["আমার বয়স তখন তেরো। এক বর্ষার রাতে আমার মা অসুস্থ হলো, হাসপাতাল নৌকায় আট ঘণ্টা।", "I was thirteen. One monsoon night my mother fell ill, and the hospital was eight hours away by boat."]],
+      ["o", ["নৌকায় মায়ের হাত ধরে বসে ছিলাম, কী করতে হবে জানতাম না। মা পৌঁছাতে পারল না।", "I sat in the boat holding her hand and didn't know what to do. She didn't make it."]],
+      ["o", ["একদিন ঘাটের পাশে একটা ছোট ঘর বানাব, একজন নার্স আর একটা প্রেশারের যন্ত্র।", "One day I'll build a small room by the ghat. One nurse and one BP machine."]],
+      ["o", ["যেন কাউকে রাতে নৌকায় বসে ভাবতে না হয়, কী করতে হবে। এটুকুই চাই।", "So that nobody has to sit in a boat at night wondering what to do. That's all I want."]],
+      ["o", ["প্রথম দিন বলেছিলাম, জিজ্ঞেস করবে না আমি ঠিক আছি কি না। আজ করতে পারো।", "The first day I told you not to ask if I'm all right. Today you may."]],
+      ["h", ["সব ঠিক আছে তো?", "Is everything all right?"]],
+      ["o", ["না। তবে চা ভালো, আর আজ রাতে আবার ডিউটি আছে।", "No. But the tea's good, and there's another shift tonight."]],
+    ],
+  ],
+  callHello: [
+    ["বলো। ডিউটিতে আছি, রোগী ঘুমাচ্ছে, তাই ধরলাম।", "Go on. I'm on duty and the patient's asleep, so I picked up."],
+    ["তানিয়া। কেউ অসুস্থ না হলে দুই মিনিট দিতে পারি।", "Tania. If nobody's ill, I can give you two minutes."],
+    ["এত ভোরে ফোন? ও, তোমার জন্য ভোর, আমার জন্য রাত।", "A call this early? Oh right, it's morning for you and night for me."],
+    ["হ্যালো। যদি জিজ্ঞেস করো কেমন আছি, রেখে দেব।", "Hello. If you ask how I am, I'm hanging up."],
+    ["হ্যাঁ, শুনছি। তুমি ফোন করলে খারাপ লাগে না, কাউকে বলো না।", "Yes, I'm listening. It's not terrible when you call. Tell no one."],
+  ],
+  callBusy: [
+    ["ডিউটিতে, একজনের স্যালাইন শেষের দিকে। রাখলাম।", "On duty. Someone's saline is nearly out. Bye."],
+    ["এখন ঘুমাচ্ছি। হ্যাঁ, এটাই আমার ঘুম, দাঁড়িয়ে ফোন ধরা।", "I'm asleep right now. Yes, this is what my sleep looks like, standing up holding a phone."],
+    ["বড় সিস্টার তাকিয়ে আছেন, উনি তাকালে ফোন গরম হয়ে যায়। পরে।", "The senior sister's looking at me. When she looks, phones heat up. Later."],
+    ["রাউন্ড চলছে, ডাক্তারের পেছনে দৌড়াচ্ছি। তোমার জ্বর না থাকলে পরে বলো।", "I'm on rounds, running behind the doctor. Unless you've got a fever, tell me later."],
+  ],
+  callYes: [
+    ["আসছি। বেশি কথা বলব না, তোমারও বলার দরকার নেই।", "Coming. I won't talk much, and you don't need to either."],
+    ["লেকের বেঞ্চে থাকো। দেরি হলে বুঝবে রোগী আমাকে ছাড়েনি।", "Wait on the lake bench. If I'm late, a patient wouldn't let me go."],
+    ["চা? আজ দরকার ছিল, চিনি ছাড়া, ভুলো না।", "Tea? I needed that today. No sugar, don't forget."],
+    ["ঠিক আছে। ডিউটি শেষ হলেই আসছি, আমাকে দেখে ভয় পেয়ো না।", "All right. I'll come when my shift ends. Don't be frightened when you see me."],
+  ],
+  theyCall: [
+    {
+      key: "tania_call_hospital",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["একটা ফোন ঘুরছে। বলে আপনার আত্মীয় হাসপাতালে ভর্তি, এখনই ঝটপট টাকায় পনেরো হাজার পাঠান।", "There's a call going round. It says your relative's in hospital, send fifteen thousand on Jhotpot Taka right now."],
+          options: [
+            { text: ["আগে আত্মীয়কে ফোন করা যায়।", "You could ring the relative first."], go: "right", out: { sense: 2, lesson: ["ভয় পেলে আগে নিজে খোঁজ নিন। আত্মীয়ের নম্বরে ফোন দিলেই অর্ধেক কাজ শেষ।", "When you're scared, check for yourself first. One call to the relative's own number does half the job."] } },
+            { text: ["ভয় তো লাগবেই।", "Anyone would be scared."], go: "scared", out: { sense: 1 } },
+          ],
+        },
+        right: { who: "o", say: ["ঠিক, কোনো হাসপাতাল ফোনে অগ্রিম টাকা চায় না। ভর্তি আগে, টাকার ঝগড়া পরে।", "Right. No hospital asks for advance money over the phone. Admission first, arguing about money later."] },
+        scared: { who: "o", say: ["ভয়টাই ওদের পুঁজি। ফোন রেখে আত্মীয়কে ফোন দাও, তারপর ভয় পাও, সময় আছে।", "Fear is their capital. Hang up, ring the relative, then be scared. There's time."] },
+      },
+    },
+    {
+      key: "tania_call_medicine",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["ডিউটিতে আটকা, এক বৃদ্ধ রোগীর লোক আসেনি। দেড়শো টাকার একটা ওষুধ এনে দেবে?", "I'm stuck on duty and an old patient's people haven't come. Could you fetch a hundred-and-fifty-taka medicine?"],
+          options: [
+            { text: ["এনে দিচ্ছি।", "I'll bring it."], go: "yes", out: { money: -150, rep: 3 } },
+            { text: ["এখন সম্ভব না।", "I can't just now."], go: "no" },
+          ],
+        },
+        yes: { who: "o", say: ["ধন্যবাদ পরে বলব। আগে ওষুধের নামটা মিলিয়ে নিয়ো, একই রকম নাম অনেক আছে।", "I'll say thanks later. First check the name of the medicine, there are plenty that sound alike."] },
+        no: { who: "o", say: ["ঠিক আছে। গেটের লোকটাকে বলি, সে অন্তত হাঁটতে পারে।", "Fine. I'll ask the man at the gate. He can walk, at least."] },
+      },
+    },
+    {
+      key: "tania_call_exam",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["পাস করেছি। চিৎকার করছি না, কারণ পাশের ঘরে রোগী ঘুমাচ্ছে।", "I passed. I'm not screaming, because a patient's asleep next door."],
+          options: [
+            { text: ["দারুণ! মিষ্টি নিয়ে আসছি।", "Great! I'm bringing sweets."], go: "sweet", out: { money: -100, rep: 3 } },
+            { text: ["আগেই জানতাম।", "I knew you would."], go: "knew", out: { rep: 1 } },
+          ],
+        },
+        sweet: { who: "o", say: ["মিষ্টি আনলে পুরো ওয়ার্ডের জন্য আনতে হবে। না, দুইটা আনো, লুকিয়ে খাব।", "Bring sweets and the whole ward will want some. No, bring two. We'll eat them in secret."] },
+        knew: { who: "o", say: ["মিথ্যা, কেউ জানত না, আমিও না। তবে শুনতে খারাপ লাগল না।", "A lie. Nobody knew, including me. But it didn't sound bad."] },
+      },
+    },
+    {
+      key: "tania_call_testing",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["আমাদের গলিতে দুইজন বাসায় বাসায় ফ্রি ডায়াবেটিস পরীক্ষা করছে। তোমার দিকেও যেতে পারে।", "Two people are doing free diabetes tests door to door in our lane. They may come your way too."],
+          options: [
+            { text: ["ফ্রি তো ভালোই!", "Free sounds good!"], go: "free", out: { sense: 2, lesson: ["ফ্রি পরীক্ষার পরে দামি ওষুধ বেচলে বুঝবেন, ওটা চিকিৎসা না, বিক্রি।", "If a free test ends in expensive medicine for sale, that isn't treatment, it's a sales pitch."] } },
+            { text: ["কার্ড দেখতে চাওয়া দরকার।", "Better ask to see their card."], go: "card", out: { sense: 1, rep: 1 } },
+          ],
+        },
+        free: { who: "o", say: ["ফ্রি পরীক্ষা, তারপর বলবে অবস্থা খারাপ, এই ওষুধ চার হাজার টাকা। পরীক্ষাটাই ছিল বিজ্ঞাপন।", "Free test, then they say you're in a bad way and this medicine is four thousand. The test was the advert."] },
+        card: { who: "o", say: ["দেখতে চেয়ো, আর ওদের ওষুধ কিনো না। আসল স্বাস্থ্যকর্মী দরজায় ওষুধের দাম বলে না।", "Do ask, and don't buy their medicine. A real health worker doesn't quote prices at your door."] },
+      },
+    },
+    {
+      key: "tania_call_lake",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["কাল ভোরে লেকে হাঁটব। ডাকছি না, জানাচ্ছি।", "I'm walking by the lake at dawn tomorrow. I'm not inviting you, I'm informing you."],
+          options: [
+            { text: ["আসব।", "I'll be there."], go: "yes", out: { rep: 2 } },
+            { text: ["ভোরে ওঠা কঠিন।", "Dawn is hard for me."], go: "no" },
+          ],
+        },
+        yes: { who: "o", say: ["ছয়টায়। দেরি করলে একা হাঁটব, পার্থক্য হবে না, মানে একটু হবে।", "Six o'clock. If you're late I'll walk alone. It makes no difference. Well, a little."] },
+        no: { who: "o", say: ["ঠিক আছে, আমি সারা রাত জেগে হাঁটব, তুমি ঘুমাও। ন্যায্য পৃথিবী।", "All right. I'll walk after being up all night, and you sleep. A just world."] },
+      },
+    },
+    {
+      key: "tania_call_stipend",
+      nodes: {
+        start: {
+          who: "o",
+          say: ["আমার বোনের কাছে ফোন এসেছে, উপবৃত্তির টাকা পেতে ওটিপি লাগবে। বলছে শিক্ষা অফিস থেকে।", "My sister got a call saying she needs to give an OTP to get her stipend. They say they're from the education office."],
+          options: [
+            { text: ["ওটিপি দেওয়া যাবে না।", "She can't give the OTP."], go: "right", out: { sense: 2, lesson: ["টাকা পেতে কোড লাগে না। কোড দিলে টাকা চলে যায়, আসে না।", "You don't need a code to receive money. Give the code and money leaves, it doesn't arrive."] } },
+            { text: ["স্কুলে গিয়ে জিজ্ঞেস করলে হয়।", "She could ask at the school."], go: "school", out: { sense: 1, rep: 1 } },
+            { text: ["উপবৃত্তি তো দরকার।", "But she needs the stipend."], go: "need", out: { sense: 1 } },
+          ],
+        },
+        right: { who: "o", say: ["আমিও তাই বললাম, ও শোনে না। তোমার নাম করে আরেকবার বলি।", "That's what I said, and she doesn't listen. I'll tell her again in your name."] },
+        school: { who: "o", say: ["ভালো কথা, শিক্ষক চেনা মানুষ, ফোনের গলা অচেনা। কাল সকালেই পাঠাব।", "Good thinking. The teacher's someone she knows, the phone voice isn't. I'll send her tomorrow morning."] },
+        need: { who: "o", say: ["দরকার বলেই ওরা জানে কাকে ফোন করতে হয়। টাকা পেতে কোড লাগে না, মনে রেখো।", "Needing it is how they know who to call. You don't need a code to receive money, remember that."] },
+      },
+    },
+  ],
+  favours: [
+    {
+      kind: "carry",
+      ask: ["এই ওষুধের প্যাকেটটা সামনের বাসায় এক বৃদ্ধকে দিয়ে আসবে? উনি সিঁড়ি নামতে পারেন না।", "Can you take this medicine to an old man in the house ahead? He can't manage the stairs."],
+      goal: ["ওষুধের প্যাকেটটা চিহ্নিত জায়গায় নিয়ে যাও", "Take the medicine to the marked spot"],
+      done: ["দিয়েছ? উনি চা সাধলে খেয়ো না, চিনি তিন চামচ।", "Done? If he offers you tea, don't drink it. Three spoons of sugar."],
+    },
+    {
+      kind: "message",
+      ask: ["গেটের লোকটাকে বলে এসো, ফাইল হাতে ওই দালাল আবার এলে যেন আমাকে ডাকে।", "Tell the man at the gate that if that tout with the file comes back, he's to call me."],
+      goal: ["গেটের লোকটাকে তানিয়ার কথা জানাও", "Pass Tania's message to the man at the gate"],
+      done: ["বলেছ? আজ আমার তিন ঘণ্টা ঘুম হয়েছে, দালালের কপাল খারাপ।", "You told him? I slept three hours today, so that tout's luck is out."],
+    },
+    {
+      kind: "find",
+      ask: ["লেকের পাড়ে আমার পরিচয়পত্র পড়ে গেছে। ওটা ছাড়া গেটে ঢুকতে দেয় না, যদিও সবাই আমাকে চেনে।", "I've dropped my ID by the lake. They won't let me in without it, even though everyone knows me."],
+      goal: ["আশেপাশে পরিচয়পত্রটা খুঁজে দেখো", "Look around for the ID card"],
+      done: ["পেয়েছ, ধন্যবাদ। ছবিটা দেখো না, ওটা ডিউটির পরে তোলা।", "You found it, thanks. Don't look at the photo, it was taken after a shift."],
+    },
+  ],
+  closer: [
+    ["তুমি এলে বিরক্ত লাগে না। আমার কাছ থেকে এর চেয়ে ভালো প্রশংসা পাবে না।", "You don't annoy me when you come. You won't get higher praise from me."],
+    ["ডিউটির পরে একা থাকতে চাই। তুমি থাকলেও একা থাকার মতোই লাগে, ভালো অর্থে।", "After a shift I want to be alone. With you here it still feels like being alone, in the good way."],
+    ["বোনকে তোমার কথা বলেছি। ও জিজ্ঞেস করল কেমন মানুষ, বললাম চলে।", "I told my sister about you. She asked what you're like. I said: passable."],
+  ],
+  hurt: [
+    ["আসলে না। ঠিক আছে, খালি বেঞ্চের সাথে চা খেলাম, ও অন্তত সময়মতো ছিল।", "You didn't come. Fine, I had tea with an empty bench. At least it was on time."],
+    ["ফোন ধরোনি, তাও দুপুরে। অজুহাত বানিয়ে রাখো, আমি শুনব না।", "You didn't pick up, and at midday too. Prepare your excuse, I won't be listening."],
+    ["আমি রাগ করি না। আমি শুধু মনে রাখি, চার্টে লিখে।", "I don't get angry. I just remember, and I write it on the chart."],
+    ["ভাবো আমি কিছু মনে করিনি। এই ভুলটা রোগীরাও করে।", "Go ahead and think I didn't mind. Patients make that mistake too."],
+  ],
+  gift: [
+    ["আমার জন্য? রাখলাম, ধন্যবাদ বলতে একটু সময় লাগে।", "For me? I'll keep it. Thank you takes me a while."],
+    ["উপহার দিয়ে আমাকে নরম করতে পারবে না। তবে চেষ্টাটা খারাপ না।", "You can't soften me with gifts. It's not a bad attempt, though."],
+    ["শেষ কবে কিছু পেয়েছিলাম জানো? প্রেশারের যন্ত্র, সেটাও ক্লিনিকের।", "Know the last thing I was given? A BP machine, and that belonged to the clinic."],
+    ["হোস্টেলের মেয়েরা জিজ্ঞেস করবে কে দিল। বলব এক রোগী, তুমি রোগী না হলে ভালো।", "The girls at the hostel will ask who gave it. I'll say a patient. It's better if you never become one."],
+  ],
+};

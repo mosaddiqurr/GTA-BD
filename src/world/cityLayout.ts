@@ -29,6 +29,8 @@ export interface Block {
   z0: number;
   z1: number;
   kind: BlockKind;
+  /** The grid cell it starts in, which is what the region's data calls it. */
+  key: string;
   sidewalk: number;
   /** Radius of the rounded kerb at each corner: SW, SE, NE, NW. */
   corners: [number, number, number, number];
@@ -40,6 +42,8 @@ export class CityLayout {
   readonly junctions: Junction[] = [];
   readonly blocks: Block[] = [];
   readonly roadsByLine = new Map<string, RoadDef>();
+  /** Which block each cell of the grid of road lines belongs to. */
+  private owner: number[][] = [];
 
   constructor(readonly data: RegionLayout) {
     this.buildJunctions();
@@ -86,7 +90,8 @@ export class CityLayout {
     const { xLines, zLines, blocks: kinds } = this.data;
     const nx = xLines.length - 1;
     const nz = zLines.length - 1;
-    const owner: number[][] = Array.from({ length: nx }, () => new Array(nz).fill(-1));
+    const owner = this.owner;
+    for (let i = 0; i < nx; i++) owner.push(new Array(nz).fill(-1));
     for (let i = 0; i < nx; i++) {
       for (let j = 0; j < nz; j++) {
         if (owner[i][j] >= 0) continue;
@@ -136,6 +141,7 @@ export class CityLayout {
           z0,
           z1,
           kind,
+          key: `${i},${j}`,
           sidewalk: main ? 5.2 : sec ? 4.2 : 3.2,
           corners,
           sideRoad: [north, east, south, west],
@@ -146,12 +152,32 @@ export class CityLayout {
 
   /** True if a world point stands on a raised block (footpath or building lot). */
   blockAt(x: number, z: number): Block | null {
-    for (const b of this.blocks) {
-      if (x >= b.x0 && x <= b.x1 && z >= b.z0 && z <= b.z1) {
-        return insideRounded(b, x, z) ? b : null;
+    const i = lineIndex(this.data.xLines, x), j = lineIndex(this.data.zLines, z);
+    if (i < 0 || j < 0) return null;
+    const b = this.blocks[this.owner[i][j]];
+    if (x >= b.x0 && x <= b.x1 && z >= b.z0 && z <= b.z1) return insideRounded(b, x, z) ? b : null;
+    return null;
+  }
+
+  /** Is this spot within a stride or two of the kerb, on either side of it? */
+  nearRoad(x: number, z: number, within: number): boolean {
+    return Math.abs(this.kerbDistance(x, z)) < within;
+  }
+
+  /** Distance from a point on the road to the nearest raised kerb; negative when on the footpath. */
+  kerbDistance(x: number, z: number): number {
+    let best = Infinity;
+    // The block it's in and the ones round it: a kerb is never further away than those.
+    const nx = this.owner.length, nz = this.owner[0].length;
+    const i = lineIndex(this.data.xLines, x), j = lineIndex(this.data.zLines, z);
+    const ci = i < 0 ? (x < 0 ? 0 : nx - 1) : i, cj = j < 0 ? (z < 0 ? 0 : nz - 1) : j;
+    for (let a = Math.max(ci - 1, 0); a <= Math.min(ci + 1, nx - 1); a++) {
+      for (let c = Math.max(cj - 1, 0); c <= Math.min(cj + 1, nz - 1); c++) {
+        const d = distanceToBlock(this.blocks[this.owner[a][c]], x, z);
+        if (d < best) best = d;
       }
     }
-    return null;
+    return best;
   }
 
   groundHeight(x: number, z: number): number {
@@ -167,12 +193,43 @@ export class CityLayout {
     return null;
   }
 
+  /** What a block is known as, if it's somewhere people would name. */
+  areaOf(b: Block): string | null {
+    const cx = (b.x0 + b.x1) / 2, cz = (b.z0 + b.z1) / 2;
+    if (!["stadium", "zoo", "garden", "river", "stage", "lake"].includes(b.kind)) return null;
+    const area = this.data.areas.find((a) => cx >= a.x0 && cx <= a.x1 && cz >= a.z0 && cz <= a.z1);
+    return area?.nameBn ?? null;
+  }
+
   areaAt(x: number, z: number): string {
     for (const a of this.data.areas) {
       if (x >= a.x0 && x <= a.x1 && z >= a.z0 && z <= a.z1) return a.nameBn;
     }
     return this.data.areas[this.data.areas.length - 1].nameBn;
   }
+}
+
+/** Which gap between road lines this is in, or -1 if it's outside them all. */
+function lineIndex(lines: number[], v: number): number {
+  if (v < lines[0] || v > lines[lines.length - 1]) return -1;
+  let lo = 0, hi = lines.length - 2;
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1;
+    if (lines[mid] <= v) lo = mid;
+    else hi = mid - 1;
+  }
+  return lo;
+}
+
+function distanceToBlock(b: Block, x: number, z: number): number {
+  const [sw, se, ne, nw] = b.corners;
+  // Inside a corner's quadrant the edge is an arc; everywhere else it is a straight side.
+  if (x < b.x0 + sw && z < b.z0 + sw) return Math.hypot(x - b.x0 - sw, z - b.z0 - sw) - sw;
+  if (x > b.x1 - se && z < b.z0 + se) return Math.hypot(x - b.x1 + se, z - b.z0 - se) - se;
+  if (x > b.x1 - ne && z > b.z1 - ne) return Math.hypot(x - b.x1 + ne, z - b.z1 + ne) - ne;
+  if (x < b.x0 + nw && z > b.z1 - nw) return Math.hypot(x - b.x0 - nw, z - b.z1 + nw) - nw;
+  const dx = Math.max(b.x0 - x, x - b.x1), dz = Math.max(b.z0 - z, z - b.z1);
+  return dx > 0 || dz > 0 ? Math.hypot(Math.max(dx, 0), Math.max(dz, 0)) : Math.max(dx, dz);
 }
 
 function insideRounded(b: Block, x: number, z: number): boolean {

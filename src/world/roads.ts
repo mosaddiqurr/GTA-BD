@@ -5,7 +5,7 @@ import { Geo, RGB, Rect } from "./geo";
 import { DIR, Heading, LaneGraph, STOP_BACK, leftOf } from "../traffic/laneGraph";
 import type { CollisionWorld } from "./collision";
 
-const WORLD = 700; // half size of the ground plane
+const WORLD = 1180; // half size of the ground plane
 
 /** Outline of a block's kerb, counter-clockwise from above, with rounded corners. */
 export function blockOutline(b: Block, segs = 8): [number, number][] {
@@ -26,6 +26,8 @@ export function blockOutline(b: Block, segs = 8): [number, number][] {
 }
 
 export interface RoadSurfaces {
+  /** Darker and shinier when wet. */
+  setWet: (k: number) => void;
   ground: Mesh;
   markings: Mesh | null;
   footpath: Mesh | null;
@@ -87,7 +89,15 @@ export function buildRoads(
   if (kerbs) kerbs.receiveShadows = true;
 
   const markings = buildMarkings(scene, layout, anisotropy);
-  return { ground, markings, footpath, kerbs, groundMaterial, paverMaterial };
+  const roadColour = groundMaterial.albedoColor.clone(), pathColour = paverMaterial.albedoColor.clone();
+  const roadRough = groundMaterial.roughness ?? 1, pathRough = paverMaterial.roughness ?? 1;
+  const setWet = (k: number): void => {
+    groundMaterial.albedoColor.copyFrom(roadColour).scaleInPlace(1 - 0.38 * k);
+    paverMaterial.albedoColor.copyFrom(pathColour).scaleInPlace(1 - 0.3 * k);
+    groundMaterial.roughness = roadRough * (1 - 0.55 * k);
+    paverMaterial.roughness = pathRough * (1 - 0.45 * k);
+  };
+  return { ground, markings, footpath, kerbs, groundMaterial, paverMaterial, setWet };
 }
 
 function buildBlockSurface(b: Block, walk: Geo, kerb: Geo, r: Rng, layout: CityLayout): void {

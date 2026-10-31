@@ -1,8 +1,76 @@
-// All player-facing text lives here so an English pack can be added later.
+// All player-facing text lives here. Bangla comes first: `src/localization/english.ts` lays the English
+// over this object at startup when that language is chosen, and newer text carries both with `L`.
+export type Lang = "bn" | "en";
+export const lang: Lang = (() => {
+  try {
+    return localStorage.getItem("bow.lang") === "en" ? "en" : "bn";
+  } catch {
+    return "bn";
+  }
+})();
+
+// The voices only speak Bangla, so English on screen has to remember what's said out loud.
+const spoken = new Map<string, string>();
+
+export function noteSpoken(shown: string, said: string): void {
+  spoken.set(shown, said);
+}
+
+/** What's said aloud for this line on screen. */
+export function spokenFor(shown: string): string {
+  return spoken.get(shown) ?? shown;
+}
+
+// Names and odd words kept outside this file, and what they are in English when that's chosen.
+const names = new Map<string, string>();
+
+export function setNames(list: Record<string, string>): void {
+  for (const [k, v] of Object.entries(list)) names.set(k, v);
+}
+
+/** A name from the district data or elsewhere, in the language in use. */
+export function N(s: string): string {
+  if (lang === "bn") return s;
+  const known = names.get(s);
+  if (known) return known;
+  return s.replace(/[০-৯]/g, (d) => String("০১২৩৪৫৬৭৮৯".indexOf(d)));
+}
+
+// How strangers address the hero. The older lines all say "ভাই", which suits a young man only.
+// Only where it's said to the hero: not "my brother" or "the younger brother".
+export const ADDRESS_RE = /(?<!আমার |ছোট |বড় |তার |ওর |ওনার |মেজো |এক |দুই |তিন |চাচাতো |মামাতো )ভাই(?![া-ৌ্য়])/g;
+let addressWord = "ভাই";
+let addressEn = "bhai";
+
+export function setAddress(b: string, e: string): void {
+  addressWord = b;
+  addressEn = e;
+}
+
+/** A line with the word for the hero put right. The voices have a recording of each version. */
+export function addressed(text: string): string {
+  if (addressWord === "ভাই") return text;
+  const out = lang === "en" ? text.replace(/\bbhai\b/g, addressEn) : text.replace(ADDRESS_RE, addressWord);
+  if (out !== text && lang === "en") spoken.set(out, spokenFor(text).replace(ADDRESS_RE, addressWord));
+  return out;
+}
+
+/** A piece of text in both languages. */
+export function L(b: string, e: string): string {
+  if (lang === "bn") return b;
+  spoken.set(e, b);
+  return e;
+}
+
+/** The same, for a line of writing kept as a pair. */
+export function T(l: readonly [string, string]): string {
+  return L(l[0], l[1]);
+}
+
 export const bn = {
   title: "বাংলাদেশ ওপেন ওয়ার্ল্ড",
   subtitle: "মিরপুর ১০, ঢাকা",
-  build: "দ্বিতীয় সংস্করণ",
+  build: "অষ্টম সংস্করণ",
   play: "খেলা শুরু করুন",
   resume: "চালিয়ে যান",
   loading: "লোড হচ্ছে",
@@ -31,24 +99,331 @@ export const bn = {
     dusk: "সন্ধ্যা",
     night: "রাত",
   },
+  journal: {
+    title: L("খাতা", "Journal"),
+    tabMissions: L("মিশন", "Missions"),
+    tabPeople: L("বন্ধু", "Friends"),
+    tabStats: L("হিসাব", "Stats"),
+    tabLessons: L("শেখা", "Lessons"),
+    done: L("শেষ", "Done"),
+    locked: L("এখনও বন্ধ", "Not yet"),
+    next: L("এটাই এখন", "Up next"),
+    replay: L("আবার খেলুন", "Replay"),
+    off: L("মিশন বন্ধ করা আছে (সেটিংস)।", "Missions are switched off (Settings)."),
+    noLessons: L("এখনও কিছু শেখা হয়নি।", "Nothing learnt yet."),
+    statRep: L("সুনাম", "Standing"),
+    statSense: L("সতর্কতা", "Scam sense"),
+    statEarned: L("আয়", "Earned"),
+    statCrashes: L("ধাক্কা", "Crashes"),
+    statFell: L("ঠকেছেন", "Fell for scams"),
+    statSpotted: L("ধরেছেন", "Spotted scams"),
+    statPhotos: L("ছবি", "Photos"),
+    statStory: L("গল্প", "Story"),
+    friendsNone: L("এখনও কোনো বন্ধু হয়নি।", "No friends yet."),
+  },
+  life: {
+    collapsed: (fee: string) => L(`মাথা ঘুরে পড়ে গিয়েছিলেন। লোকজন ক্লিনিকে নিয়ে এসেছে। খরচ ${fee} টাকা।`, `You passed out, and people brought you to the clinic. The bill is ${fee} taka.`),
+    collapsedFree: L("মাথা ঘুরে পড়ে গিয়েছিলেন। লোকজন ক্লিনিকে নিয়ে এসেছে। টাকা নেই বলে ডাক্তার এবার ছেড়ে দিলেন।", "You passed out, and people brought you to the clinic. You've no money, so the doctor lets it go this once."),
+    tired: L("দম ফুরিয়ে গেছে। একটু হাঁটুন।", "Out of breath. Walk for a bit."),
+    sleptWell: L("ঘুমিয়ে শরীর ভরে গেল। খেলা সেভ হয়েছে।", "A good sleep, and you feel restored. Game saved."),
+    teaAtHome: L("<kbd>G</kbd> ঘরে চা বানান", "<kbd>G</kbd> Make tea at home"),
+    teaMade: L("নিজের হাতের চা। আহ!", "Tea made by your own hand. Ah."),
+    cookPrompt: (name: string) => L(`<kbd>H</kbd> রান্না করুন: ${name}`, `<kbd>H</kbd> Cook: ${name}`),
+  },
+  ui: {
+    collapsedFail: ["শরীর আর চলছিল না।", "Your body gave out."] as [string, string],
+    otherDistrict: L("এই মিশন অন্য জেলায়। সেখানে গিয়ে খেলুন।", "That mission's in another district. Go there to replay it."),
+    language: L("ভাষা", "Language"),
+    languageHint: L("বদলালে খেলা আবার লোড হবে। কণ্ঠ বাংলাই থাকবে।", "The game reloads to change it. The voices stay in Bangla."),
+    easyTab: L("সহজ", "Easy"),
+    soundOn: L("শব্দ", "Sound"),
+    soundHint: L("পুরো খেলার শব্দ চালু বা বন্ধ", "All sound in the game, on or off"),
+    volume: L("শব্দের জোর", "Volume"),
+    test: L("শব্দ পরীক্ষা", "Test sound"),
+    soundRunning: L("শব্দ চলছে", "Sound is playing"),
+    soundMuted: L("শব্দ বন্ধ করা আছে", "Sound is switched off"),
+    soundBlocked: L("ব্রাউজার শব্দ আটকে রেখেছে। পর্দায় একবার ক্লিক করুন।", "The browser is holding sound back. Click once on the screen."),
+    soundNotYet: L("খেলা শুরু করলে বা পরীক্ষা চাপলে শব্দ চালু হবে", "Sound starts when you play or press Test"),
+    soundTip: L("এই দাগ নড়ছে অথচ কিছু শুনছেন না? তাহলে ব্রাউজারের ট্যাব মিউট, উইন্ডোজের ভলিউম আর স্পিকার দেখুন।", "Bar moving but hearing nothing? Check that the browser tab isn't muted, then the Windows volume and speakers."),
+    soundBad: L("শব্দ আটকে আছে: ক্লিক করুন", "Sound blocked: click"),
+    soundOffPill: L("শব্দ বন্ধ", "Sound off"),
+    graphicsHint: L("খেলা আটকালে কমান। অটো নিজেই ঠিক করে।", "Lower it if the game stutters. Auto decides for you."),
+    crowdHint: L("রাস্তায় কত মানুষ। বেশি হলে খেলা ভারী হয়।", "How many people on the street. More is heavier."),
+    trafficHint: L("রাস্তায় কত গাড়ি। বেশি হলে খেলা ভারী হয়।", "How many vehicles on the road. More is heavier."),
+    rainHint: L("বৃষ্টি কত ঘন ঘন হবে", "How often it rains"),
+    viewFoot: L("হাঁটার সময় ক্যামেরা", "Camera on foot"),
+    viewDrive: L("চালানোর সময় ক্যামেরা", "Camera while driving"),
+    viewHint: L("খেলার মধ্যে যেকোনো সময় V চাপলে বদলাবে", "Press V any time in the game to switch"),
+    viewThird: L("পেছন থেকে", "Behind"),
+    viewFirst: L("নিজের চোখে", "First person"),
+    missionsLabel: L("মিশন", "Missions"),
+    missionsHint: L("পরীক্ষার জন্য। বন্ধ করলে সব মিশন, কাজ আর অচেনা কল বন্ধ থাকবে।", "For testing. Off stops all missions, jobs and scam calls."),
+    sens: L("মাউসের গতি", "Mouse speed"),
+    subtitlesHint: L("কথাগুলো পর্দায় লেখা থাকবে", "Show what people say as text"),
+    menuHints: {
+      play: L("যেখানে ছিলেন সেখান থেকে", "Carry on from where you were"),
+      fresh: L("শুরু থেকে খেলুন", "Start playing"),
+      newGame: L("জেলা আর চরিত্র বেছে নিন", "Choose a district and a character"),
+      load: L("আগের সেভ করা খেলা খুলুন", "Open a game you saved"),
+      save: L("এখনকার খেলা রেখে দিন", "Keep this game for later"),
+      settings: L("শব্দ, ভাষা, ছবি, ভিড়", "Sound, language, picture, crowds"),
+      controls: L("কোন বোতামে কী হয়", "What each key does"),
+      respawn: L("আটকে গেলে এখানে", "If you get stuck"),
+      quit: L("প্রথম পাতায় ফিরুন", "Back to the first screen"),
+    },
+    loading: {
+      letters: L("অক্ষর সাজানো হচ্ছে", "Setting the type"),
+      sky: L("আকাশ আঁকা হচ্ছে", "Painting the sky"),
+      props: L("রাস্তার জিনিসপত্র আনা হচ্ছে", "Bringing out the street"),
+      people: L("মানুষজন ডাকা হচ্ছে", "Calling the people"),
+      vehicles: L("গাড়ি আনা হচ্ছে", "Bringing the vehicles"),
+      district: L("এলাকা বানানো হচ্ছে", "Building the district"),
+      walking: L("হাঁটার ভঙ্গি শেখানো হচ্ছে", "Teaching everyone to walk"),
+      lights: L("ট্রাফিক সিগন্যাল চালু হচ্ছে", "Turning on the traffic lights"),
+      near: L("কাছের দালানগুলো সাজানো হচ্ছে", "Arranging the nearby buildings"),
+      shaders: L("ছবি আঁকার প্রস্তুতি চলছে", "Getting the picture ready"),
+      ready: L("প্রস্তুত", "Ready"),
+    },
+  },
   controls: [
     ["W A S D", "হাঁটা / চালানো"],
     ["Shift", "দৌড়ানো"],
     ["Space", "লাফ / হ্যান্ডব্রেক"],
     ["F", "গাড়িতে ওঠা / নামা"],
     ["G", "যাত্রী হয়ে ওঠা"],
-    ["V", "গাড়ি বেছে নেওয়া"],
-    ["E", "কথা বলা"],
+    ["V", L("নিজের চোখে দেখা / পেছন থেকে দেখা", "First person / behind")],
+    ["B", "গাড়ি বেছে নেওয়া"],
+    ["I", L("ব্যাগ: কেনা জিনিস ব্যবহার", "Bag: use what you bought")],
+    ["J", L("মিশন, বন্ধু, হিসাব", "Missions, friends, stats")],
+    ["N", L("গাড়ির রেডিও", "Car radio")],
+    ["M", "বড় মানচিত্র"],
+    ["E", "কথা বলা / চা খাওয়া / দেখা"],
+    ["Q", "রিকশা, সিএনজি, ট্যাক্সি ডাকা"],
     ["H", "হর্ন / বেল"],
     ["মাউস", "ক্যামেরা ঘোরানো"],
     ["C", "ক্যামেরার দূরত্ব"],
     ["T", "দিনের সময় বদলানো"],
     ["R", "নিরাপদ জায়গায় ফেরা"],
+    ["P", "ফোন"],
     ["Esc", "বিরতি"],
   ] as [string, string][],
   // Bangla locative endings differ by word, so each vehicle has its own written form.
   promptEnter: (id: string) => `<kbd>F</kbd> ${bn.vehiclesIn[id] ?? bn.vehicles[id]} উঠুন`,
   promptExit: "<kbd>F</kbd> নামুন",
+  inside: {
+    enter: (name: string) => `<kbd>E</kbd> ${name}-এ ঢুকুন`,
+    exit: "<kbd>E</kbd> বের হন",
+    lift: "<kbd>E</kbd> লিফট",
+    liftStay: "থাক",
+    sleep: "<kbd>E</kbd> ঘুমান",
+    slept: "ঘুম ভাঙল। শরীরটা ভালো লাগছে।",
+    doctor: "<kbd>E</kbd> ডাক্তার দেখান",
+    bank: "<kbd>E</kbd> ব্যাংকের কাউন্টার",
+    officer: "<kbd>E</kbd> ডিউটি অফিসার",
+    fineDesk: "<kbd>E</kbd> জরিমানা দিন",
+    floor: (n: number) => (n === 0 ? "নিচতলা" : n === 1 ? "দোতলা" : n === 2 ? "তিনতলা" : `${n + 1} তলা`),
+    homeFloor: "তিনতলা, আপনার বাসা",
+    names: { mall: "শপিং মল", restaurant: "রেস্তোরাঁ", hotel: "হোটেল", clinic: "ক্লিনিক", bank: "ব্যাংক", home: "আবাসিক ভবন", office: "অফিস টাওয়ার", thana: "থানা" } as Record<string, string>,
+  },
+  law: {
+    flashed: "পুলিশের গাড়ি আপনাকে থামতে বলছে!",
+    approach: "এই যে ভাই, এদিকে আসেন। গাড়ির কাগজ আছে?",
+    towing: "রাস্তা আটকে রেখেছে, থানায় নিয়ে যাই।",
+    ticketed: (why: string, n: string) => `জরিমানা হলো: ${why}, ${n} টাকা। থানায় গিয়ে দিতে হবে।`,
+    yourTowed: "আপনার গাড়ি রাস্তা আটকে ছিল। পুলিশ থানায় নিয়ে গেছে।",
+    noEntry: ["এই যে! এটা পুলিশের গাড়ি, হাত দেবেন না।", "ভাই, সরকারি গাড়িতে ওঠা যাবে না।", "ওখান থেকে সরে দাঁড়ান, ভাই।"],
+    why: { footpath: "ফুটপাতে গাড়ি চালানো", red: "লাল বাতি অমান্য", crash: "বেপরোয়া গাড়ি চালানো", fled: "পুলিশের সংকেত অমান্য", towed: "রাস্তা আটকে গাড়ি রাখা" } as Record<string, string>,
+    charge: (why: string, n: string) => `আপনি ${why} করেছেন। জরিমানা ${n} টাকা।`,
+    chargeSay: (why: string, n: number) => `আপনি ${why} করেছেন। জরিমানা ${takaWords(n)} টাকা।`,
+    payNow: "এখনই দিয়ে দিন",
+    payLine: "ঠিক আছে স্যার, দিচ্ছি।",
+    payLater: "পরে থানায় দেব",
+    payLaterLine: "স্যার, এখন টাকা নেই। পরে থানায় দিয়ে আসব।",
+    paidLine: "ঠিক আছে। পরের বার সাবধানে চালাবেন।",
+    laterLine: "ঠিক আছে, লিখে রাখলাম। থানায় গিয়ে দিয়ে আসবেন।",
+    plead: "মাফ করে দিন",
+    pleadLine: "স্যার, ভুল হয়ে গেছে। এবারের মতো মাফ করে দেন।",
+    pleadYes: "আচ্ছা, এবারের মতো ছেড়ে দিলাম। আর যেন না হয়।",
+    pleadNo: "আইন সবার জন্য এক, ভাই। জরিমানা দিতেই হবে।",
+    noMoney: "টাকা তো কম। থানায় গিয়ে দিয়ে আসবেন।",
+    desk: "কী দরকার, বলেন?",
+    deskOwes: (n: string) => `আপনার নামে ${n} টাকা জরিমানা আছে।`,
+    deskOwesSay: (n: number) => `আপনার নামে ${takaWords(n)} টাকা জরিমানা আছে।`,
+    deskClear: "আপনার নামে কোনো জরিমানা নেই। যেতে পারেন।",
+    deskPay: (n: string) => `${n} টাকা জরিমানা দিন`,
+    deskPaid: "জরিমানা শোধ হলো। আপনার গাড়ি উঠানে আছে।",
+    officerHello: "জি বলেন, কী সমস্যা?",
+    officerAsk: "রাস্তায় কিছু দেখলে কোথায় জানাব?",
+    officerAnswer: "থানায় আসবেন, অথবা জরুরি নম্বরে ফোন করবেন।",
+    officerBye: "ধন্যবাদ স্যার।",
+    locked: "জরিমানা না দিলে গাড়ি ছাড়া হবে না। ভেতরে ডেস্কে দিন।",
+  },
+  phone: {
+    noService: L("ফোনে কোনো সেবা নেই।", "The phone has no service."),
+    network: "৪জি",
+    apps: { call: "ফোন", messages: "মেসেজ", contacts: "পরিচিত", map: "মানচিত্র", bank: "ঝটপট টাকা", ride: "রাইড", camera: "ক্যামেরা", jobs: "কাজ" },
+    callKinds: { in: "এসেছিল", out: "করেছেন", missed: "মিস কল" } as Record<string, string>,
+    noCalls: "এখনো কোনো কল নেই",
+    noMessages: "কোনো মেসেজ নেই",
+    dialling: "রিং হচ্ছে...",
+    ringing: (who: string) => `${who} ফোন করছেন`,
+    answer: "<kbd>P</kbd> ফোন ধরুন",
+    newMessage: (who: string) => `${who}: নতুন মেসেজ`,
+    newJob: "নতুন কাজ এসেছে",
+    navStop: "পথ দেখানো বন্ধ করুন",
+    navArrived: (where: string) => `পৌঁছে গেছেন: ${where}`,
+    bankName: "ঝটপট টাকা",
+    balance: "ব্যালেন্স",
+    cashInHand: "হাতে আছে",
+    send: "টাকা পাঠান",
+    agent: "ক্যাশ ইন ও ক্যাশ আউট",
+    statement: "লেনদেনের তালিকা",
+    noStatement: "এখনো কোনো লেনদেন নেই",
+    setPin: "নিজের ৪ সংখ্যার পিন ঠিক করুন",
+    pinSet: "পিন সেট হয়েছে। কাউকে বলবেন না।",
+    enterPin: "পিন দিন",
+    wrongPin: "ভুল পিন",
+    pinWarning: "পিন কাউকে বলবেন না। কোনো ব্যাংক, এজেন্ট বা অফিস কখনো আপনার পিন চায় না।",
+    howMuch: "কত টাকা?",
+    notEnough: "ব্যালেন্সে এত টাকা নেই",
+    notEnoughCash: "হাতে এত টাকা নেই",
+    sentTo: (who: string) => `${who} কে পাঠানো`,
+    sent: (n: string, who: string) => `${n} টাকা ${who} কে পাঠানো হয়েছে`,
+    noAgent: "এখানে কোনো এজেন্ট নেই। \"ঝটপট টাকা\" লেখা দোকানের সামনে গিয়ে আবার চেষ্টা করুন।",
+    atAgent: "এজেন্টের দোকানে আছেন",
+    cashIn: "ক্যাশ ইন",
+    cashOut: "ক্যাশ আউট",
+    cashedIn: (n: string) => `${n} টাকা ক্যাশ ইন হয়েছে`,
+    cashedOut: (n: string, fee: string) => `${n} টাকা হাতে পেলেন, চার্জ ${fee} টাকা`,
+    rides: {
+      bike: "বাইক", bikeSub: "জ্যামে সবচেয়ে দ্রুত",
+      cng: "সিএনজি", cngSub: "দুই-তিনজন যাওয়া যায়",
+      taxi: "ট্যাক্সি", taxiSub: "আরামে, এসি সহ",
+      rickshaw: "রিকশা", rickshawSub: "কাছে কোথাও",
+    },
+    takePhoto: "ছবি তুলুন",
+    noPhotos: "এখনো কোনো ছবি নেই",
+    photoSaved: "ছবি রাখা হয়েছে",
+    cameraHint: "<kbd>মাউস</kbd> ছবি তুলুন &nbsp; <kbd>P</kbd> ফিরে যান",
+    noJobs: "এখনো কোনো কাজ নেই",
+    jobsDone: "শেষ করা কাজ",
+    firstText: "বাবা, ঢাকায় পৌঁছে গেছিস? সময় পেলে আমার চায়ের দোকানে একবার আসিস। কথা আছে।",
+    subjects: { person: "একজন মানুষ", vehicle: "একটা গাড়ি", stall: "একটা দোকান" } as Record<string, string>,
+    texts: [
+      { who: "bank", text: "ঝটপট টাকা: নতুন অফার! আজ রিচার্জ করলে ১০% বোনাস।" },
+      { who: "unknown", text: "অভিনন্দন! আপনি লটারিতে ১০ লক্ষ টাকা জিতেছেন। টাকা পেতে এখনই এই নম্বরে আপনার পিন পাঠান।" },
+      { who: "unknown", text: "আপনার ঝটপট টাকা একাউন্ট বন্ধ হয়ে যাবে। চালু রাখতে এই লিংকে ঢুকে পিন দিন।" },
+      { who: "rasel", text: "দোস্ত, বিকেলে খেলা আছে মাঠে। আসবি?" },
+      { who: "rasel", text: "কোথায় তুই? ফোন ধরিস না কেন?" },
+      { who: "tanvir", text: "ভাই, মেট্রোতে আসিস, রাস্তায় যা জ্যাম!" },
+      { who: "landlord", text: "বাবা, এই মাসের ভাড়াটা সময়মতো দিয়ে দিও।" },
+      { who: "chacha", text: "চা ঠান্ডা হয়ে যাচ্ছে। দোকানে একবার আয়।" },
+    ],
+    people: {
+      chacha: {
+        name: "কাদের চাচা", about: "চায়ের দোকান",
+        calls: [
+          ["কি রে বাবা, কেমন আছিস?", "ভালো আছি চাচা। আপনি?", "আছি রে। দোকানে আসিস একদিন।", "আসব চাচা।"],
+          ["হ্যালো, কে? ও, তুই! খেয়েছিস?", "জি চাচা, খেয়েছি।", "রাতে দেরি করিস না, রাস্তা ভালো না।", "আচ্ছা চাচা।"],
+        ],
+        incoming: [["বাবা, দোকানে একটু আসতে পারবি? একটা ঝামেলায় পড়েছি।", "কী হয়েছে চাচা?", "ফোনে বলব না। সামনে আয়।", "আসছি চাচা।"]],
+        replies: ["জি চাচা, আসব।", "একটু পরে আসছি।"],
+      },
+      rasel: {
+        name: "রাসেল", about: "বন্ধু",
+        calls: [
+          ["দোস্ত, কই তুই?", "রাস্তায়। তুই কই?", "মাঠে আয়, খেলা হবে!", "দেখি, আসছি।"],
+          ["কি খবর দোস্ত? সিনেমা দেখবি?", "টাকা নাই রে।", "আরে আমি দেব, চল!", "আচ্ছা, পরে জানাচ্ছি।"],
+        ],
+        incoming: [["দোস্ত, পাঁচশো টাকা ধার দিতে পারবি? কালকেই দিয়ে দেব।", "দেখি রে, পরে জানাই।", "আচ্ছা, দেখিস।"]],
+        replies: ["আসছি দোস্ত!", "আজ পারব না রে।"],
+      },
+      tanvir: {
+        name: "তানভীর ভাই", about: "অফিসের বড় ভাই",
+        calls: [["হ্যাঁ বলো, কী অবস্থা?", "এই তো ভাই, ভালো।", "কাজের কিছু খবর আছে। পরে জানাব।", "ঠিক আছে ভাই।"]],
+        incoming: [["শোনো, একটা পার্সেল পৌঁছে দিতে পারবে? টাকা পাবে।", "কোথায় ভাই?", "ঠিকানা পরে মেসেজ করব।", "আচ্ছা ভাই।"]],
+        replies: ["জি ভাই, ঠিক আছে।"],
+      },
+      landlord: {
+        name: "বাড়িওয়ালা চাচা", about: "বাসার মালিক",
+        calls: [["হ্যাঁ বাবা, ভাড়ার ব্যাপারে নাকি?", "জি চাচা, এই সপ্তাহে দিয়ে দেব।", "ঠিক আছে, দেরি করো না।", "জি চাচা।"]],
+        incoming: [["বাবা, পানির লাইনে কাজ চলছে। আজ পানি কম থাকবে।", "ঠিক আছে চাচা।"]],
+        replies: ["জি চাচা, দিয়ে দেব।"],
+      },
+      emergency: {
+        name: "জরুরি সেবা", about: "পুলিশ, আগুন, অ্যাম্বুলেন্স",
+        calls: [["জরুরি সেবা বলছি। আপনার কী সমস্যা?", "না ভাই, ভুল করে চাপ লেগে গেছে।", "ঠিক আছে। দরকার হলে আবার ফোন করবেন।", "ধন্যবাদ ভাই।"]],
+      },
+      bank: { name: "ঝটপট টাকা", about: "", calls: [["ঝটপট টাকায় ফোন করার জন্য ধন্যবাদ। আমরা কখনো আপনার পিন চাই না।"]] },
+      unknown: {
+        name: "অচেনা নম্বর",
+        calls: [["হ্যালো? হ্যালো? কে বলছেন?", "আপনিই তো ফোন করেছিলেন!", "ভুল নম্বর ভাই।"]],
+        incoming: [
+          ["হ্যালো, আমি মোবাইল কোম্পানি থেকে বলছি। আপনার সিম আজই বন্ধ হয়ে যাবে। আপনার পিনটা বলুন তো।", "আমার পিন আপনাকে বলব কেন? কোম্পানি তো পিন চায় না।", "আরে ভাই, বিশ্বাস করেন..."],
+          ["হ্যালো, রহিম ভাই বলছেন?", "না ভাই, ভুল নম্বর।", "ও, দুঃখিত।"],
+        ],
+      },
+    },
+  },
+  menu: {
+    newGame: "নতুন খেলা",
+    load: "খেলা লোড করুন",
+    save: "খেলা সেভ করুন",
+    quit: "মূল মেনুতে ফিরুন",
+    tabs: { gfx: "ছবি", sound: "শব্দ", game: "খেলা", controls: "নিয়ন্ত্রণ", display: "পর্দা" } as Record<string, string>,
+    slot: (n: string) => `খেলা ${n}`,
+    empty: "খালি",
+    savedAt: "সেভ হয়েছে",
+    played: "খেলার সময়",
+    hoursMinutes: (h: string, m: string) => `${h} ঘণ্টা ${m} মিনিট`,
+    minutes: (m: string) => `${m} মিনিট`,
+    remove: "মুছে ফেলুন",
+    removeSure: "নিশ্চিত? আবার চাপুন",
+    overwriteSure: "এই খেলার ওপর সেভ হবে। আবার চাপুন",
+    saved: "খেলা সেভ হয়েছে",
+    saveTitle: "কোন ঘরে সেভ করবেন?",
+    loadTitle: "কোন খেলা চালাবেন?",
+    newTitle: "নতুন খেলা শুরু করুন",
+    pickDistrict: "কোন এলাকা থেকে শুরু করবেন?",
+    pickSlot: "কোন ঘরে সেভ হবে?",
+    start: "শুরু করুন",
+    back: "ফিরে যান",
+    taglines: { dhaka_mirpur10: "ভিড়, বাজার আর মেট্রোর এলাকা", dhaka_gulshan: "কাচের দালান, চওড়া রাস্তা আর লেকের পাড়", dhaka_dhanmondi: "লেক, কোচিং সেন্টার আর রিকশার গলি" } as Record<string, string>,
+    rain: "বৃষ্টি কতবার হবে",
+    rainKinds: { never: "কখনো না", rare: "মাঝে মাঝে", normal: "স্বাভাবিক", often: "প্রায়ই" } as Record<string, string>,
+    uiSize: "মেনুর আকার",
+    uiSizes: { auto: "অটো", small: "ছোট", medium: "মাঝারি", large: "বড়", xlarge: "অনেক বড়" } as Record<string, string>,
+    subtitleSize: "লেখার আকার",
+    sizes: { small: "ছোট", medium: "মাঝারি", large: "বড়" } as Record<string, string>,
+    minimap: "ছোট মানচিত্র",
+    invertY: "মাউস উল্টো",
+    autoFollow: "গাড়িতে ক্যামেরা পেছনে আসবে",
+    shake: "ধাক্কায় ক্যামেরা কাঁপবে",
+    autosave: "নিজে থেকে সেভ",
+    brightness: "উজ্জ্বলতা",
+    sharpness: "ছবির তীক্ষ্ণতা",
+    drawDistance: "দূরের জিনিসের বিস্তার",
+    distances: { near: "কম", mid: "মাঝারি", far: "বেশি" } as Record<string, string>,
+  },
+  crowdPeople: "মানুষের ভিড়",
+  crowdTraffic: "গাড়ির ভিড়",
+  dayPace: "দিনের গতি",
+  dayPaces: { stop: "থামানো", slow: "ধীর", normal: "স্বাভাবিক", fast: "দ্রুত" } as Record<string, string>,
+  mapTitle: "মানচিত্র",
+  mapHint: "<kbd>M</kbd> বন্ধ করুন &nbsp; চাকা ঘুরিয়ে ছোট-বড় করুন &nbsp; টেনে সরান &nbsp; ক্লিক করে জায়গা দাগ দিন",
+  mapMark: "আপনার দাগ",
+  mapFlyover: "ফ্লাইওভার",
+  mapBridge: "ফুটওভারব্রিজ",
+  mapMetroLine: "মেট্রোরেল",
+  mapDhaka: "ঢাকা",
+  mapWays: "অন্য এলাকায় যাওয়ার পথ",
+  mapWayBus: (route: string) => `বাস: ${route}`,
+  mapWayCar: "সিএনজি, ট্যাক্সি বা নিজের গাড়ি",
+  mapWayMetro: "মেট্রোরেল",
+  mapSize: (w: string, h: string) => `এলাকার আয়তন: ${w} মিটার × ${h} মিটার`,
+  mapMetres: (m: string) => `${m} মিটার`,
+  mapLegend: { you: "আপনি", bus: "বাস স্টপ", tea: "চায়ের দোকান", police: "ট্রাফিক পুলিশ", vehicle: "গাড়ি", flyover: "ফ্লাইওভার", metro: "মেট্রোরেল" },
+  mapPlaces: { mall: "শপিং মল", thana: "থানা", fuel: "ফিলিং স্টেশন", garments: "গার্মেন্টস", river: "নদী", pond: "পুকুর", garden: "উদ্যান", stadium: "স্টেডিয়াম", zoo: "চিড়িয়াখানা", embassy: "দূতাবাস পাড়া", stage: "মুক্তমঞ্চ", coaching: "কোচিং পাড়া", towers: "বাণিজ্যিক টাওয়ার", plaza: "গোলচত্বর", station: "মেট্রো স্টেশন", terminal: "বাস টার্মিনাল", mosque: "মসজিদ", market: "বাজার", park: "খেলার মাঠ", construction: "নির্মাণ এলাকা", lake: "লেক", villas: "আবাসিক এলাকা", school: "স্কুল", university: "বিশ্ববিদ্যালয়" } as Record<string, string>,
   promptRide: "<kbd>G</kbd> যাত্রী হয়ে উঠুন",
   promptRideBus: (route: string) => `<kbd>G</kbd> ${route} বাসে উঠুন`,
   paints: {
@@ -64,9 +439,19 @@ export const bn = {
   bring: "আনুন",
   close: "বন্ধ করুন",
   voice: "বাংলা কণ্ঠ",
+  soundMaster: "সব শব্দ",
+  soundVoice: "কণ্ঠের শব্দ",
+  soundAmbience: "চারপাশের শব্দ",
+  soundVehicles: "গাড়ির শব্দ",
+  soundEffects: "অন্যান্য শব্দ",
+  mute: "শব্দ বন্ধ",
+  subtitles: "লেখা দেখান",
+  voiceKind: "কণ্ঠের ধরন",
+  voiceKinds: { pack: "গেমের কণ্ঠ", browser: "ব্রাউজারের কণ্ঠ" } as Record<string, string>,
+  voiceTest: "শুনে দেখুন",
+  voiceSample: "ভাই, চা খাবেন? গরম চা আছে। আজকে রাস্তায় অনেক জ্যাম।",
   gpuHint: "গেমটি ল্যাপটপের দুর্বল গ্রাফিক্সে চলছে। আরও মসৃণ ও স্পষ্ট ছবির জন্য Windows Settings → Display → Graphics থেকে ব্রাউজারকে High performance করুন।",
-  promptTalk: "<kbd>E</kbd> কথা বলুন",
-  promptTea: "<kbd>E</kbd> চা খান",
+  promptTalk: (who: string) => `<kbd>E</kbd> ${who}: কথা বলুন`,
   speedUnit: "কিমি/ঘণ্টা",
   clickToLook: "ক্যামেরা ঘোরাতে ক্লিক করুন",
   unsupported: "দুঃখিত, এই ব্রাউজারে WebGL2 চালু নেই। গেমটি চালাতে Chrome বা Edge-এর নতুন সংস্করণ ব্যবহার করুন।",
@@ -75,17 +460,24 @@ export const bn = {
     "বাংলাদেশে গাড়ি চলে রাস্তার বাঁ দিকে।",
     "ট্রাফিক পুলিশের সামনে লাল বাতি পার হলে বাঁশি শুনবেন!",
     "যে কোনো রিকশা, সিএনজি বা বাসের কাছে গিয়ে F চাপুন।",
-    "চায়ের দোকানে থেমে এক কাপ চা খেয়ে নিন।",
+    "চায়ের দোকানে বসে এক কাপ চা খান, পাশের জনের সাথে গল্পও করুন।",
+    "যে কারও কাছে গিয়ে E চাপুন, কথা বলুন, পথ জিজ্ঞেস করুন।",
+    "রাস্তার পাশে দাঁড়িয়ে Q চাপুন: রিকশা, সিএনজি বা ট্যাক্সি ডাকতে পারবেন।",
     "মেট্রোরেলের ওপর দিয়ে ট্রেন যায়, মাঝে মাঝে ওপরে তাকান।",
+    "M চেপে মানচিত্র খুলুন, ক্লিক করে জায়গা দাগ দিন।",
+    "গুলশান বা ধানমন্ডি যেতে চান? বড় রাস্তা ধরে গাড়ি চালিয়ে যান, অথবা সঠিক বাস, সিএনজি বা মেট্রো নিন।",
+    "দোকানের সামনে দাঁড়িয়ে E চাপুন, কিছু কিনে দেখুন।",
     "সামনের সংস্করণে আসছে সাইবার নিরাপত্তার মিশন।",
   ],
   vehicles: {
+    leguna: "লেগুনা", goods_van: "কাভার্ড ভ্যান", garbage_truck: "ময়লার গাড়ি", ambulance: "অ্যাম্বুলেন্স", police_car: "পুলিশের গাড়ি", wrecker: "রেকার",
     bicycle: "সাইকেল",
     rickshaw: "রিকশা",
     easybike: "ব্যাটারি রিকশা",
     cng: "সিএনজি",
     motorbike: "মোটরসাইকেল",
     car_sedan: "প্রাইভেট কার",
+    taxi: "ট্যাক্সি",
     microbus: "মাইক্রোবাস",
     bus_city: "সিটি বাস",
     truck: "ট্রাক",
@@ -97,6 +489,7 @@ export const bn = {
     cng: "সিএনজিতে",
     motorbike: "মোটরসাইকেলে",
     car_sedan: "প্রাইভেট কারে",
+    taxi: "ট্যাক্সিতে",
     microbus: "মাইক্রোবাসে",
     bus_city: "সিটি বাসে",
     truck: "ট্রাকে",
@@ -109,6 +502,23 @@ export const bn = {
     "নিয়ে যান, নিয়ে যান। আমি চা খেয়ে আসি।",
     "মামা, ভাড়াটা পরে দিয়েন!",
   ],
+  sideIn: [
+    "ভাই, একটু সাইড দেন!",
+    "সরেন ভাই, একটু জায়গা দেন।",
+    "সাইড, সাইড!",
+    "ভাই, বাম দিক দিয়ে যান।",
+  ],
+  bumped: [
+    "আরে ভাই, দেখে হাঁটেন!",
+    "ধাক্কা দিচ্ছেন কেন?",
+    "ও ভাই, একটু আস্তে!",
+    "এত তাড়া কিসের, ভাই?",
+  ],
+  bumpedHard: [
+    "আরে আরে! কী করছেন এটা?",
+    "দৌড়ে এসে ধাক্কা দিলেন কেন?",
+    "ভাই, আরেকটু হলেই পড়ে যেতাম!",
+  ],
   dodge: [
     "আরে ভাই, দেখে চালান!",
     "ওই মিয়া, চোখ কই!",
@@ -120,27 +530,509 @@ export const bn = {
     "থামেন ভাই, সিগন্যাল লাল!",
     "ট্রাফিক আইন মানেন, ভাই!",
   ],
-  greet: [
-    "ভাই, কেমন আছেন?",
-    "আজকে রাস্তায় অনেক জ্যাম।",
-    "সামনে মেট্রো স্টেশনের রাস্তা।",
-    "গরম খুব, ভাই। একটু ছায়ায় দাঁড়ান।",
-    "অপরিচিত নম্বর থেকে ফোন এলে সাবধান, ভাই।",
-    "ওটিপি কাউকে দেবেন না, বুঝলেন?",
-    "মামা, কোথায় যাবেন?",
-    "কী খুঁজছেন, ভাই?",
+  rhythm: {
+    eid: "ঈদ মোবারক! আজ শহর অনেক ফাঁকা।",
+    powerCut: "লোডশেডিং! পুরো এলাকা অন্ধকার।",
+    powerBack: "কারেন্ট এসেছে।",
+    prayers: ["ফজরের সময় হয়েছে", "জোহরের সময় হয়েছে", "আসরের সময় হয়েছে", "মাগরিবের সময় হয়েছে", "এশার সময় হয়েছে"],
+    prayerHours: [5.0, 13.25, 16.5, 18.0, 19.5],
+    closed: "দোকান বন্ধ হয়ে গেছে",
+    eidBanner: "ঈদ মোবারক",
+  },
+  heroes: {
+    title: "কে হয়ে খেলবেন?",
+    mango: { name: "আম", age: "২২ বছর, সদ্য ঢাকায়", note: "সব গাড়ি চালাতে পারে। সাধারণ শুরু।" },
+    peach: { name: "পিচ", age: "২৬ বছর, ব্যাংকে চাকরি", note: "হাতে টাকা বেশি। হিসেবে পাকা।" },
+    orange: { name: "কমলা", age: "৩৫ বছর, অফিসে চাকরি", note: "সবচেয়ে বেশি টাকা। দৌড়াতে একটু ধীর।" },
+    date: { name: "খেজুর চাচা", age: "৬৮ বছর, অবসরে", note: "ধীরে হাঁটেন। ভাড়ায় ছাড় পান, সবাই সম্মান করে।" },
+    berry: { name: "জাম", age: "১০ বছর, স্কুলের ছাত্র", note: "গাড়ি চালাতে পারে না, সাইকেল পারে। খুব দ্রুত। মাঠে ক্রিকেট খেলে।" },
+    kidNoDrive: ["এই বাবু! তুমি তো ছোট, গাড়ি চালানো যাবে না!", "আরে, এটা বড়দের কাজ। সাইকেল চালাও!"],
+  } as Record<string, any>,
+  cricketGame: {
+    prompt: "<kbd>E</kbd> ক্রিকেটে নামুন",
+    start: "বল আসছে! সোনালি জায়গায় দৌড়ে গিয়ে ধরুন।",
+    caught: "ক্যাচ! দারুণ!",
+    dropped: "ইশ, পড়ে গেল!",
+    score: (n: string, of: string) => `${of} বলে ${n} ক্যাচ`,
+  },
+  trip: {
+    whereTo: "মামা, কোথায় যাবেন?",
+    goTo: (place: string) => `${place} যাবেন, মামা?`,
+    tooClose: "এত কাছে? হেঁটেই চলে যান, মামা!",
+    quote: (fare: string) => `${fare} টাকা দিয়েন, মামা।`,
+    quoteSay: (fare: number) => `${takaWords(fare)} টাকা দিয়েন, মামা।`,
+    deal: (fare: string) => `ঠিক আছে, ${fare} টাকাই সই`,
+    dealSay: "ঠিক আছে, চলেন।",
+    offerMenu: (fare: string) => `${fare} টাকা বলুন`,
+    offer: (fare: string) => `${fare} টাকা দেব, যাবেন?`,
+    counter: (fare: string) => `না মামা, ${fare} টাকার কমে হবে না।`,
+    counterSay: (fare: number) => `না মামা, ${takaWords(fare)} টাকার কমে হবে না।`,
+    okay: "আচ্ছা, উঠেন মামা।",
+    never: "না থাক, যাব না।",
+    noMoney: "মামা, এত টাকা তো আপনার কাছে নাই দেখি।",
+    yourLoss: "আচ্ছা মামা, আপনার ইচ্ছা।",
+    arrived: (fare: string) => `এসে গেছি, মামা। ${fare} টাকা।`,
+    arrivedSay: (fare: number) => `এসে গেছি, মামা। ${takaWords(fare)} টাকা।`,
+    conductor: "কন্ডাক্টর",
+    thisStop: (place: string) => `${place}! ${place}! নামেন নামেন, তাড়াতাড়ি নামেন!`,
+    busAsk: "ভাড়া দেন, ভাই। কোথায় নামবেন?",
+    busGetOff: (place: string) => `${place} নামিয়ে দিয়েন, ভাই।`,
+    busFare: (fare: string) => `ঠিক আছে, ভাড়া ${fare} টাকা। এসে গেলে বলব।`,
+    busFareWords: "পনেরো",
+    busArrived: (place: string) => `${place}! নামেন, নামেন!`,
+    justRiding: "এমনিই একটু ঘুরছি, ভাই।",
+    calling: (route: string) => `${route}! উঠেন, উঠেন! জায়গা আছে!`,
+    farMenu: "অন্য এলাকায় যাব",
+    tooFar: "এত দূরে রিকশা যায় না, মামা। সিএনজি নেন।",
+    busToMenu: (name: string) => `${name} যেতে চান`,
+    busToAsk: (name: string) => `এই বাস ${name} যাবে, ভাই?`,
+    busGoes: (name: string) => `হ্যাঁ, ${name} যাবে। ভাড়া চল্লিশ টাকা। এসে গেলে বলব।`,
+    busNotGoing: (name: string, route: string) => `না ভাই, এই বাস ${name} যায় না। ${route} বাসে উঠেন।`,
+    farArrived: (name: string) => `${name} এসে গেছি! নামেন, নামেন!`,
+    back: "না থাক",
+  },
+  campus: { school: "আদর্শ উচ্চ বিদ্যালয়", university: "নগর বিশ্ববিদ্যালয়" },
+  playground: {
+    six: "ছক্কা! ছক্কা!",
+    run: "দৌড়া, দৌড়া!",
+    missed: "ধুর, ব্যাটে লাগল না!",
+    goal: "গোল! গোল!",
+    pass: "এই, পাস দে, পাস দে!",
+  },
+  metro: {
+    promptTicket: "<kbd>E</kbd> টিকিট কিনুন",
+    promptUp: "<kbd>E</kbd> প্ল্যাটফর্মে উঠুন",
+    promptDown: "<kbd>E</kbd> নিচে নামুন",
+    promptBoard: (to: string) => `<kbd>F</kbd> ${to}ের ট্রেনে উঠুন`,
+    promptNoTicket: "<kbd>F</kbd> ট্রেনে উঠুন",
+    promptWrong: "<kbd>F</kbd> ট্রেনে উঠুন",
+    ask: "কোথায় যাবেন, ভাই?",
+    buy: (to: string) => `${to}ের একটা টিকিট দেন।`,
+    sold: "এই নিন। গেট পার হয়ে প্ল্যাটফর্মে যান, ট্রেন এখনই আসবে।",
+    gotTicket: (to: string, fare: string) => `${to}ের টিকিট কিনলেন, ${fare} টাকা`,
+    haveTicket: "আপনার টিকিট কেনা আছে। গেট দিয়ে প্ল্যাটফর্মে যান।",
+    needTicket: "আগে টিকিট কাউন্টার থেকে টিকিট কিনুন।",
+    wrongSide: "এই পাশের ট্রেন আপনার দিকে যায় না। ওপাশের প্ল্যাটফর্মে যান।",
+    never: "না থাক",
+  },
+  travel: {
+    onFoot: "হেঁটে এত দূর যাওয়া যাবে না। বাস, সিএনজি বা নিজের গাড়ি নিন।",
+    noRickshaw: "এই গাড়ি নিয়ে বড় রাস্তায় এত দূর যাওয়া যাবে না।",
+    go: (name: string) => `${name} চলুন`,
+    stay: "না, ফিরে যাই",
+    road: (name: string, via: string) => `${name} যাওয়ার রাস্তা: ${via}`,
+    journey: (from: string, to: string) => `${from} থেকে ${to}`,
+    arrived: (name: string) => `${name} পৌঁছে গেছেন`,
+    by: { drive: "গাড়ি চালিয়ে এসেছেন।", bus: "বাস থেকে নামলেন।", hire: "গাড়ি থেকে নামলেন।", metro: "ট্রেন থেকে নামলেন।" } as Record<string, string>,
+    goOn: "চালিয়ে যান",
+    pick: "কোথা থেকে শুরু করবেন?",
+  },
+  menuHint: "নম্বর চেপে বেছে নিন · হাঁটা শুরু করলে কথা শেষ",
+  you: "আপনি",
+  // Every line of talk. Each person type has its own way of being addressed, so the hero's
+  // questions are written once and filled in with the right form of address.
+  talk: {
+    ask: {
+      hello: (a: string) => `${a}, কেমন আছেন?`,
+      name: (a: string) => `${a}, আপনার নাম কী?`,
+      work: (a: string) => `${a}, আপনি কী করেন?`,
+      news: (a: string) => `${a}, এলাকার খবর কী?`,
+      place: (a: string) => `${a}, একটা জায়গা খুঁজছি।`,
+      bye: (a: string) => `আচ্ছা ${a}, আসি।`,
+      back: "না থাক, অন্য কথা বলি।",
+    },
+    /** What the hero says, shown as a shorter choice in the menu. */
+    menu: { hello: "কুশল জিজ্ঞেস করুন", name: "নাম জিজ্ঞেস করুন", work: "কী করেন জিজ্ঞেস করুন", news: "এলাকার খবর নিন", place: "পথ জিজ্ঞেস করুন", district: "অন্য এলাকায় যাওয়ার পথ জিজ্ঞেস করুন", bye: "বিদায় নিন" },
+    districtAsk: (name: string) => `${name} কীভাবে যাব?`,
+    wayDistrict: (name: string, route: string) => `${name}? ${route} বাসে উঠেন, নয়তো সিএনজি নেন।`,
+    wayDistrictMetro: (name: string, route: string) => `${name}? মেট্রোতে চলে যান, নয়তো ${route} বাসে উঠেন।`,
+    myName: (name: string) => `আমার নাম ${name}।`,
+    again: ["আবার আপনি! বলেন, ভাই।", "হ্যাঁ ভাই, আবার কী হলো?", "জি, বলেন।"],
+    busy: ["এখন একটু তাড়া আছে, ভাই। পরে কথা হবে।", "ভাই, বাস ধরতে হবে। মাফ করবেন।", "একটু ব্যস্ত আছি, ভাই।"],
+    leftAlone: ["আচ্ছা, যান তাহলে।", "কথা শেষ না করেই চলে গেলেন!", "ঠিক আছে, ঠিক আছে।"],
+    whereTo: "কোন জায়গা খুঁজছেন?",
+    placeAsk: (place: string) => `${place} কোন দিকে?`,
+    placeFar: (place: string, dir: string, metres: string) => `${place}? ওই যে, ${dir}। এখান থেকে প্রায় ${metres} মিটার।`,
+    placeNear: (place: string) => `${place} তো এই কাছেই, ভাই।`,
+    // The same directions, a piece at a time, for saying aloud.
+    wayIs: (dir: string) => `ওই যে, ${dir}।`,
+    distanceIs: (metres: string) => `এখান থেকে প্রায় ${metres} মিটার।`,
+    marked: "মানচিত্রে জায়গাটা দাগ দেওয়া হলো",
+    arrived: "পৌঁছে গেছেন",
+    metres: (m: string) => `${m} মিটার`,
+    dirs: ["উত্তর দিকে", "উত্তর-পূর্ব দিকে", "পূর্ব দিকে", "দক্ষিণ-পূর্ব দিকে", "দক্ষিণ দিকে", "দক্ষিণ-পশ্চিম দিকে", "পশ্চিম দিকে", "উত্তর-পশ্চিম দিকে"],
+    places: { station: "মেট্রো স্টেশন", plaza: "গোলচত্বর", terminal: "বাস টার্মিনাল", market: "বাজার", mosque: "মসজিদ", park: "খেলার মাঠ", school: "স্কুল", university: "বিশ্ববিদ্যালয়", lake: "লেক", tea: "চায়ের দোকান", bus: "বাস স্টপ" } as Record<string, string>,
+    names: ["রফিক", "জামাল", "হাসান", "সুমন", "রনি", "শফিক", "মাসুদ", "আলম", "কবির", "নয়ন", "তারেক", "বাবুল", "সোহেল", "মিজান", "রাসেল", "ইমন"],
+    roles: {
+      npc_woman_apple: { label: "গৃহিণী", address: "আপা", greet: ["জি ভাই, বলেন।", "কিছু বলবেন?"], hello: ["ভালোই আছি ভাই, বাজারে যাচ্ছি।"], work: ["সংসার সামলাই, ভাই। এটাই সবচেয়ে বড় কাজ।"], news: ["আজ রাস্তায় খুব জ্যাম।"], topic: { menu: "এই এলাকা কেমন?", ask: "এই এলাকা কেমন?", answer: ["ভালোই। তবে ভিড় খুব।"] }, bye: ["আচ্ছা ভাই, আসি।"] },
+      npc_woman_peach: { label: "চাকরিজীবী", address: "আপা", greet: ["জি বলেন।", "জি ভাই?"], hello: ["ভালো আছি। অফিসের দেরি হয়ে যাচ্ছে।"], work: ["একটা ব্যাংকে চাকরি করি।"], news: ["আজ রাস্তায় খুব জ্যাম।"], topic: { menu: "এই এলাকা কেমন?", ask: "এই এলাকা কেমন?", answer: ["ভালোই। তবে ভিড় খুব।"] }, bye: ["আচ্ছা, যাই তাহলে।"] },
+      npc_woman_plum: { label: "গার্মেন্টস কর্মী", address: "আপা", greet: ["জি ভাই?", "বলেন, কী বলবেন?"], hello: ["ভালো। শিফট শেষ হলো মাত্র।"], work: ["গার্মেন্টসে কাজ করি, ভাই। লাইনে দাঁড়িয়ে সারাদিন।"], news: ["আজ রাস্তায় খুব জ্যাম।"], topic: { menu: "এই এলাকা কেমন?", ask: "এই এলাকা কেমন?", answer: ["ভালোই। তবে ভিড় খুব।"] }, bye: ["আসি ভাই।"] },
+      npc_girl_pear: { label: "স্কুলের ছাত্রী", address: "আপু", greet: ["জি ভাইয়া?", "কী ভাইয়া?"], hello: ["ভালো আছি, স্কুল থেকে ফিরছি।"], work: ["ক্লাস সেভেনে পড়ি।"], news: ["আজ রাস্তায় খুব জ্যাম।"], topic: { menu: "এই এলাকা কেমন?", ask: "এই এলাকা কেমন?", answer: ["ভালোই। তবে ভিড় খুব।"] }, bye: ["আসি ভাইয়া।"] },
+      npc_kid_berry: { label: "ছোট ছেলে", address: "বাবু", greet: ["কী ভাইয়া?", "জি?"], hello: ["ভালো! খেলতে যাচ্ছি!"], work: ["আমি তো খেলি, ভাইয়া! ব্যাটিং করি!"], news: ["আজ রাস্তায় খুব জ্যাম।"], topic: { menu: "এই এলাকা কেমন?", ask: "এই এলাকা কেমন?", answer: ["ভালোই। তবে ভিড় খুব।"] }, bye: ["গেলাম ভাইয়া!"] },
+      npc_granny_fig: { label: "নানি", address: "নানি", greet: ["কী রে বাবা?", "বল, বাবা।"], hello: ["আছি বাবা, আল্লাহর রহমতে।"], work: ["নাতি-নাতনি দেখি, আর কী করব।"], news: ["আজ রাস্তায় খুব জ্যাম।"], topic: { menu: "এই এলাকা কেমন?", ask: "এই এলাকা কেমন?", answer: ["ভালোই। তবে ভিড় খুব।"] }, bye: ["ভালো থাকিস, বাবা।"] },
+      npc_doctor_kiwi: { label: "ডাক্তার", address: "ডাক্তার সাহেব", greet: ["জি, বলুন। কী সমস্যা?"], hello: ["ভালো আছি। আপনার শরীর ভালো তো?"], work: ["রোগী দেখি, ভাই। দিনে পঞ্চাশজন।"], news: ["আজ রাস্তায় খুব জ্যাম।"], topic: { menu: "এই এলাকা কেমন?", ask: "এই এলাকা কেমন?", answer: ["ভালোই। তবে ভিড় খুব।"] }, bye: ["সাবধানে থাকবেন।"] },
+      npc_guard_melon: { label: "নিরাপত্তা প্রহরী", address: "ভাই", greet: ["জি স্যার, বলেন।"], hello: ["ভালো আছি স্যার।"], work: ["এই গেটেই বারো ঘণ্টা ডিউটি, স্যার।"], news: ["আজ রাস্তায় খুব জ্যাম।"], topic: { menu: "এই এলাকা কেমন?", ask: "এই এলাকা কেমন?", answer: ["ভালোই। তবে ভিড় খুব।"] }, bye: ["আচ্ছা স্যার।"] },
+      npc_sweeper_tamarind: { label: "পরিচ্ছন্নতা কর্মী", address: "ভাই", greet: ["জি ভাই?"], hello: ["আছি ভাই, রাস্তা তো আর পরিষ্কার হয় না।"], work: ["সকাল থেকে রাস্তা ঝাড়ু দিই, ভাই।"], news: ["আজ রাস্তায় খুব জ্যাম।"], topic: { menu: "এই এলাকা কেমন?", ask: "এই এলাকা কেমন?", answer: ["ভালোই। তবে ভিড় খুব।"] }, bye: ["আচ্ছা ভাই।"] },
+      npc_boss_quince: { label: "ব্যবসায়ী", address: "ভাই", greet: ["হ্যাঁ বলেন, সময় কম।"], hello: ["ভালো, মিটিং আছে।"], work: ["ব্যবসা করি। বিস্তারিত বলার সময় নেই।"], news: ["আজ রাস্তায় খুব জ্যাম।"], topic: { menu: "এই এলাকা কেমন?", ask: "এই এলাকা কেমন?", answer: ["ভালোই। তবে ভিড় খুব।"] }, bye: ["আচ্ছা, আসি।"] },
+      npc_student_lemon: {
+        label: "ছাত্র", address: "ভাই",
+        greet: ["জি ভাই, বলেন।", "হ্যাঁ ভাই, কিছু বলবেন?"],
+        hello: ["ভালো আছি ভাই, পরীক্ষা নিয়ে একটু চিন্তায় আছি।", "এই তো ভাই, ক্লাস শেষ করে ফিরছি।"],
+        work: ["কলেজে পড়ি, ভাই। বিকালে দুইটা টিউশনি করি।"],
+        news: ["মেট্রোতে উঠলে এখন ক্লাসে আর দেরি হয় না।", "ফোনে অচেনা লিংক এলে আমি আর চাপি না, ভাই। বন্ধুর একটা অ্যাকাউন্ট এভাবেই গেছে।"],
+        topic: { menu: "পড়াশোনার খবর নিন", ask: "পড়াশোনা কেমন চলছে?", answer: ["চলছে ভাই, গণিতটা একটু কঠিন লাগে।", "সামনে পরীক্ষা। রাত জেগে পড়তে হচ্ছে।"] },
+        bye: ["আচ্ছা ভাই, ভালো থাকবেন।", "ঠিক আছে, দেখা হবে।"],
+      },
+      npc_office_orange: {
+        label: "চাকরিজীবী", address: "ভাই",
+        greet: ["জি, বলেন ভাই।", "হ্যাঁ, বলেন।"],
+        hello: ["আলহামদুলিল্লাহ, ভালো। অফিসের দেরি হয়ে যাচ্ছে, ভাই।", "চলছে ভাই, জ্যামে বসে বসেই দিন যায়।"],
+        work: ["একটা প্রাইভেট অফিসে হিসাবের কাজ করি।"],
+        news: ["অফিসে সবাইকে বলে দিয়েছে, ফোনে কেউ ওটিপি চাইলে না দিতে।", "মেট্রো হওয়ার পর মতিঝিল যেতে এখন আধা ঘণ্টার মতো লাগে।"],
+        topic: { menu: "অফিসের খবর নিন", ask: "অফিস কেমন চলছে?", answer: ["কাজের চাপ অনেক, ভাই। ছুটি পাই না।", "বসের মেজাজ আজকে ভালো, এটাই বড় খবর।"] },
+        bye: ["আচ্ছা ভাই, যাই। অফিসে দেরি হচ্ছে।", "ঠিক আছে, ভালো থাকবেন।"],
+      },
+      npc_elder_date: {
+        label: "মুরুব্বি", address: "চাচা",
+        greet: ["বলো বাবা, কী বলবে?", "হ্যাঁ বাবা, বলো।"],
+        hello: ["আলহামদুলিল্লাহ বাবা, ভালো আছি। তুমি কেমন আছ?", "এই বয়সে যেমন থাকা যায়, বাবা।"],
+        work: ["চাকরি থেকে অবসর নিয়েছি, বাবা। এখন নাতি-নাতনি নিয়েই দিন কাটে।"],
+        news: ["আগে এখানে এত দালান ছিল না, বাবা। সব কেমন বদলে গেল।", "ব্যাংকের নাম করে কেউ ফোন করলে পিন বলবে না, বুঝলে?"],
+        topic: { menu: "পুরনো দিনের কথা জিজ্ঞেস করুন", ask: "এই এলাকায় কত দিন ধরে আছেন?", answer: ["চল্লিশ বছর হয়ে গেল, বাবা। তখন চারদিকে কত ফাঁকা জায়গা ছিল।"] },
+        bye: ["আচ্ছা বাবা, সাবধানে থেকো।", "যাও বাবা, ভালো থেকো।"],
+      },
+      npc_shop_papaya: {
+        label: "দোকানদার", address: "ভাই",
+        greet: ["কী খুঁজছেন, ভাই?", "জি ভাই, বলেন।"],
+        hello: ["ভালো, ভাই। বেচাকেনা মোটামুটি।", "চলছে ভাই, আল্লাহর রহমতে।"],
+        work: ["ওই গলিতে আমার একটা ছোট দোকান আছে। মুদি মাল রাখি।"],
+        news: ["জিনিসপত্রের দাম তো বাড়তেই আছে, ভাই।", "মোবাইলে টাকা পাঠিয়েছি বলে ভুয়া মেসেজ দেখায় অনেকে। ব্যালেন্স না দেখে মাল দেই না।"],
+        topic: { menu: "বেচাকেনার খবর নিন", ask: "বেচাকেনা কেমন হচ্ছে?", answer: ["সকালে ভালো ছিল, দুপুরে একদম ফাঁকা।", "মাসের শুরুতে ভালো হয়, ভাই। শেষে সবার পকেট খালি।"] },
+        bye: ["আচ্ছা ভাই, আবার আসবেন।", "ঠিক আছে, ভালো থাকবেন।"],
+      },
+      npc_commuter_lychee: {
+        label: "যাত্রী", address: "ভাই",
+        greet: ["জি, বলেন ভাই।", "হ্যাঁ ভাই?"],
+        hello: ["এই তো ভাই, বাসের জন্য দাঁড়িয়ে আছি।", "ভালো, ভাই। কাজে যাচ্ছি।"],
+        work: ["সকালে বের হই, রাতে ফিরি। এই তো জীবন, ভাই।"],
+        news: ["এই রুটে বাস পেতে আজকে অনেক সময় লাগছে।", "বাসে ফোন সামলে রাখবেন, ভাই। সেদিন একজনের গেছে।"],
+        topic: { menu: "কোথায় যাচ্ছেন জিজ্ঞেস করুন", ask: "কোথায় যাচ্ছেন, ভাই?", answer: ["গুলিস্তান যাব। এক ঘণ্টা হয়ে গেল দাঁড়িয়ে আছি।", "ফার্মগেট, ভাই। মেট্রোতেই যেতাম, ভিড় দেখে নামলাম।"] },
+        bye: ["আচ্ছা ভাই, আমার বাস এসে গেলে উঠে যাব।", "ঠিক আছে, ভাই।"],
+      },
+      npc_worker_jackfruit: {
+        label: "শ্রমিক", address: "ভাই",
+        greet: ["জি ভাই, বলেন।", "কিছু বলবেন, ভাই?"],
+        hello: ["ভালো, ভাই। কাজ শেষে একটু জিরিয়ে নিচ্ছি।", "আছি ভাই, শরীরটা একটু ক্লান্ত।"],
+        work: ["নির্মাণের কাজ করি। ওই যে নতুন দালানটা উঠছে, ওখানে।"],
+        news: ["গরমে কাজ করা কঠিন, কিন্তু কী আর করা।", "টাকা পাঠাতে গিয়ে কেউ পিন চাইলে দিই না। আগে একবার ঠকেছি।"],
+        topic: { menu: "কাজের খবর নিন", ask: "দিনে কত ঘণ্টা কাজ করেন?", answer: ["সকাল আটটা থেকে সন্ধ্যা ছয়টা, ভাই। মাঝে এক ঘণ্টা বিরতি।"] },
+        bye: ["আচ্ছা ভাই, কাজে যাই।", "ঠিক আছে, ভাই।"],
+      },
+      npc_vendor_pineapple: {
+        label: "ফেরিওয়ালা", address: "মামা",
+        greet: ["কী লাগবে, মামা?", "আসেন মামা, দেখে যান।"],
+        hello: ["ভালো মামা। কিছু নিবেন?", "আল্লাহ রাখছে, মামা।"],
+        work: ["ফল বিক্রি করি, মামা। এই মোড়েই বিশ বছর।"],
+        news: ["আজকে আম ভালো, দামও কম।", "বিকালে ভিড় বাড়ে, তখন আর হাঁটার জায়গা থাকে না।"],
+        topic: { menu: "দাম জিজ্ঞেস করুন", ask: "দাম কত, মামা?", answer: ["কেজি একশো বিশ টাকা, মামা। নিলে কম রাখব।", "যেটা নিবেন সেটাই সস্তায় দেব, মামা।"] },
+        bye: ["আচ্ছা মামা, আবার আসবেন।", "যান মামা, কিনতে মন চাইলে আসবেন।"],
+      },
+      npc_tea_banana: {
+        label: "চা-ওয়ালা", address: "মামা",
+        greet: ["ভাই, চা খাবেন? গরম চা আছে।", "আসেন মামা, বসেন।"],
+        hello: ["ভালো মামা। চা খাবেন?", "চলছে মামা, চায়ের সাথে।"],
+        work: ["এই যে, চা বানাই। সকাল থেকে রাত পর্যন্ত।"],
+        news: ["এই দোকানে সবাই আসে, মামা। সব খবর এখানেই পাওয়া যায়।", "আদা দিয়ে চা বানালে কাশি কমে, মামা। খেয়ে দেখেন।"],
+        topic: { menu: "দোকানের সময় জিজ্ঞেস করুন", ask: "দোকান কতক্ষণ খোলা থাকে?", answer: ["ফজরের পর খুলি, রাত এগারোটায় বন্ধ করি।"] },
+        bye: ["আচ্ছা মামা, আবার আসবেন।", "আসেন মামা, চা না খেয়ে যাচ্ছেন!"],
+      },
+      npc_cng_guava: {
+        label: "সিএনজিচালক", address: "ভাই",
+        greet: ["জি ভাই, কোথায় যাবেন?", "হ্যাঁ ভাই, বলেন।"],
+        hello: ["ভালো, ভাই। গ্যাসের লাইনে দুই ঘণ্টা গেল আজকে।", "আছি ভাই, জ্যামের মধ্যে।"],
+        work: ["সিএনজি চালাই, ভাই। দশ বছর ধরে।"],
+        news: ["ওদিকে আজকে খুব জ্যাম, ভাই। ঘুরে যেতে হবে।", "অ্যাপে ডাকলে অনেকে এখন ভুয়া নম্বর থেকে ফোন করে। সাবধানে থাকবেন।"],
+        topic: { menu: "ভাড়া জিজ্ঞেস করুন", ask: "ভাড়া কেমন নেন, ভাই?", answer: ["জায়গা বুঝে, ভাই। দরদাম করে নেন।"] },
+        bye: ["আচ্ছা ভাই, লাগলে ডাক দিয়েন।", "ঠিক আছে, ভাই।"],
+      },
+      npc_rickshaw_watermelon: {
+        label: "রিকশাচালক", address: "মামা",
+        greet: ["মামা, কোথায় যাবেন?", "কী মামা, উঠবেন?"],
+        hello: ["ভালো, মামা। কোথায় যাবেন?", "পায়ে একটু ব্যথা, মামা। তবু চলছে।"],
+        work: ["রিকশা চালাই, মামা। দেশের বাড়ি রংপুর।"],
+        news: ["মেইন রোডে রিকশা উঠতে দেয় না, মামা। গলি দিয়ে ঘুরে যেতে হয়।", "বৃষ্টি হলে ভাড়া একটু বেশি পাই, মামা।"],
+        topic: { menu: "গ্রামের খবর নিন", ask: "বাড়িতে কে কে আছে, মামা?", answer: ["বউ আর দুই ছেলে, মামা। মাসে একবার টাকা পাঠাই।"] },
+        bye: ["আচ্ছা মামা, দরকার হলে ডাকবেন।", "যান মামা, ভালো থাকেন।"],
+      },
+      npc_police_coconut: {
+        label: "ট্রাফিক পুলিশ", address: "স্যার",
+        greet: ["জি, বলেন।", "হ্যাঁ, কী সমস্যা?"],
+        hello: ["ভালো। রাস্তায় সাবধানে চলবেন।", "ডিউটিতে আছি, ভাই। বলেন।"],
+        work: ["ট্রাফিক সামলাই, ভাই। সকাল-সন্ধ্যা এই মোড়েই।"],
+        news: ["লাল বাতিতে থামবেন। ফুটপাথে গাড়ি তুলবেন না।", "রাস্তা পার হতে ফুটওভারব্রিজ ব্যবহার করবেন।"],
+        topic: { menu: "সিগন্যালের কথা জিজ্ঞেস করুন", ask: "সিগন্যাল কতক্ষণ পর ছাড়ে?", answer: ["এক মিনিটের মতো। একটু অপেক্ষা করেন।", "ভিড় বুঝে আমরাই হাত দিয়ে ছাড়ি।"] },
+        bye: ["আচ্ছা, সাবধানে যাবেন।", "ঠিক আছে, যান।"],
+      },
+    } as Record<string, TalkRole>,
+    /** The same people, away from their post. They answer differently, and have nothing to sell. */
+    offDuty: {
+      npc_shop_papaya: {
+        greet: ["জি ভাই, বলেন। দোকান বন্ধ করে একটু বের হয়েছি।", "হ্যাঁ ভাই, বলেন।"],
+        topic: { menu: "কিছু বিক্রি করছেন কি না জিজ্ঞেস করুন", ask: "ভাই, কিছু বিক্রি করছেন নাকি?", answer: ["না ভাই, এখন তো কিছু বেচছি না। দোকানে আসেন।", "এখন না, ভাই। একটু কাজে বের হয়েছি।"] },
+      },
+      npc_vendor_pineapple: {
+        greet: ["জি মামা, বলেন। ভ্যান রেখে একটু হাঁটছি।", "হ্যাঁ মামা, কিছু বলবেন?"],
+        hello: ["ভালো মামা। একটু জিরিয়ে নিচ্ছি।", "আল্লাহ রাখছে, মামা।"],
+        topic: { menu: "কিছু বিক্রি করছেন কি না জিজ্ঞেস করুন", ask: "মামা, কিছু বিক্রি করছেন নাকি?", answer: ["না মামা, এখন কিছু বেচছি না। ভ্যানের কাছে আসেন।", "হাতে তো কিছুই নাই, মামা।"] },
+      },
+      npc_tea_banana: {
+        greet: ["জি মামা, বলেন। দোকানে এখন ছেলেটা বসেছে।", "হ্যাঁ মামা, বলেন।"],
+        hello: ["ভালো মামা। একটু বাজারে যাচ্ছি।", "চলছে মামা।"],
+        topic: { menu: "দোকান খোলা কি না জিজ্ঞেস করুন", ask: "মামা, দোকান খোলা আছে?", answer: ["আছে মামা, চায়ের দোকানে গিয়ে বসেন।"] },
+      },
+      npc_cng_guava: {
+        greet: ["জি ভাই, বলেন। গাড়ি এখন গ্যারেজে।", "হ্যাঁ ভাই, বলেন।"],
+        topic: { menu: "গাড়ি কোথায় জিজ্ঞেস করুন", ask: "ভাই, আপনার গাড়ি কোথায়?", answer: ["গ্যারেজে, ভাই। এখন যাব না। রাস্তায় খালি সিএনজি ডাকেন।"] },
+      },
+      npc_rickshaw_watermelon: {
+        greet: ["জি মামা, বলেন। রিকশা জমা দিয়ে এসেছি।", "হ্যাঁ মামা, কিছু বলবেন?"],
+        hello: ["ভালো, মামা। একটু জিরিয়ে নিচ্ছি।", "পায়ে একটু ব্যথা, মামা।"],
+      },
+    } as Record<string, Partial<TalkRole>>,
+    /** Talk on the bench, while the tea lasts. */
+    bench: {
+      greet: ["বসেন ভাই, এখানে জায়গা আছে।", "চা খাচ্ছেন? ভালো করেছেন।", "আজকের চা-টা ভালো হয়েছে, ভাই।"],
+      topics: [
+        { menu: "খেলার কথা বলুন", ask: "কালকের খেলা দেখেছেন, ভাই?", answer: ["দেখেছি ভাই, শেষ ওভারে তো দম বন্ধ হওয়ার অবস্থা!", "না ভাই, কারেন্ট ছিল না। কে জিতল?"] },
+        { menu: "দামের কথা বলুন", ask: "সব কিছুর দাম তো বাড়ছেই।", answer: ["আগে পাঁচ টাকায় চা খেতাম, ভাই। এখন দশ টাকা।", "বাজারে গেলে মন খারাপ হয়ে যায়, ভাই।"] },
+        { menu: "ফোনের মেসেজের কথা বলুন", ask: "ভাই, ফোনে মেসেজ এসেছে, আমি নাকি লটারি জিতেছি!", answer: ["ওটা ভুয়া, ভাই! লটারি না কিনলে জেতা যায় নাকি? লিংকে চাপ দেবেন না।", "আমারও এসেছিল। কাউকে টাকা বা পিন দেবেন না।"] },
+        { menu: "জ্যামের কথা বলুন", ask: "আজকে রাস্তায় খুব জ্যাম, তাই না?", answer: ["রোজই তো জ্যাম, ভাই। মেট্রোটাই বাঁচিয়েছে।", "গোলচত্বরে তো নড়ার জায়গা নাই।"] },
+      ],
+    },
+  },
+  /** Money on screen, in Bangla digits with the usual grouping. */
+  money: (taka: number) => `৳${bnNum(taka.toLocaleString("en-IN"))}`,
+  moneyHome: "বাড়ি থেকে এক হাজার টাকা পাঠিয়েছে। মোবাইলে দেখে নিন।",
+  bag: "ব্যাগে আছে",
+  bagEmpty: "কিছু নেই",
+  shop: {
+    prompt: "<kbd>E</kbd> দোকান থেকে কিনুন",
+    promptCart: "<kbd>E</kbd> কিনুন",
+    greet: ["কী লাগবে, ভাই?", "আসেন ভাই, দেখেন।", "বলেন ভাই, কী দেব?"],
+    ask: (name: string) => `${name} দেন, ভাই।`,
+    here: (price: string) => `এই নেন। ${price} টাকা।`,
+    hereSay: (price: number) => `এই নেন। ${takaWords(price)} টাকা।`,
+    noMoney: "টাকা তো কম পড়ছে, ভাই।",
+    bought: (name: string, price: string) => `${name} কিনলেন, ${price} টাকা`,
+    chat: "দোকানদারের সাথে কথা বলুন",
+    leave: "না, কিছু লাগবে না",
+    leaveLine: "না ভাই, পরে আসব।",
+    /** What each kind of shop or cart keeps, by what the hero would ask for. Prices are in tens. */
+    stock: {
+      doctor: [{ key: "checkup", name: "ডাক্তার দেখানো", price: 300 }, { key: "medicine", name: "ওষুধ", price: 100 }],
+      bankDesk: [{ key: "depositSlip", name: "জমা স্লিপ", price: 10 }],
+      hotelDesk: [{ key: "hotelRoom", name: "এক রাতের ঘর", price: 800 }, { key: "hotelTea", name: "এক কাপ চা", price: 20 }],
+      shopBarber: [{ key: "haircut", name: "চুল কাটা", price: 100 }, { key: "shave", name: "দাড়ি কামানো", price: 50 }],
+      shopTailor: [{ key: "stitchShirt", name: "একটা জামা সেলাই", price: 300 }, { key: "panjabi", name: "একটা পাঞ্জাবি", price: 700 }],
+      shopRepair: [{ key: "screenFix", name: "মোবাইলের স্ক্রিন বদল", price: 800 }, { key: "charger", name: "একটা চার্জার", price: 250 }],
+      shopPhoto: [{ key: "photocopy", name: "কয়েকটা ফটোকপি", price: 10 }, { key: "photo", name: "পাসপোর্ট সাইজ ছবি", price: 100 }],
+      shopAgent: [{ key: "recharge", name: "মোবাইল রিচার্জ", price: 50 }],
+      shopDiagnostic: [{ key: "bloodTest", name: "রক্ত পরীক্ষা", price: 500 }, { key: "bpCheck", name: "প্রেসার মাপা", price: 50 }],
+      shopBiryani: [{ key: "kacchi", name: "এক প্লেট কাচ্চি", price: 280 }, { key: "tehari", name: "এক প্লেট তেহারি", price: 150 }],
+      shopRice: [{ key: "riceFish", name: "ভাত আর মাছ", price: 120 }, { key: "riceDal", name: "ভাত আর ডাল", price: 60 }],
+      shopSari: [{ key: "sari", name: "একটা শাড়ি", price: 800, haggle: true }, { key: "orna", name: "একটা ওড়না", price: 200, haggle: true }],
+      shopGold: [{ key: "ring", name: "একটা ছোট আংটি", price: 800 }],
+      shopElectronics: [{ key: "fan", name: "একটা টেবিল ফ্যান", price: 800, haggle: true }, { key: "kettle", name: "একটা কেটলি", price: 500, haggle: true }],
+      paan_stall: [{ key: "paan", name: "একটা পান", price: 10 }, { key: "sweetPaan", name: "মিষ্টি পান", price: 20 }],
+      fuchka_cart: [{ key: "fuchka", name: "এক প্লেট ফুচকা", price: 50 }, { key: "chotpoti2", name: "এক প্লেট চটপটি", price: 40 }],
+      jhalmuri_stand: [{ key: "jhalmuri", name: "এক ঠোঙা ঝালমুড়ি", price: 20 }],
+      pitha_stall: [{ key: "bhapa", name: "একটা ভাপা পিঠা", price: 10 }, { key: "chitoi", name: "একটা চিতই পিঠা", price: 10 }],
+      coconut_cart: [{ key: "coconut", name: "একটা ডাব", price: 80, haggle: true }],
+      cane_press: [{ key: "cane", name: "এক গ্লাস আখের রস", price: 30 }],
+      cobbler_kit: [{ key: "stitchShoe", name: "জুতা সেলাই", price: 40, haggle: true }, { key: "polish", name: "জুতা পালিশ", price: 20 }],
+      barber_chair: [{ key: "haircut", name: "চুল কাটা", price: 50, haggle: true }, { key: "shave", name: "দাড়ি কামানো", price: 20 }],
+      fish_table: [{ key: "hilsa", name: "একটা ইলিশ", price: 800, haggle: true }, { key: "rui", name: "এক কেজি রুই", price: 350, haggle: true }, { key: "shrimp", name: "আধা কেজি চিংড়ি", price: 400, haggle: true }],
+      meat_table: [{ key: "beef", name: "এক কেজি গরুর মাংস", price: 750, haggle: true }, { key: "chicken", name: "একটা মুরগি", price: 300, haggle: true }],
+      veg_stall: [{ key: "potato", name: "এক কেজি আলু", price: 40, haggle: true }, { key: "chili", name: "এক পোয়া কাঁচা মরিচ", price: 30, haggle: true }, { key: "pumpkin", name: "এক ফালি কুমড়া", price: 50, haggle: true }],
+      clothes_heap: [{ key: "usedShirt", name: "একটা পুরানো শার্ট", price: 100, haggle: true }, { key: "usedJacket", name: "একটা পুরানো জ্যাকেট", price: 300, haggle: true }],
+      shopGrocery: [{ key: "biscuit", name: "বিস্কুট", price: 20 }, { key: "chips", name: "চিপস", price: 20 }, { key: "water", name: "পানির বোতল", price: 20 }, { key: "soap", name: "সাবান", price: 40 }],
+      shopPharmacy: [{ key: "saline", name: "স্যালাইন", price: 10 }, { key: "para", name: "জ্বরের ট্যাবলেট", price: 10 }, { key: "bandage", name: "ব্যান্ডেজ", price: 30 }],
+      shopMobile: [{ key: "recharge", name: "মোবাইল রিচার্জ", price: 50 }, { key: "earphone", name: "ইয়ারফোন", price: 200 }, { key: "charger", name: "চার্জার", price: 350 }],
+      shopClothes: [{ key: "gamcha", name: "গামছা", price: 120 }, { key: "tshirt", name: "গেঞ্জি", price: 250 }, { key: "lungi", name: "লুঙ্গি", price: 400 }],
+      shopTea: [{ key: "teacup", name: "এক কাপ চা", price: 10 }, { key: "biscuit", name: "বিস্কুট", price: 20 }, { key: "bun", name: "বনরুটি", price: 20 }],
+      shopHardware: [{ key: "rope", name: "দড়ি", price: 60 }, { key: "lock", name: "তালা", price: 150 }, { key: "torch", name: "টর্চ", price: 200 }],
+      shopSweets: [{ key: "rosogolla", name: "রসগোল্লা", price: 30 }, { key: "jilapi", name: "জিলাপি", price: 30 }, { key: "shondesh", name: "সন্দেশ", price: 40 }],
+      shopBooks: [{ key: "pen", name: "কলম", price: 10 }, { key: "khata", name: "খাতা", price: 40 }, { key: "storybook", name: "গল্পের বই", price: 150 }],
+      fruit_cart: [{ key: "guava", name: "পেয়ারা", price: 30 }, { key: "mango", name: "আম", price: 60 }, { key: "banana", name: "এক হালি কলা", price: 40 }],
+      food_cart: [{ key: "shingara", name: "সিঙ্গারা", price: 10 }, { key: "chotpoti", name: "চটপটি", price: 40 }, { key: "fuchka", name: "ফুচকা", price: 50 }],
+      umbrella_stall: [{ key: "umbrella", name: "একটা ছাতা", price: 300 }, { key: "raincoat", name: "রেইনকোট", price: 350 }],
+      newspaper_stand: [{ key: "paper", name: "একটা পত্রিকা", price: 20 }, { key: "magazine", name: "একটা ম্যাগাজিন", price: 60 }],
+      flexi_kiosk: [{ key: "recharge", name: "মোবাইল রিচার্জ", price: 50 }, { key: "sim", name: "একটা সিম", price: 150 }],
+      clothes_rack: [{ key: "tshirt", name: "গেঞ্জি", price: 200 }, { key: "shirt", name: "একটা শার্ট", price: 450 }],
+      shoe_stall: [{ key: "sandal", name: "এক জোড়া স্যান্ডেল", price: 250 }, { key: "shoes", name: "এক জোড়া জুতা", price: 700 }],
+      plant_nursery: [{ key: "sapling", name: "একটা চারাগাছ", price: 100 }, { key: "flowerpot", name: "একটা ফুলের টব", price: 150 }],
+    } as Record<string, { key: string; name: string; price: number; haggle?: boolean }[]>,
+    /** Bargaining. The seller opens high, comes down a little when asked, and has a floor. */
+    askPrice: (name: string) => `${name} কত?`,
+    quote: (price: string) => `${price} টাকা, ভাই। একদম ন্যায্য দাম।`,
+    quoteSay: (price: number) => `${takaWords(price)} টাকা, ভাই। একদম ন্যায্য দাম।`,
+    haggleBuy: (price: string) => `ঠিক আছে, ${price} টাকায় দেন`,
+    haggleBuySay: (price: number) => `ঠিক আছে, ${takaWords(price)} টাকায় দেন।`,
+    haggleAsk: ["এত দাম কেন, ভাই? একটু কম রাখেন।", "আরে না ভাই, বেশি হয়ে গেল। কমান।", "শেষ দাম বলেন।"],
+    haggleAskShort: "দাম কমাতে বলুন",
+    haggleDown: (price: string) => `আচ্ছা, আপনার জন্য ${price} টাকা।`,
+    haggleDownSay: (price: number) => `আচ্ছা, আপনার জন্য ${takaWords(price)} টাকা।`,
+    haggleFloor: ["ভাই, এর নিচে আর পারব না। কেনা দামই পড়ে না।", "এটাই শেষ দাম, ভাই। নিলে নেন।"],
+    haggleLeave: "থাক, লাগবে না",
+    haggleLeaveLine: "না ভাই, এত দিয়ে নেব না।",
+    haggleCall: ["আরে ভাই, শোনেন শোনেন! আচ্ছা, যান।", "আচ্ছা ভাই, আবার আসবেন।"],
+  },
+  tea: {
+    prompt: "<kbd>E</kbd> চায়ের দোকানে যান",
+    ask: "কী দেব, মামা? গরম চা আছে।",
+    menu: [
+      { key: "milk", label: "দুধ চা", line: "মামা, এক কাপ দুধ চা দেন।", seconds: 24, price: 20 },
+      { key: "red", label: "রং চা", line: "মামা, একটা রং চা দেন। চিনি কম।", seconds: 20, price: 10 },
+      { key: "biscuit", label: "চা আর বিস্কুট", line: "মামা, চা আর একটা বিস্কুট দেন।", seconds: 32, price: 30 },
+      { key: "singara", label: "চা আর সিঙ্গারা", line: "মামা, চা আর একটা গরম সিঙ্গারা দেন।", seconds: 42, price: 30 },
+    ],
+    chat: "চা-ওয়ালার সাথে কথা বলুন",
+    notNow: "না মামা, পরে আসব।",
+    okay: "ঠিক আছে ভাই, একটু দাঁড়ান। বসেন।",
+    noSeat: "বসার জায়গা নাই, মামা। একটু পরে আসেন।",
+    serve: "এই নেন ভাই, গরম গরম।",
+    drinking: { milk: "দুধ চা খাচ্ছেন", red: "রং চা খাচ্ছেন", biscuit: "চা আর বিস্কুট খাচ্ছেন", singara: "চা আর সিঙ্গারা খাচ্ছেন" } as Record<string, string>,
+    waiting: "চা আসছে",
+    left: (time: string) => `আর ${time}`,
+    talkNeighbour: "পাশের জনের সাথে কথা বলুন",
+    talkVendor: "চা-ওয়ালার সাথে কথা বলুন",
+    hurry: "তাড়াতাড়ি শেষ করুন",
+    hurrying: "তাড়াতাড়ি শেষ করছেন",
+    leave: "উঠে পড়ুন",
+    done: "আহ, চা-টা ভালো ছিল, মামা!",
+    leftEarly: "মামা, একটু তাড়া আছে। উঠি।",
+    bill: "আবার আসবেন, মামা।",
+    calls: ["চা! গরম চা!", "আসেন মামা, এক কাপ চা খেয়ে যান!"],
+  },
+  crash: {
+    driver: ["আরে! কী করছেন, ভাই?", "চোখ কোথায় আপনার?", "ওই মিয়া, দেখে চালান!", "এটা কী হলো, ভাই?", "আরে আরে, আমার গাড়ি!"],
+    driverOut: ["দেখেন তো, কী করলেন এটা!", "এত জোরে কেউ চালায়, ভাই?", "আরেকটু হলে বড় কিছু হয়ে যেত!"],
+    passenger: ["আরে ড্রাইভার সাহেব, কী হলো?", "ওস্তাদ, আস্তে!", "আল্লাহ, ধাক্কা লাগল নাকি?"],
+    bystander: ["আরে আরে, কী হলো?", "এই যে, ধাক্কা লাগল!", "সাবধানে চালান, ভাই!", "আস্তে চালান, এটা তো রাস্তা!"],
+    wall: ["আরে, দেয়ালে মারলেন তো!", "ভাই, চোখে দেখেন না?", "গাড়ি চালানো শিখেন, ভাই!"],
+    cart: ["আরে আমার ভ্যান! কী করছেন?", "ফল সব পড়ে যাবে তো, ভাই!", "দেখে চালান মামা, এটা আমার রুটিরুজি!"],
+    police: ["এই যে! সাবধানে চালান!", "রাস্তায় ধাক্কাধাক্কি কেন, ভাই?"],
+    fled: ["ওই! চলে যাচ্ছেন কেন?", "আরে ভাই, দাঁড়ান!"],
+    knocked: ["আরে আরে, লোকটার ওপর উঠিয়ে দিচ্ছিলেন তো!", "দেখে চালান, ভাই! মানুষ হাঁটছে!", "আল্লাহ বাঁচাইছে!", "এই গাড়ি থামান!"],
+    pedestrian: ["আরে ভাই, গাড়ির সামনে কেন?", "দেখে রাস্তা পার হন, ভাই!", "চোখ কোথায় আপনার? গাড়ি দেখেন না?"],
+    prompt: "<kbd>E</kbd> ক্ষমা চান",
+    menu: [
+      { label: "ক্ষমা চান", line: "দুঃখিত ভাই, ভুল হয়ে গেছে।", reply: "ঠিক আছে, ঠিক আছে। পরের বার সাবধানে চালাবেন।" },
+      { label: "খোঁজ নিন", line: "ভাই, কারও কিছু হয়নি তো?", reply: "না, আল্লাহর রহমতে কিছু হয়নি। সাবধানে যান।" },
+      { label: "তর্ক করুন", line: "আপনিই তো হঠাৎ থেমে গেলেন!", reply: "আমি থামলাম? সিগন্যাল দেখেন নাই? আচ্ছা থাক, যান।" },
+    ],
+    calmed: "আচ্ছা, যাই। কাজ আছে।",
+  },
+  hail: {
+    prompt: "<kbd>Q</kbd> গাড়ি ডাকুন",
+    menu: { rickshaw: "রিকশা ডাকুন", cng: "সিএনজি ডাকুন", taxi: "ট্যাক্সি ডাকুন", bus: "বাসের খোঁজ করুন", never: "থাক, লাগবে না" } as Record<string, string>,
+    call: { cng: "এই সিএনজি! এদিকে আসেন!", rickshaw: "ওই রিকশা! এদিকে আসেন!", taxi: "এই ট্যাক্সি! এদিকে আসেন!" } as Record<string, string>,
+    coming: { cng: "সিএনজি আসছে", rickshaw: "রিকশা আসছে", taxi: "ট্যাক্সি আসছে" } as Record<string, string>,
+    reply: "মামা, কোথায় যাবেন? উঠেন।",
+    none: "ধারে-কাছে কোনো খালি গাড়ি নেই।",
+    gaveUp: "গাড়িটা জ্যামে আটকে গেছে। আবার ডেকে দেখুন।",
+    farRoad: "গাড়ি ডাকতে রাস্তার পাশে আসুন।",
+    busCall: "এই বাস! দাঁড়ান!",
+    busRoom: ["আসেন আসেন, উঠেন! জায়গা আছে!", "ওঠেন ওঠেন, ভেতরে জায়গা আছে, ভাই!"],
+    busFull: ["জায়গা নাই, ভাই! পরের বাসে আসেন!", "ভেতরে দাঁড়ানোরও জায়গা নাই! পরেরটায় আসেন!"],
+    noBus: "কাছে কোনো বাস নেই। বাস স্টপে গিয়ে দাঁড়ান।",
+    stop: "বাস স্টপ",
+  },
+  blocked: ["ও ভাই, রাস্তা ছাড়েন!", "সরেন ভাই, পেছনে জ্যাম লেগে গেল!", "আরে ভাই, রাস্তার মাঝে দাঁড়িয়ে কেন?", "ভাই, একটু সাইড দেন তো!"],
+  /** What's particular to each district, over the general text. */
+  regionText: {
+    dhaka_mirpur10: {
+      station: { title: "মিরপুর ১০ মেট্রো স্টেশন", text: "ঢাকার মেট্রোরেল এই পথ ধরে উত্তরা থেকে মতিঝিল যায়। ওপরে ট্রেন, নিচে শহরের ব্যস্ততম মোড়গুলোর একটি।" },
+      plaza: { title: "মিরপুর ১০ গোলচত্বর", text: "চারদিকের রাস্তা এখানে এসে মিলেছে। মিরপুরের মানুষ এই মোড় দেখেই দিক ঠিক করে।" },
+    },
+    dhaka_gulshan: {
+      plaza: { title: "গুলশান ১ গোলচত্বর", text: "কাচের উঁচু দালান আর দামি গাড়ির মোড়। অফিসের সময় এখানেও জ্যাম লেগে যায়।" },
+      lake: { title: "গুলশান লেক", text: "গুলশান আর বাড্ডার মাঝখানের লেক। বিকালে পাড় ধরে হাঁটার লোকের অভাব হয় না।" },
+    },
+    dhaka_dhanmondi: {
+      station: { title: "শাহবাগ মেট্রো স্টেশন", text: "মিরপুর থেকে মতিঝিল যাওয়ার পথে এখানে ট্রেন থামে। ধানমন্ডি আর শাহবাগের মানুষ এখান থেকেই ওঠেন।" },
+      plaza: { title: "ধানমন্ডি ২৭ গোলচত্বর", text: "দোকান, কোচিং সেন্টার আর রেস্তোরাঁয় ঘেরা মোড়। সন্ধ্যায় এখানে তরুণদের আড্ডা জমে।" },
+      lake: { title: "ধানমন্ডি লেক", text: "ঢাকার সবচেয়ে প্রিয় লেকগুলোর একটি। সকাল-বিকাল হাঁটা, ফুচকা আর গল্প।" },
+    },
+  } as Record<string, Record<string, { title?: string; text?: string }>>,
+  inspect: {
+    prompt: (name: string) => `<kbd>E</kbd> ${name} দেখুন`,
+    places: {
+      station: { name: "মেট্রো স্টেশন", title: "মেট্রো স্টেশন", text: "ঢাকার মেট্রোরেল এই পথ ধরে উত্তরা থেকে মতিঝিল যায়। ওপরে ট্রেন, নিচে শহরের ব্যস্ত রাস্তা।" },
+      plaza: { name: "গোলচত্বর", title: "গোলচত্বর", text: "চারদিকের রাস্তা এখানে এসে মিলেছে। এই মোড় দেখেই মানুষ দিক ঠিক করে।" },
+      school: { name: "স্কুল", title: "আদর্শ উচ্চ বিদ্যালয়", text: "সকালে অ্যাসেম্বলি, দুপুরে টিফিনের ঘণ্টা। ছুটির সময় গেটের সামনে অভিভাবকদের ভিড় জমে।" },
+      university: { name: "বিশ্ববিদ্যালয়", title: "নগর বিশ্ববিদ্যালয়", text: "ক্লাসের ফাঁকে চত্বরে আড্ডা, গেটের বাইরে চায়ের দোকানে তর্ক। শহরের অনেক তরুণ এখানেই পড়ে।" },
+      lake: { name: "লেক", title: "লেক", text: "শহরের মাঝখানে একটু খোলা বাতাস। সকালে মানুষ এখানে হাঁটতে আসে, বিকালে বসে গল্প করে।" },
+      villas: { name: "আবাসিক এলাকা", title: "আবাসিক এলাকা", text: "উঁচু দেয়াল আর লোহার গেটের পেছনে বাগানওয়ালা বাড়ি। এখানকার রাস্তা অনেক শান্ত।" },
+      footbridge: { name: "ফুটওভারব্রিজ", title: "ফুটওভারব্রিজ", text: "নিরাপদে রাস্তা পার হওয়ার জন্য বানানো সেতু। ওপর থেকে পুরো মোড়টা দেখা যায়।" },
+      mosque: { name: "মসজিদ", title: "এলাকার মসজিদ", text: "আজানের সময় আশপাশের দোকানিরা এখানে নামাজ পড়তে আসেন। জুমার দিনে ভিড় রাস্তা পর্যন্ত চলে আসে।" },
+      market: { name: "বাজার", title: "কাঁচাবাজার", text: "সকালে টাটকা সবজি আর মাছ, বিকালে ফেরিওয়ালাদের হাঁকডাক। দরদাম না করে এখানে কেউ কেনে না।" },
+      park: { name: "খেলার মাঠ", title: "খেলার মাঠ", text: "এলাকার ছেলেরা বিকালে এখানে ক্রিকেট আর ফুটবল খেলে। এই শহরে খোলা জায়গা খুব কম।" },
+      terminal: { name: "বাস টার্মিনাল", title: "বাস টার্মিনাল", text: "নানা রুটের বাস এখান থেকে ছাড়ে। হেলপারের ডাকে কান পাতা দায়।" },
+      construction: { name: "নির্মাণ এলাকা", title: "নির্মাণ এলাকা", text: "বাঁশের ভারা আর ইটের স্তূপ। ঢাকায় সব সময় কোথাও না কোথাও নতুন দালান উঠছে।" },
+      bus: { name: "বাস স্টপ", title: "বাস স্টপ", text: "এখানে দাঁড়ালে বাস থামবে। সামনের বোর্ডে দেখে নিন বাসটা কোথায় যাচ্ছে।" },
+      police: { name: "পুলিশ বক্স", title: "ট্রাফিক পুলিশ বক্স", text: "ব্যস্ত সময়ে ট্রাফিক পুলিশ এখান থেকে হাত দিয়ে গাড়ি নিয়ন্ত্রণ করেন। লাল বাতি মানবেন।" },
+    } as Record<string, { name: string; title: string; text: string }>,
+  },
+  // What people say to each other, a line each in turn, overheard in passing.
+  overheard: [
+    ["ভাই, বাজারে আজকে পেঁয়াজ কত?", "একশো ত্রিশ। ভাবা যায়!"],
+    ["কালকে খেলা দেখছিলেন?", "দেখছি। শেষ ওভারে তো দম বন্ধ হওয়ার অবস্থা!"],
+    ["অফিসে যাবেন না আজকে?", "জ্যামে আটকে গেলে যাওয়া না যাওয়া একই কথা।"],
+    ["ছেলেটা পাস করেছে?", "জি ভাই, জিপিএ ফাইভ পেয়েছে।"],
+    ["ভাই, একটা মেসেজ এসেছে, আমি নাকি লটারি জিতেছি!", "ওই লিংকে চাপ দিয়েন না, ভাই। সব ভুয়া।"],
+    ["বৃষ্টি হবে নাকি আজকে?", "আকাশের অবস্থা তো ভালো না।"],
+    ["ভাড়া কত চাইল?", "দেড়শো টাকা! ভাবতে পারেন?"],
+    ["নতুন ফোন কিনলেন নাকি?", "হ্যাঁ ভাই, কিস্তিতে নিয়েছি।"],
+    ["কই যান, ভাই?", "এই তো, একটু বাজারে।"],
   ],
-  tea: [
-    "ভাই, চা খাবেন? গরম চা আছে।",
-    "ঠিক আছে ভাই, একটু দাঁড়ান। চিনি কম না বেশি?",
-    "দুধ চা না লাল চা, ভাই?",
-  ],
+  stallCalls: {
+    fruit_cart: ["আম! পাকা আম!", "টাটকা ফল, মামা! নিয়ে যান!"],
+    food_cart: ["গরম গরম সিঙ্গারা!", "ফুচকা! চটপটি!"],
+    other: ["আসেন মামা, দেখে যান!", "দেখে যান, মামা! দাম কম!"],
+  } as Record<string, string[]>,
+  browse: ["এটার দাম কত, মামা?", "একটু কম রাখা যায় না?", "তাজা তো, মামা?"],
 };
+
+/** One kind of person, and everything they might say. */
+export interface TalkRole {
+  label: string;
+  /** How the hero addresses them. */
+  address: string;
+  greet: string[];
+  hello: string[];
+  work: string[];
+  news: string[];
+  topic: { menu: string; ask: string; answer: string[] };
+  bye: string[];
+}
+
+const TENS: Record<number, string> = { 10: "দশ", 20: "বিশ", 30: "ত্রিশ", 40: "চল্লিশ", 50: "পঞ্চাশ", 60: "ষাট", 70: "সত্তর", 80: "আশি", 90: "নব্বই" };
+const HUNDREDS: Record<number, string> = { 100: "একশো", 200: "দুইশো", 300: "তিনশো", 400: "চারশো", 500: "পাঁচশো", 600: "ছয়শো", 700: "সাতশো", 800: "আটশো", 900: "নয়শো" };
+
+/** A round number said as words, for anything that's going to be spoken. */
+export function takaWords(n: number): string {
+  const k = Math.floor(n / 1000), rest = n - k * 1000;
+  const h = Math.floor(rest / 100) * 100, t = rest - h;
+  const thousands = k ? `${["", "এক", "দুই", "তিন", "চার", "পাঁচ", "ছয়", "সাত", "আট", "নয়"][k] ?? bnNum(k)} হাজার` : "";
+  return [thousands, HUNDREDS[h], TENS[t]].filter(Boolean).join(" ");
+}
 
 const DIGITS = "০১২৩৪৫৬৭৮৯";
 
 /** Writes ASCII digits in a string as Bangla digits. */
 export function bnNum(value: number | string): string {
+  if (lang === "en") return String(value);
   return String(value).replace(/[0-9]/g, (d) => DIGITS[Number(d)]);
 }
 
@@ -148,6 +1040,7 @@ export function bnNum(value: number | string): string {
 export function bnClock(hours: number): string {
   const h24 = Math.floor(hours) % 24;
   const m = Math.floor((hours - Math.floor(hours)) * 60);
+  if (lang === "en") return `${h24 % 12 === 0 ? 12 : h24 % 12}:${String(m).padStart(2, "0")} ${h24 < 12 ? "am" : "pm"}`;
   const part = h24 < 5 ? "রাত" : h24 < 11 ? "সকাল" : h24 < 15 ? "দুপুর" : h24 < 18 ? "বিকাল" : h24 < 20 ? "সন্ধ্যা" : "রাত";
   const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
   return `${part} ${bnNum(h12)}:${bnNum(String(m).padStart(2, "0"))}`;

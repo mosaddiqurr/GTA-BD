@@ -10,6 +10,7 @@ import "@fontsource/tiro-bangla/bengali-400.css";
 import "@fontsource/mina/bengali-700.css";
 import "@fontsource/atma/bengali-700.css";
 import "@fontsource/noto-serif-bengali/bengali-800.css";
+import type { BusRoute, RegionManifest } from "../regions/types";
 import { Rng } from "./cityLayout";
 import type { CellName } from "./atlas";
 import type { Rect } from "./geo";
@@ -18,6 +19,18 @@ import { bnNum } from "../localization/bn";
 // All Bangla text is typeset by the browser's shaping engine, so conjuncts are correct.
 // Names are generic and original: no real brands, and phone numbers are all zeros.
 export const SHOP_NAMES: Record<string, string[]> = {
+  shopBarber: ["নিউ স্টাইল সেলুন", "ভাই ভাই হেয়ার কাটিং", "রয়্যাল সেলুন"],
+  shopTailor: ["আলিফ টেইলার্স", "ফ্যাশন টেইলার্স", "মডার্ন দর্জি ঘর"],
+  shopRepair: ["মোবাইল সার্ভিসিং সেন্টার", "ডিজিটাল মোবাইল রিপেয়ার", "হক মোবাইল মেরামত"],
+  shopPhoto: ["ফটোকপি ও প্রিন্ট", "পাসপোর্ট সাইজ ছবি", "স্মৃতি ফটো স্টুডিও"],
+  shopAgent: ["ঝটপট টাকা এজেন্ট", "টাকা পাঠান ও তুলুন", "ঝটপট টাকা পয়েন্ট"],
+  shopDiagnostic: ["মেডিকেয়ার ডায়াগনস্টিক সেন্টার", "জনসেবা ডায়াগনস্টিক", "নিরাময় প্যাথলজি ল্যাব"],
+  shopBiryani: ["নবাবী বিরিয়ানি হাউজ", "মামা কাচ্চি ঘর", "পুরান ঢাকা বিরিয়ানি"],
+  shopRice: ["মা ভাতের হোটেল", "জনতা ভাত ঘর", "গরম ভাতের হোটেল"],
+  shopSari: ["বেনারসি বিতান", "জামদানি ঘর", "শাড়ি মহল"],
+  shopGold: ["স্বর্ণালী জুয়েলার্স", "নিউ গহনা ঘর", "রূপসী জুয়েলার্স"],
+  shopElectronics: ["ইলেকট্রো বাজার", "ভাই ভাই ইলেকট্রনিক্স", "ডিজিটাল টিভি সেন্টার"],
+  coaching: ["মেধা কোচিং সেন্টার", "প্রতিভা ভর্তি কোচিং", "সফল একাডেমিক কেয়ার", "বিজ্ঞান ক্লাব কোচিং", "এসএসসি ও এইচএসসি ব্যাচ", "গণিত ক্লাব", "ইংরেজি স্পোকেন কোর্স"],
   shopGrocery: ["মায়ের দোয়া স্টোর", "জনতা জেনারেল স্টোর", "ভাই ভাই ট্রেডার্স", "আল-আমিন স্টোর", "বিসমিল্লাহ ভ্যারাইটি স্টোর", "নিউ মদিনা স্টোর"],
   shopPharmacy: ["রহমান ফার্মেসী", "সেবা মেডিকেল হল", "জনসেবা ফার্মেসী", "মা ফার্মা", "লাইফ কেয়ার ফার্মেসী"],
   shopMobile: ["নিউ ঢাকা মোবাইল সেন্টার", "স্মার্ট টেলিকম", "সিটি মোবাইল ও রিচার্জ", "ডিজিটাল ফোন হাউস", "এশিয়া টেলিকম"],
@@ -29,6 +42,18 @@ export const SHOP_NAMES: Record<string, string[]> = {
 };
 
 const SHOP_TAGLINES: Record<string, string> = {
+  shopBarber: "চুল কাটা, দাড়ি কামানো",
+  shopTailor: "জামা, প্যান্ট, পাঞ্জাবি সেলাই",
+  shopRepair: "সব মোবাইল মেরামত করা হয়",
+  shopPhoto: "ফটোকপি, প্রিন্ট, ছবি",
+  shopAgent: "টাকা পাঠান, তুলুন, রিচার্জ করুন",
+  shopDiagnostic: "রক্ত পরীক্ষা, এক্স-রে, ইসিজি",
+  shopBiryani: "কাচ্চি, তেহারি, মোরগ পোলাও",
+  shopRice: "ভাত, মাছ, ডাল, ভর্তা",
+  shopSari: "বেনারসি, জামদানি, কাতান",
+  shopGold: "২২ ক্যারেট সোনার গহনা",
+  shopElectronics: "টিভি, ফ্রিজ, ফ্যান, রাইস কুকার",
+  coaching: "ভর্তি চলছে",
   shopGrocery: "চাল, ডাল, তেল, মসলা",
   shopPharmacy: "সকল প্রকার ঔষধ পাওয়া যায়",
   shopMobile: "রিচার্জ ও মোবাইল সার্ভিসিং",
@@ -56,17 +81,12 @@ const BILLBOARDS: { head: string; sub: string; bg: [string, string]; fg: string;
   { head: "তাজা চা পাতা", sub: "প্রতিদিনের সতেজতা", bg: ["#1b4d2e", "#5b8c3a"], fg: "#fff8e1", accent: "#e8c547" },
 ];
 
-const ROAD_SIGNS = [
-  { head: "মিরপুর ১০", sub: "গোলচত্বর" },
-  { head: "কাজীপাড়া", sub: "দক্ষিণে" },
-  { head: "মিরপুর ১১", sub: "উত্তরে" },
-  { head: "মিরপুর ২", sub: "পশ্চিমে" },
-  { head: "মিরপুর ১৪", sub: "পূর্বে" },
-  { head: "মিরপুর ১০ মেট্রো স্টেশন", sub: "" },
-];
+const LABELS = ["ঈদ মোবারক", "শপিং মল", "রেস্তোরাঁ", "হোটেল", "ক্লিনিক", "ব্যাংক", "আবাসিক ভবন", "অফিস টাওয়ার", "থানা", "সিএনজি ফিলিং স্টেশন", "গার্মেন্টস কারখানা", "কোচিং পাড়া", "ইলেকট্রনিক্স মার্কেট", "গহনা মার্কেট", "বই বাজার", "শাড়ি মার্কেট", "মাছ বাজার", "ট্রাফিক পুলিশ", "বাস স্টপ", "খেলার মাঠ", "কাঁচাবাজার", "মসজিদ", "কাজ চলছে", "রাস্তা বন্ধ", "সিএনজি স্ট্যান্ড", "নিরাপদে রাস্তা পার হোন", "আদর্শ উচ্চ বিদ্যালয়", "নগর বিশ্ববিদ্যালয়"];
 
-const LABELS = ["ট্রাফিক পুলিশ", "বাস স্টপ", "খেলার মাঠ", "কাঁচাবাজার", "মসজিদ", "কাজ চলছে", "রাস্তা বন্ধ", "সিএনজি স্ট্যান্ড", "নিরাপদে রাস্তা পার হোন", "মিরপুর ১০ মেট্রো স্টেশন"];
-export const ROUTES = ["মিরপুর ১০ — গুলিস্তান", "মিরপুর — মতিঝিল", "গাবতলী — সদরঘাট", "উত্তরা — মতিঝিল", "মিরপুর ১৪ — আজিমপুর", "পল্লবী — যাত্রাবাড়ী"];
+/** The bus routes of the district being played. Each bus shows one on its board. */
+export let ROUTES: string[] = [];
+export let ROUTE_INFO: BusRoute[] = [];
+
 const POSTERS = ["টু-লেট", "বাসা ভাড়া হবে", "সাবলেট", "পড়াতে চাই", "জরুরি লোক চাই", "ফ্ল্যাট ভাড়া"];
 const PLATE_LETTERS = ["ক", "খ", "গ", "ঘ", "চ", "ছ", "জ", "ট", "ঠ", "থ"];
 
@@ -111,6 +131,7 @@ export class SignAtlas {
   private officeSigns: Rect[] = [];
   private billboards: Rect[] = [];
   private roadSigns: Rect[] = [];
+  private gateBoards = new Map<string, Rect>();
   private labels = new Map<string, Rect>();
   private routes: Rect[] = [];
   private posters: Rect[] = [];
@@ -118,8 +139,10 @@ export class SignAtlas {
   private platesGreen: Rect[] = [];
   private tall: Rect[] = [];
 
-  constructor(scene: Scene, size: number) {
+  constructor(scene: Scene, size: number, private region: RegionManifest) {
     this.size = size;
+    ROUTE_INFO = region.busRoutes;
+    ROUTES = region.busRoutes.map((q) => q.name);
     this.texture = new DynamicTexture("signAtlas", { width: size, height: size }, scene, true, Texture.TRILINEAR_SAMPLINGMODE);
     this.texture.anisotropicFilteringLevel = 8;
     this.ctx = this.texture.getContext() as unknown as CanvasRenderingContext2D;
@@ -254,11 +277,15 @@ export class SignAtlas {
       }
       this.shopSigns.set(kind, list);
     }
-    for (const name of OFFICE_NAMES) this.officeSigns.push(this.board(name, r.chance(0.5) ? "২য় তলা" : "", bw, bh));
-    for (const name of OFFICE_NAMES.slice(0, 6)) this.tall.push(this.tallBoard(name, Math.floor(120 * s), Math.floor(640 * s)));
-    for (const b of BILLBOARDS) this.billboards.push(this.billboard(b, Math.floor(800 * s), Math.floor(400 * s)));
-    for (const b of ROAD_SIGNS) this.roadSigns.push(this.roadSign(b.head, b.sub, Math.floor(520 * s), Math.floor(220 * s)));
-    for (const l of LABELS) this.labels.set(l, this.label(l, Math.floor(420 * s), Math.floor(110 * s)));
+    // Local businesses are named after wherever they are.
+    const here = (t: string): string => t.replace("মিরপুর ১০", this.region.shortNameBn).replace("মিরপুর", this.region.shortNameBn);
+    const offices = OFFICE_NAMES.map(here);
+    for (const name of offices) this.officeSigns.push(this.board(name, r.chance(0.5) ? "২য় তলা" : "", bw, bh));
+    for (const name of offices.slice(0, 6)) this.tall.push(this.tallBoard(name, Math.floor(120 * s), Math.floor(640 * s)));
+    for (const b of BILLBOARDS) this.billboards.push(this.billboard({ ...b, sub: here(b.sub) }, Math.floor(800 * s), Math.floor(400 * s)));
+    for (const g of this.region.gates) this.gateBoards.set(g.to, this.roadSign(g.nameBn, g.viaBn, Math.floor(520 * s), Math.floor(220 * s)));
+    for (const b of this.region.roadSigns) this.roadSigns.push(this.roadSign(b.head, b.sub, Math.floor(520 * s), Math.floor(220 * s)));
+    for (const l of [...LABELS, ...this.region.labels]) this.labels.set(l, this.label(l, Math.floor(420 * s), Math.floor(110 * s)));
     for (const route of ROUTES) this.routes.push(this.routeBoard(route, Math.floor(520 * s), Math.floor(110 * s)));
     for (const p of POSTERS) this.posters.push(this.poster(p, Math.floor(160 * s), Math.floor(224 * s)));
     for (let i = 0; i < 10; i++) {
@@ -417,6 +444,10 @@ export class SignAtlas {
   }
   road(i: number): Rect {
     return this.roadSigns[i % this.roadSigns.length];
+  }
+  /** The big board over a road leaving for another district. */
+  gateBoard(to: string): Rect {
+    return this.gateBoards.get(to) ?? this.officeSigns[0];
   }
   labelOf(text: string): Rect {
     return this.labels.get(text) ?? this.officeSigns[0];

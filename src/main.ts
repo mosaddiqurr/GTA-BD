@@ -1,3 +1,4 @@
+import "./localization/english";
 import { Game } from "./app/game";
 import { bn } from "./localization/bn";
 

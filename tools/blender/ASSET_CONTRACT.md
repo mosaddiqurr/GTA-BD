@@ -50,8 +50,9 @@ done without having looked at it. Report honestly anything you were not able to 
 ## Characters: `public/assets/characters/<id>.glb`
 
 Fruit people. **Absolute rule: no eyes, no nose, no mouth, no eyebrows, no face-like marks, in
-geometry or texture, from any angle.** Opaque eyewear (sunglasses, aviators, wrap visors,
-futuristic shades) sits where eyes would be. Vary the eyewear. Every character wears some.
+geometry or texture, from any angle.** Glasses are optional: some of the cast wear opaque eyewear
+(sunglasses, aviators, wrap visors, futuristic shades), and traditional dress and working roles
+usually have a plain fruit face.
 Male cast only. Chunky mascot proportions: big fruit head about 40% of total height, stubby limbs,
 chunky hands with thumb plus 3 thick fingers, separate shoes/sandals.
 
@@ -79,6 +80,9 @@ Real-world scale. Node names (mesh objects unless noted):
   its local X. Same material as body.
 - `steer`: optional object for parts turning with the steering (handlebars, fork, mudguard), origin on
   the steering axis. For two- and three-wheelers `wheel_F` is parented to `steer`.
+- Doors: cut out afterwards by `tools/blender/build_doors.py`, each its own object with its origin on the
+  hinge. `door_D`, `door_DL` the driver's on the right and left; `door_P`, `door_PL` the passengers'; `door_P2`
+  the second leaf of the bus's door. A pane of glass in a door is the same name plus `_glass`.
 - Empties (plain empty objects exported as nodes):
   `seat_driver` at the character's hips position, `seat_p1`, `seat_p2`... for passengers,
   `exit_L`, `exit_R` on the ground just beside the driver where the character stands after getting out,

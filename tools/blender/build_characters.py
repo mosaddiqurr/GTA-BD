@@ -4349,7 +4349,7 @@ def npc_rickshaw_watermelon(opts):
     C = Character("npc_rickshaw_watermelon", Body(1.40, 0.5, hat=0.0, girth=1.0), tex=1024)
     b = C.b
     C.add(head_watermelon(C), 1100, ("head",), density=1.5, chart=0.2, ext=0.005)
-    add_eyewear(C, "wayfarer", a=0.092, b_=0.05, level=0.62, bud_scale=0.7)
+    # No eyewear: owner's decision, only some of the cast wear glasses. Plain fruit, still no face.
     top, prof, limbs, btn = garment_top(C, mat_plaid("check_shirt", SHIRT_CHECK, 0.092), "short", hem=0.452, seed=3, amp=1.1, loose=1.02, button="#D8D2C2")
     add_top(C, top, btn, 2100)
     add_wrap_cloth(C, neck_wrap(C, GAMCHA_RED, 0.056, 0.24, 0.13, seed=2), 740)
@@ -4369,7 +4369,7 @@ def npc_tea_banana(opts):
     C.add(head_banana(C), 1100, ("head",), density=1.5, chart=0.2, ext=0.005)
     for hi, lo, bud in baseball_cap(C, b.chin + b.head_h * 0.5, yaw=180.0, tilt=10.0, color="#3A352E", arch=False, brim_len=0.085, name="flat", crown_rx=0.2, crown_rz=0.098, clip_dome=True, cxy=(0.006, 0.066), brim_droop=0.018):
         C.add(hi, bud, ("head",), lo=lo, chart=0.08, ext=0.004)
-    add_eyewear(C, "wayfarer", a=0.076, b_=0.041, gap=0.012, fw=0.011, level=0.335, bud_scale=0.7)
+    # No eyewear: owner's decision, only some of the cast wear glasses. Plain fruit, still no face.
     top, prof, limbs, btn = garment_top(C, mat_plaid("brown_check", SHIRT_BROWN, 0.05), "short", hem=0.47, seed=7, amp=1.05, loose=1.02, pocket=False, button="#C6B79E")
     add_top(C, top, btn, 1750)
     C.add(shirt_collar(C, prof, mat=mat_plaid("brown_collar", SHIRT_BROWN, 0.05)), 170, ("chest",), chart=0.02, ext=0.004)
@@ -4394,7 +4394,7 @@ def npc_shop_papaya(opts):
     C.add(br, 520, ("head",), lo=br_lo, chart=0.04, ext=0.016)
     st, lf = small_stem_leaf(C, leaf=False, stem_h=0.03)
     C.add(st, 50, ("head",), ext=0.004)
-    add_eyewear(C, "rect", a=0.086, b_=0.041, gap=0.012, fw=0.012, level=0.635, bud_scale=0.7)
+    # No eyewear: owner's decision, only some of the cast wear glasses. Plain fruit, still no face.
     m_panj = mat_cloth("panjabi_white", lin("#E9E5D8"), 0.9, 320.0, 0.16, 0.04, 0.3)
     top, prof, limbs, btn = garment_top(C, m_panj, "long", hem=0.3, seed=4, amp=1.0, flare=0.03, loose=1.02, pocket=False, placket=True, button="#BFAE86", drape=14, buttons=5)
     C.add(top, 2100, TORSO_BONES + ("thigh.L", "thigh.R"), weight_fn=lower_blend_weights, ext=0.012, group=0, lo_smooth=8)
@@ -4491,7 +4491,7 @@ def npc_elder_date(opts):
     C.add(topi(C, b.chin + b.head_h * 0.81), 420, ("head",), density=1.3, chart=0.05, ext=0.003)
     br, br_lo = beard(C, top_el=-30.0, bot_el=-84.0, half=66.0, thick=0.03, drop=0.17, narrow=0.68, color="#E8E5DD", light="#FFFFFF", rough=0.9, forward=0.045)
     C.add(br, 560, ("head",), lo=br_lo, chart=0.04, ext=0.016)
-    add_eyewear(C, "round", a=0.053, b_=0.053, gap=0.018, fw=0.0072, level=0.64, bud_scale=0.7)
+    # No eyewear: owner's decision, only some of the cast wear glasses. Plain fruit, still no face.
     m_panj = mat_cloth("panjabi_white", lin("#ECE8DC"), 0.9, 320.0, 0.16, 0.04, 0.3)
     top, prof, limbs, btn = garment_top(C, m_panj, "long", hem=0.22, seed=13, amp=1.0, flare=0.03, loose=1.03, pocket=True, placket=True, button="#C8BE9E", drape=16, buttons=5)
     C.add(top, 2200, TORSO_BONES + ("thigh.L", "thigh.R"), weight_fn=lower_blend_weights, ext=0.012, group=0, lo_smooth=8)
@@ -4513,7 +4513,7 @@ def npc_vendor_pineapple(opts):
     h, crown = head_pineapple(C)
     C.add(h, 1300, ("head",), density=1.5, chart=0.2, ext=0.006)
     C.add(crown, 760, ("head",), density=1.2, chart=0.012, ext=0.0035)
-    add_eyewear(C, "wayfarer", a=0.086, b_=0.046, gap=0.012, level=0.6, bud_scale=0.7)
+    # No eyewear: owner's decision, only some of the cast wear glasses. Plain fruit, still no face.
     top, prof, limbs, btn = garment_top(C, mat_plaid("vendor_shirt", SHIRT_VENDOR, 0.088), "short", hem=0.455, seed=15, amp=1.05, loose=1.02, button="#C8B88E")
     add_top(C, top, btn, 1800)
     C.add(shirt_collar(C, prof, mat=mat_plaid("vendor_collar", SHIRT_VENDOR, 0.088)), 160, ("chest",), chart=0.02, ext=0.004)
@@ -4579,7 +4579,7 @@ def npc_worker_jackfruit(opts):
     b = C.b
     C.add(head_jackfruit(C), 1400, ("head",), density=1.5, chart=0.2, ext=0.007)
     C.add(turban(C, b.chin + b.head_h * 0.735, GAMCHA_RED, 0.056), 780, ("head",), chart=0.03, ext=0.012, density=1.45)
-    add_eyewear(C, "wayfarer", a=0.09, b_=0.044, gap=0.012, fw=0.014, level=0.6, bud_scale=0.7)
+    # No eyewear: owner's decision, only some of the cast wear glasses. Plain fruit, still no face.
 
     def faded(Q, a, u):
         base = np.array(lin("#7E8F8C"))
@@ -4679,7 +4679,251 @@ def build_hero_mango(opts):
     return C
 
 
+# ---------------------------------------------------------------------------
+# More of the city: women and girls, a child, and more trades. Plain fruit faces, as everywhere.
+# ---------------------------------------------------------------------------
+
+
+def plain_fruit(C, name, base, deep, light, rx=0.222, ry=0.214, sq=1.0, taper=0.0, pore="#000000", scale=210.0, rough=0.42, bump=0.16):
+    """A round fruit head in the same manner as the rest of the cast."""
+    b = C.b
+    hh = b.head_h / 2
+    fn = ellipsoid_fn(b.chin + hh, hh, rx, ry, sq=sq, taper=taper)
+
+    def paint(P, th, v):
+        n = fbm(P, 5.0, 3, 1)
+        col = mixc(np.array(lin(base)), np.array(lin(deep)), sstep(0.32, 0.72, n))
+        col = mixc(col, np.array(lin(light)), sstep(0.55, 0.8, fbm(P, 9.0, 3, 2)) * 0.5)
+        pores = sstep(0.6, 0.84, vnoise(P, scale, 3))
+        col = mixc(col, np.array(lin(pore)), pores * 0.08)
+        return (n - 0.5) * 0.005 - pores * 0.0012, col
+
+    return head_from(C, name, fn, paint, mat_attr(name + "_skin", rough, 300.0, bump, "voronoi", 0.0013))
+
+
+def head_scarf(C, color, rx=0.232, ry=0.224, front=62.0, low=0.2, name="scarf", drape=0.1):
+    """Cloth over the top and back of the head and round the neck. The fruit shows in the opening."""
+    b = C.b
+    hh = b.head_h / 2
+    cz = b.chin + hh
+    rows, cols = 22, 44
+    P = np.zeros((rows, cols, 3))
+    for i in range(rows):
+        v = i / (rows - 1)
+        el = math.radians(-78 + 170 * v)
+        for j in range(cols):
+            # From the opening's edge, round the back, to the other edge. Front is -Y.
+            a = math.radians(front + (360 - 2 * front) * j / (cols - 1))
+            ce, se = math.cos(el), math.sin(el)
+            grow = 1 + 0.03 * math.sin(a * 3 + el * 2) + 0.02 * (1 - v)
+            x = math.sin(a) * rx * ce * grow
+            y = -math.cos(a) * ry * ce * grow
+            P[i, j] = (x, y, cz + se * hh * 1.03)
+            if v < low:
+                P[i, j, 2] -= (low - v) * drape * 3
+    obj = grid_obj(name, P)
+    obj.data.materials.append(mat_cloth(name, lin(color), 0.86, 340.0, 0.14, 0.05, 0.3))
+    return obj
+
+
+def long_top(C, mat, hem=0.2, seed=21, flare=0.05, loose=1.05, name="kameez"):
+    top, prof, limbs, btn = garment_top(C, mat, "long", hem=hem, seed=seed, amp=1.0, flare=flare, loose=loose, pocket=False, placket=False, name=name)
+    C.add(top, 2200, TORSO_BONES + ("thigh.L", "thigh.R"), weight_fn=lower_blend_weights, ext=0.012, group=0, lo_smooth=8)
+    return prof
+
+
+def wrap_skirt(C, stops, pitch=0.1, seed=7):
+    b = C.b
+    lg, lg_lo, _ = lungi(C, stops, pitch, hem=0.11, seed=seed, wide=1.06)
+    C.add(lg, 950, ("hips", "thigh.L", "thigh.R"), lo=lg_lo, weight_fn=skirt_weights, group=0, ext=0.014, lo_smooth=3, chart=0.09)
+
+
+SARI_RED = [("#A81C3A", 2.6), ("#E6B83C", 0.5), ("#7A1230", 1.8), ("#E6B83C", 0.35)]
+SARI_WHITE = [("#EAE6DC", 2.4), ("#3D6E58", 0.3), ("#DDD8CC", 1.8)]
+SARI_BLUE = [("#1D5F8C", 2.4), ("#F0D070", 0.4), ("#14476E", 1.8)]
+ORNA_PINK = [("#D6588A", 2.0), ("#F1D6E0", 0.5), ("#B83F70", 1.2)]
+
+
+def npc_woman_apple(opts):
+    """In a sari, the end of it over her head."""
+    C = Character("npc_woman_apple", Body(1.36, 0.47, hat=0.03, girth=0.94), tex=1024)
+    C.add(plain_fruit(C, "apple", "#C5232C", "#9C1720", "#E2574A", sq=0.98), 900, ("head",), density=1.5, chart=0.2, ext=0.005)
+    C.add(head_scarf(C, "#A81C3A"), 700, ("head",), chart=0.06, ext=0.005)
+    m = mat_plaid("sari_top", SARI_RED, 0.1)
+    prof = long_top(C, m, hem=0.3, seed=22, name="sari_blouse")
+    add_wrap_cloth(C, neck_wrap(C, SARI_RED, 0.1, 0.4, 0.3, ring=0.14, thick=0.02, width=0.07, seed=3, flat=True, z_ring=0.84, name="anchal"), 760)
+    wrap_skirt(C, SARI_RED, seed=31)
+    add_bare_feet(C, "#B5202A")
+    add_hands(C, "#C42A32")
+    add_shoes(C, sandal, style="two", color="#5A2A1C", sole="#241911")
+    return C
+
+
+def npc_woman_peach(opts):
+    """Salwar kameez and an orna over the shoulders."""
+    C = Character("npc_woman_peach", Body(1.38, 0.47, hat=0.02, girth=0.92), tex=1024)
+    C.add(plain_fruit(C, "peach", "#F2A77A", "#E68A5C", "#F9C9A0", sq=1.0), 900, ("head",), density=1.5, chart=0.2, ext=0.005)
+    st, lf = small_stem_leaf(C, leaf=True, stem_h=0.022, leaf_len=0.1, leaf_w=0.03)
+    C.add(st, 50, ("head",), ext=0.003)
+    C.add(lf, 90, ("head",), chart=0.012, ext=0.003)
+    m = mat_cloth("kameez_teal", lin("#1F7E7A"), 0.84, 340.0, 0.14, 0.04, 0.3)
+    long_top(C, m, hem=0.24, seed=23)
+    add_wrap_cloth(C, neck_wrap(C, ORNA_PINK, 0.05, 0.42, 0.34, ring=0.15, thick=0.018, width=0.06, seed=6, flat=True, z_ring=0.835, name="orna"), 760)
+    pants, _ = trousers(C, mat_cloth("salwar", lin("#E9E2CE"), 0.88, 320.0, 0.16, 0.04, 0.3), "pajama", seed=24, cuff=0.09, top_cut=0.33)
+    C.add(pants, 800, LEG_BONES, ext=0.012, group=0, lo_smooth=8)
+    add_bare_feet(C, "#E89B70")
+    add_hands(C, "#EFA57A")
+    add_shoes(C, sandal, style="two", color="#8A3A3C", sole="#2C1A18")
+    return C
+
+
+def npc_woman_plum(opts):
+    """In a long dark coat and scarf."""
+    C = Character("npc_woman_plum", Body(1.42, 0.47, hat=0.03, girth=0.95), tex=1024)
+    C.add(plain_fruit(C, "plum", "#5E2A6E", "#431C50", "#8A4C96", sq=1.0), 900, ("head",), density=1.5, chart=0.2, ext=0.005)
+    C.add(head_scarf(C, "#26282E", front=58.0), 700, ("head",), chart=0.06, ext=0.005)
+    m = mat_cloth("borka", lin("#22242A"), 0.8, 360.0, 0.16, 0.05, 0.3)
+    long_top(C, m, hem=0.14, seed=25, flare=0.07, loose=1.08, name="borka")
+    add_bare_feet(C, "#4D2358")
+    add_hands(C, "#5A2A68")
+    add_shoes(C, sandal, style="two", color="#1E1E22", sole="#121214")
+    return C
+
+
+def npc_girl_pear(opts):
+    """In school uniform: white top, blue dress, a bag on her back."""
+    C = Character("npc_girl_pear", Body(1.12, 0.42, hat=0.03, girth=0.86), tex=1024)
+    C.add(plain_fruit(C, "pear", "#C4CF4E", "#A9B63C", "#DEE37C", sq=0.96, taper=0.18), 900, ("head",), density=1.5, chart=0.2, ext=0.005)
+    st, lf = small_stem_leaf(C, leaf=True, stem_h=0.026, leaf_len=0.09, leaf_w=0.028)
+    C.add(st, 50, ("head",), ext=0.003)
+    C.add(lf, 90, ("head",), chart=0.012, ext=0.003)
+    m = mat_cloth("uniform_blue", lin("#274F8F"), 0.84, 340.0, 0.14, 0.04, 0.3)
+    long_top(C, m, hem=0.3, seed=26, flare=0.06, name="pinafore")
+    add_wrap_cloth(C, neck_wrap(C, [("#F2F0EA", 2.0), ("#DAD7CF", 0.6)], 0.05, 0.28, 0.22, ring=0.13, thick=0.016, width=0.05, seed=9, flat=True, z_ring=0.835, name="sash"), 500)
+    pk, stp = backpack(C, "#B5324C", "#7E2036")
+    C.add(pk, 460, ("chest", "spine"), chart=0.05, ext=0.005)
+    C.add(stp, 200, ("chest", "spine"), chart=0.02, ext=0.003)
+    m2 = add_bare_feet(C, "#BDC74B")
+    add_bare_legs(C, m2, 0.36 * C.b.k)
+    add_hands(C, "#C4CF4E")
+    add_shoes(C, formal_shoe, color="#111114")
+    return C
+
+
+def npc_kid_berry(opts):
+    """A boy in a tee shirt and shorts, always on his way to a game."""
+    C = Character("npc_kid_berry", Body(1.02, 0.42, hat=0.02, girth=0.84), tex=1024)
+    C.add(plain_fruit(C, "berry", "#B02A3E", "#8C1E30", "#D44A5A", sq=1.0), 900, ("head",), density=1.5, chart=0.2, ext=0.005)
+    st, lf = small_stem_leaf(C, leaf=True, stem_h=0.02, leaf_len=0.08, leaf_w=0.03)
+    C.add(st, 50, ("head",), ext=0.003)
+    C.add(lf, 90, ("head",), chart=0.012, ext=0.003)
+    top, prof, limbs, btn = garment_top(C, mat_cloth("kid_tee", lin("#2E7FB8"), 0.86, 340.0, 0.12, 0.04, 0.3), "short", hem=0.47, seed=27, amp=0.9, loose=1.02, pocket=False, placket=False)
+    add_top(C, top, btn, 1600)
+    pants, _ = cargo_pants(C, "#3E3F3A", seed=28, cargo=False, cuff_z=0.26)
+    C.add(pants, 1100, LEG_BONES, ext=0.018, group=0, lo_smooth=9)
+    m = add_bare_feet(C, "#A92A3C")
+    add_bare_legs(C, m, 0.3 * C.b.k)
+    add_bare_arms(C, m, "short")
+    add_hands(C, "#B02A3E")
+    add_shoes(C, sandal, style="two", color="#2B6A9E", sole="#1A1D20")
+    return C
+
+
+def npc_granny_fig(opts):
+    """An old woman in a white sari, the end of it over her hair."""
+    C = Character("npc_granny_fig", Body(1.24, 0.45, hat=0.03, girth=0.92), tex=1024)
+    C.add(plain_fruit(C, "fig", "#6D4C62", "#4F3548", "#8F6C84", sq=1.02, taper=0.12), 900, ("head",), density=1.5, chart=0.2, ext=0.005)
+    C.add(head_scarf(C, "#E9E5DA"), 700, ("head",), chart=0.06, ext=0.005)
+    long_top(C, mat_plaid("granny_top", SARI_WHITE, 0.1), hem=0.3, seed=29, name="granny_blouse")
+    add_wrap_cloth(C, neck_wrap(C, SARI_WHITE, 0.1, 0.36, 0.28, ring=0.14, thick=0.02, width=0.07, seed=8, flat=True, z_ring=0.84, name="anchal"), 760)
+    wrap_skirt(C, SARI_WHITE, seed=33)
+    add_bare_feet(C, "#5E4054")
+    add_hands(C, "#6D4C62")
+    add_shoes(C, sandal, style="two", color="#3F3028", sole="#1E1812")
+    return C
+
+
+def npc_doctor_kiwi(opts):
+    C = Character("npc_doctor_kiwi", Body(1.46, 0.47, hat=0.02), tex=1024)
+    C.add(plain_fruit(C, "kiwi", "#8A6D3B", "#6D552C", "#A68A52", sq=1.0, scale=330.0, rough=0.7, bump=0.3), 900, ("head",), density=1.5, chart=0.2, ext=0.005)
+    add_eyewear(C, "rect", a=0.078, b_=0.032, gap=0.012, fw=0.006, level=0.62, bud_scale=0.6)
+    m = mat_cloth("white_coat", lin("#EEF0EE"), 0.82, 340.0, 0.12, 0.03, 0.28)
+    long_top(C, m, hem=0.34, seed=30, flare=0.03, loose=1.06, name="white_coat")
+    pants, _ = trousers(C, mat_cloth("dr_trousers", lin("#23303F"), 0.82, 380.0, 0.16, 0.08, 0.34), "dress", seed=34, amp=0.8, waist=0.605)
+    C.add(pants, 1100, LEG_BONES, ext=0.012, group=0, lo_smooth=8)
+    add_wrap_cloth(C, neck_wrap(C, [("#1F2226", 1.0)], 0.05, 0.3, 0.3, ring=0.14, thick=0.012, width=0.022, seed=2, flat=False, fringe=False, z_ring=0.82, name="stethoscope"), 300)
+    add_hands(C, "#8A6D3B")
+    add_shoes(C, formal_shoe, color="#141418")
+    return C
+
+
+def npc_guard_melon(opts):
+    C = Character("npc_guard_melon", Body(1.5, 0.48, hat=0.075, girth=1.04), tex=1024)
+    b = C.b
+    C.add(plain_fruit(C, "melon", "#C9C46A", "#A8A44E", "#E0DC8C", sq=1.0, scale=120.0), 900, ("head",), density=1.5, chart=0.2, ext=0.005)
+    for hi, lo, bud in peaked_cap(C, b.chin + b.head_h * 0.79, color="#2B3A5A", band_col="#141C2E"):
+        C.add(hi, bud, ("head",), lo=lo, chart=0.06, ext=0.003)
+    m = mat_cloth("guard_shirt", lin("#3D5478"), 0.84, 340.0, 0.16, 0.05, 0.3)
+    top, prof, limbs, btn = garment_top(C, m, "short", hem=0.53, seed=35, amp=0.85, loose=1.03, pocket=True, button="#D8C894", buttons=5)
+    add_top(C, top, btn, 1800)
+    C.add(shirt_collar(C, prof, mat=m), 160, ("chest",), chart=0.02, ext=0.004)
+    pants, _ = trousers(C, mat_cloth("guard_pants", lin("#1E2838"), 0.82, 380.0, 0.16, 0.08, 0.34), "dress", seed=36, amp=0.8, waist=0.605)
+    C.add(pants, 1200, LEG_BONES, ext=0.012, group=0, lo_smooth=8)
+    bl, bk = belt(C, 0.585, "#101014")
+    C.add(bl, 150, ("hips",), chart=0.02, ext=0.003)
+    C.add(bk, 24, ("hips",), ext=0.002)
+    ma = add_bare_feet(C, "#C0BB62")
+    add_bare_arms(C, ma, "short")
+    add_hands(C, "#C9C46A")
+    add_shoes(C, formal_shoe, color="#0E0E10", boot=True)
+    return C
+
+
+def npc_sweeper_tamarind(opts):
+    C = Character("npc_sweeper_tamarind", Body(1.4, 0.45, hat=0.05), tex=1024)
+    C.add(plain_fruit(C, "tamarind", "#7A5230", "#5C3C22", "#9A7044", sq=1.04, taper=0.1, rough=0.7), 900, ("head",), density=1.5, chart=0.2, ext=0.005)
+    C.add(head_scarf(C, "#E0701C", front=120.0, low=0.5, name="headcloth", rx=0.226, ry=0.218), 450, ("head",), chart=0.05, ext=0.004)
+    m = mat_cloth("work_shirt", lin("#6E705E"), 0.88, 340.0, 0.18, 0.08, 0.32)
+    top, prof, limbs, btn = garment_top(C, m, "short", hem=0.47, seed=37, amp=1.05, loose=1.03, pocket=False, placket=False)
+    add_top(C, top, btn, 1500)
+    vest, vp, gapf = shell_vest(C, prof, mat_cloth("hivis_orange", lin("#E0701C"), 0.74, 380.0, 0.3, 0.05, 0.3), off=0.012, gap_top=26.0, gap_bot=2.5, gap_z=0.62, hem=0.505, seed=38, name="work_vest")
+    C.add(vest, 700, ("chest", "spine"), ext=0.01, group=0, lo_smooth=6)
+    pants, _ = cargo_pants(C, "#4B4A44", seed=39, cargo=False)
+    C.add(pants, 1100, LEG_BONES, ext=0.018, group=0, lo_smooth=9)
+    ma = add_bare_feet(C, "#6C4728")
+    add_bare_arms(C, ma, "short")
+    add_hands(C, "#7A5230")
+    add_shoes(C, sandal, style="two", color="#2E2A24", sole="#191612")
+    return C
+
+
+def npc_boss_quince(opts):
+    """A man in a suit, hurrying between towers."""
+    C = Character("npc_boss_quince", Body(1.5, 0.47, hat=0.02, girth=1.02), tex=1024)
+    C.add(plain_fruit(C, "quince", "#E2C84A", "#C4AC36", "#F0E07A", sq=1.02, taper=0.08), 900, ("head",), density=1.5, chart=0.2, ext=0.005)
+    add_eyewear(C, "aviator", a=0.082, b_=0.05, gap=0.016, fw=0.0056, level=0.6, frame="#2B2D30", metal=True, bud_scale=0.8)
+    m = mat_cloth("suit", lin("#232B3C"), 0.8, 380.0, 0.14, 0.05, 0.3)
+    top, prof, limbs, btn = garment_top(C, m, "long", hem=0.45, seed=41, amp=0.8, loose=1.04, pocket=True, button="#101014", buttons=3)
+    add_top(C, top, btn, 2100)
+    C.add(shirt_collar(C, prof, mat=mat_cloth("suit_collar", lin("#EEF0EE"), 0.84, 340.0, 0.12, 0.03, 0.28)), 180, ("chest",), chart=0.02, ext=0.004)
+    pants, _ = trousers(C, mat_cloth("suit_pants", lin("#20283A"), 0.82, 380.0, 0.16, 0.08, 0.34), "dress", seed=42, amp=0.8, waist=0.605)
+    C.add(pants, 1200, LEG_BONES, ext=0.012, group=0, lo_smooth=8)
+    add_hands(C, "#E2C84A")
+    add_shoes(C, formal_shoe, color="#0E0E10")
+    return C
+
+
 ROSTER = {
+    "npc_woman_apple": npc_woman_apple,
+    "npc_woman_peach": npc_woman_peach,
+    "npc_woman_plum": npc_woman_plum,
+    "npc_girl_pear": npc_girl_pear,
+    "npc_kid_berry": npc_kid_berry,
+    "npc_granny_fig": npc_granny_fig,
+    "npc_doctor_kiwi": npc_doctor_kiwi,
+    "npc_guard_melon": npc_guard_melon,
+    "npc_sweeper_tamarind": npc_sweeper_tamarind,
+    "npc_boss_quince": npc_boss_quince,
     "hero_mango": build_hero_mango,
     "npc_rickshaw_watermelon": npc_rickshaw_watermelon,
     "npc_tea_banana": npc_tea_banana,

@@ -73,7 +73,8 @@
     "variants": [
       "red",
       "black",
-      "blue"
+      "blue",
+      "rideshare"
     ]
   },
   "bicycle": {
@@ -110,6 +111,75 @@
     "seatPose": "sit_bus",
     "variants": [
       "default"
+    ]
+  },
+  "garbage_truck": {
+    "length": 7.683,
+    "width": 2.36,
+    "height": 3.222,
+    "wheelbase": 4.34,
+    "wheelRadius": 0.5,
+    "seatPose": "sit_bus",
+    "variants": [
+      "default"
+    ]
+  },
+  "goods_van": {
+    "length": 7.708,
+    "width": 2.36,
+    "height": 3.38,
+    "wheelbase": 4.34,
+    "wheelRadius": 0.5,
+    "seatPose": "sit_bus",
+    "variants": [
+      "default",
+      "green",
+      "red"
+    ]
+  },
+  "wrecker": {
+    "length": 8.484,
+    "width": 2.36,
+    "height": 3.289,
+    "wheelbase": 4.34,
+    "wheelRadius": 0.5,
+    "seatPose": "sit_bus",
+    "variants": [
+      "default"
+    ]
+  },
+  "ambulance": {
+    "length": 4.825,
+    "width": 1.72,
+    "height": 2.215,
+    "wheelbase": 2.6,
+    "wheelRadius": 0.3,
+    "seatPose": "sit_drive",
+    "variants": [
+      "default"
+    ]
+  },
+  "police_car": {
+    "length": 4.48,
+    "width": 1.71,
+    "height": 1.45,
+    "wheelbase": 2.55,
+    "wheelRadius": 0.3,
+    "seatPose": "sit_drive",
+    "variants": [
+      "default"
+    ]
+  },
+  "leguna": {
+    "length": 4.855,
+    "width": 1.72,
+    "height": 2.132,
+    "wheelbase": 2.6,
+    "wheelRadius": 0.3,
+    "seatPose": "sit_drive",
+    "variants": [
+      "default",
+      "yellow"
     ]
   }
 }

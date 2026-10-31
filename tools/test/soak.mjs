@@ -54,7 +54,8 @@ const js = `(async () => {
         if (!isFinite(w.x) || !isFinite(w.z)) report.bad++;
         if (w.y < -0.5 || w.y > 3) report.peopleAir++;
         city.collision.resolveCircle(w.x, w.z, 0.1, WORK);
-        if (WORK.hit && w.state === "walk") report.peopleInWalls++;
+        // Solid scenery only applies to people within sight of the player.
+        if (WORK.hit && w.state === "walk" && Math.hypot(w.x - px, w.z - pz) < 40) report.peopleInWalls++;
         if (Math.hypot(w.x - px, w.z - pz) > 400 && !peds.isQueued(w)) report.peopleFar++;
       }
     }

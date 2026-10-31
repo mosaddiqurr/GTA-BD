@@ -1,0 +1,57 @@
+import type { Line } from "./types";
+
+/** On-screen hints. {W} and the like are drawn as key caps by the game, and are the same in both languages. */
+export const TUTORIAL: { key: string; text: Line }[] = [
+  { key: "tut_walk", text: ["{W} {A} {S} {D} দিয়ে হাঁটুন।", "Walk with {W} {A} {S} {D}."] },
+  { key: "tut_run", text: ["{Shift} চেপে ধরে দৌড়ান। ঢাকায় সময় কম, ফুটপাথও কম।", "Hold {Shift} to run. Dhaka is short on time, and on footpaths."] },
+  { key: "tut_jump", text: ["{Space} চাপলে লাফ। ড্রেন পেরোতে কাজে লাগবে।", "Press {Space} to jump. Handy for drains."] },
+  { key: "tut_look", text: ["মাউস ঘুরিয়ে চারদিকে দেখুন।", "Move the mouse to look around."] },
+  { key: "tut_camera", text: ["{C} চেপে ক্যামেরার দূরত্ব বদলান।", "Press {C} to change how far the camera sits."] },
+  { key: "tut_talk", text: ["কারও কাছে গিয়ে {E} চাপলে কথা শুরু হবে।", "Go up to someone and press {E} to talk."] },
+  { key: "tut_choose", text: ["মাউসের চাকা ঘুরিয়ে উত্তর বাছুন, তারপর {E} চাপুন।", "Turn the mouse wheel to pick an answer, then press {E}."] },
+  { key: "tut_buy", text: ["দোকান বা ঠেলাগাড়ির সামনে {E} চাপলে কী কী আছে দেখা যাবে।", "Press {E} at a shop or cart to see what's on sale."] },
+  { key: "tut_money", text: ["পকেটের টাকা আর ঝটপট টাকা আলাদা হিসাব। ফোনে ব্যালেন্স দেখে নিন।", "Pocket money and Jhotpot Taka are separate. Check your balance on the phone."] },
+  { key: "tut_phone", text: ["{P} চাপলে ফোন খুলবে। বন্ধ করতেও {P}।", "Press {P} to open the phone. {P} closes it too."] },
+  { key: "tut_scam", text: ["ফোনে অচেনা কেউ পিন বা ওটিপি চাইলে কেটে দিন। খেলায়ও, জীবনেও।", "If a stranger on the phone asks for a PIN or OTP, hang up. In the game and in life."] },
+  { key: "tut_map", text: ["{M} চাপলে বড় মানচিত্র খুলবে।", "Press {M} for the big map."] },
+  { key: "tut_hail", text: ["রাস্তার পাশে {Q} চাপলে রিকশা, সিএনজি বা ট্যাক্সি ডাকা যায়।", "Press {Q} by the road to call a rickshaw, CNG or taxi."] },
+  { key: "tut_enter", text: ["গাড়ির কাছে {F} চাপলে চালক হয়ে উঠবেন। আগের চালক শান্তভাবে নেমে যাবেন।", "Press {F} near a vehicle to take the wheel. The driver steps out peacefully."] },
+  { key: "tut_ride", text: ["{G} চাপলে যাত্রী হয়ে উঠবেন। ভাড়াটা মনে রাখবেন।", "Press {G} to get in as a passenger. Remember the fare."] },
+  { key: "tut_drive", text: ["{W} চালায়, {S} থামায়, {A} {D} ঘোরায়। {Space} হ্যান্ডব্রেক।", "{W} goes, {S} stops, {A} {D} steer. {Space} is the handbrake."] },
+  { key: "tut_horn", text: ["{H} চাপলে হর্ন বা বেল। কম বাজান, শহর খুশি হবে।", "Press {H} for the horn or bell. Use it less and the city will thank you."] },
+  { key: "tut_exit", text: ["আবার {F} চাপলে গাড়ি থেকে নামবেন।", "Press {F} again to get out."] },
+  { key: "tut_law", text: ["লাল বাতিতে থামুন, ফুটপাথে চালাবেন না। ট্রাফিক পুলিশের জরিমানা সত্যিকারের।", "Stop at red lights and stay off footpaths. Traffic police fines are real."] },
+  { key: "tut_stuck", text: ["আটকে গেলে {R} চাপুন, নিরাপদ জায়গায় ফিরে যাবেন।", "Stuck? Press {R} to return to a safe place."] },
+  { key: "tut_health", text: ["ক্লান্ত লাগলে কিছু খান বা বাসায় ঘুমান। শরীর খারাপ হলে ক্লিনিকে যান।", "If you're tired, eat something or sleep at home. If you feel ill, visit the clinic."] },
+  { key: "tut_jobs", text: ["ফোনের কাজ অংশে কাজ খুঁজুন, বা মালিকের সঙ্গে কথা বলুন। টাকা কাজ শেষে।", "Look for work in the phone's jobs section, or talk to an owner. You're paid when it's done."] },
+  { key: "tut_missions", text: ["যাঁর কাজে আপনাকে দরকার, মানচিত্রে তাঁর চিহ্ন থাকে। কাছে গিয়ে {E} চাপুন।", "Whoever needs your help has a mark on the map. Go close and press {E}."] },
+  { key: "tut_save", text: ["খেলা নিজে থেকেই জমা হয়। আলাদা করে কিছু চাপতে হবে না।", "The game saves by itself. There's nothing extra to press."] },
+  { key: "tut_pause", text: ["{Esc} চাপলে বিরতি। চা খেয়ে আসুন।", "Press {Esc} to pause. Go and have some tea."] },
+];
+
+export const ENDING: { lines: Line[]; credits: Line[] } = {
+  lines: [
+    ["ভাই ও বোনেরা, মাইক ধরার অভ্যাস নাই। আমি চা বানাই, চায়ে মাইক লাগে না।", "Brothers and sisters, I'm not used to a microphone. I make tea, and tea needs no microphone."],
+    ["কিছুদিন আগে একটা ফোন এসেছিল। মিষ্টি গলা, ব্যাংকের নাম, আর আমার সারা জীবনের জমানো টাকা।", "Not long ago a call came. A sweet voice, a bank's name, and all my life's savings."],
+    ["একটা নাম্বার বলেছিলাম। মাত্র ছয়টা সংখ্যা। তাতেই চল্লিশ বছরের চা চলে গেল।", "I read out one number. Just six digits. And with that, forty years of tea were gone."],
+    ["লজ্জায় কাউকে বলিনি। ভেবেছিলাম, আমার মতো বোকা আর কেউ ঠকে না।", "I told no one, out of shame. I thought nobody else could be such a fool."],
+    ["তারপর শুনলাম, পাশের দোকান ঠকেছে। ওই রিকশাচালক ঠকেছেন। স্কুলের শিক্ষিকাও।", "Then I heard the shop next door had been tricked. That rickshaw driver too. The schoolteacher too."],
+    ["তখন আমার পরিবারের একজন রাস্তায় নামলেন। হাতে শুধু একটা ফোন, আর মাথা ঠান্ডা।", "Then someone from my family took to the streets. With only a phone, and a cool head."],
+    ["কেউ কাউকে একটা ধমকও দেয়নি। শুধু জিজ্ঞেস করা, খুঁজে বের করা, আর সবাইকে ডাকা।", "Nobody so much as raised their voice. Just asking, finding out, and calling everyone together."],
+    ["আজ সেই টাকা ফিরে এসেছে। আমার, আপনার, সবার। থানার খাতায় সই করে, গুনে গুনে।", "Today that money has come back. Mine, yours, everyone's. Signed for in the police register, counted note by note."],
+    ["তবে আমি আরেকটা জিনিসও ফেরত পেয়েছি। পাশের মানুষকে জিজ্ঞেস করার সাহস।", "But I've got something else back too. The courage to ask the person beside me."],
+    ["যে বাচ্চা আব্বাকে বলল ওটিপি দিয়ো না, যে দোকানদার মুরুব্বিকে ডেকে বোঝালেন, তাঁরাই আজকের নায়ক।", "The child who told her father not to give the OTP, the shopkeeper who sat an elder down and explained. They're today's heroes."],
+    ["তাই একটাই কথা। ফোনে কেউ তাড়া দিলে থামেন, পাশের মানুষকে ডাকেন। একা ঠকা সহজ, একসঙ্গে ঠকা কঠিন।", "So just one thing. If a call hurries you, stop, and call the person beside you. It's easy to be fooled alone, hard together."],
+    ["এখন আর বক্তৃতা না। দোকান খোলা, চা আজ আমার পক্ষ থেকে। চিনি কম, ভালোবাসা বেশি।", "That's enough speeches. The stall's open, and tea's on me today. Less sugar, more love."],
+  ],
+  credits: [
+    ["যাঁরা ফোনে পিন বলেননি, তাঁদের ধন্যবাদ।", "Thank you to everyone who never read out their PIN."],
+    ["অচেনা লিংকে চাপ দেওয়ার আগে যাঁরা এক কাপ চা খেয়েছেন, ধন্যবাদ।", "Thank you to all who had a cup of tea before tapping a strange link."],
+    ["ঢাকার সব রিকশা, সিএনজি, বাস আর ক্লান্ত হেলপারদের ধন্যবাদ।", "Thank you to all Dhaka's rickshaws, CNGs, buses and tired helpers."],
+    ["এই খেলার জন্য যে পরিবার দেরি করে ভাত খেয়েছে, ধন্যবাদ।", "Thank you to the family who ate dinner late because of this game."],
+    ["যাঁরা বাংলা ঠিক করে দিয়েছেন, এক এক করে প্রতিটা শব্দের শেষ, ধন্যবাদ।", "Thank you to those who corrected the Bangla, one word ending at a time."],
+    ["মুক্ত সফটওয়্যার আর খোলা জিনিস যাঁরা সবার জন্য রেখেছেন, ধন্যবাদ।", "Thank you to those who keep free software and open resources for everyone."],
+    ["এই শহরের কোনো নাম, কোনো গল্প সত্যি না। তবে আপনার ফোনে যে কলটা আসবে, সেটা সত্যি।", "No name or story in this city is real. But the call coming to your phone is."],
+    ["আর আপনি, যিনি এতক্ষণ খেললেন। আজ পাশের মানুষটার খোঁজ নিবেন। ধন্যবাদ।", "And you, who played this far. Look in on the person beside you today. Thank you."],
+  ],
+};
